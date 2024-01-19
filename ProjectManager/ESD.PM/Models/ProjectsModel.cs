@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ESD.PM.ViewModels
+namespace ESD.PM.Models
 {
     public class ProjectsModel
     {
