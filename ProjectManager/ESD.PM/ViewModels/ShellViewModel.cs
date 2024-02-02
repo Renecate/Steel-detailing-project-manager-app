@@ -5,16 +5,20 @@ using System.IO;
 
 namespace ESD.PM.ViewModels
 {
-    public class ShellViewModel: Screen
+    public class ShellViewModel : Conductor<object>
     {
         #region Public Properties
         public ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
         public ObservableCollection<ProjectsModel> ItemsList { get; set; } = [];
+        public ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
+
         #endregion
 
         #region Private Properties
 
         private ProjectsModel _selectedProject;
+
+        private ProjectsModel _selectedItem;
 
         #endregion
 
@@ -33,6 +37,19 @@ namespace ESD.PM.ViewModels
                 NotifyOfPropertyChange(() => SelectedProject);
             }
         }
+
+        public ProjectsModel SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                Docs();
+                NotifyOfPropertyChange(() => SelectedItem);
+            }
+        }
+
+
 
         public ShellViewModel()
         {
@@ -64,15 +81,40 @@ namespace ESD.PM.ViewModels
         public void Items()
         {
             var count = 0;
+            DisplayItemsList.Clear();
             ItemsList.Clear();
             foreach(var item in Directory.GetDirectories(SelectedProject.FullName))
             {
                 if (item.EndsWith("Items"))
-                    foreach (var _item in Directory.GetDirectories(item))
-                        ItemsList.Add(new ProjectsModel(_item));
+                    count ++;
             }
+            if (count == 0)
+            {
+                foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
+                {
+                    ItemsList.Add(new ProjectsModel(item));
+                }
+            }
+            else
+            {
+
+                foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
+                    if (item.EndsWith("Items"))
+                        foreach (var _item in Directory.GetDirectories(item))
+                            DisplayItemsList.Add(new ProjectsModel(_item));
+                }
         }
 
+        private void Docs()
+        {
+            ItemsList.Clear();
+            if (SelectedItem != null)
+            {
+                foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
+                    ItemsList.Add(new ProjectsModel(item));
+            }
+
+        }
         #endregion
     }
 }
