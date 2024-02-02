@@ -17,7 +17,6 @@ namespace ESD.PM.ViewModels
             set
             {
                 _selectedFolder = value;
-                Docs();
                 NotifyOfPropertyChange(() => SelectedFolder);
             }
         }
@@ -27,5 +26,6 @@ namespace ESD.PM.ViewModels
             foreach (var item in Directory.GetDirectories(SelectedFolder.FullName))
                 DocsList.Add(new ProjectsModel(item));
         }
+
     }
 }

@@ -3,14 +3,17 @@ using ESD.PM.Models;
 using System.Collections.ObjectModel;
 using System.IO;
 
+
+
 namespace ESD.PM.ViewModels
 {
-    public class ShellViewModel : Conductor<object>
+    public class ShellViewModel : Screen
     {
         #region Public Properties
         public ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
         public ObservableCollection<ProjectsModel> ItemsList { get; set; } = [];
         public ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
+        public ObservableCollection<ProjectsModel> DocsList { get; set; } = [];
 
         #endregion
 
@@ -19,6 +22,8 @@ namespace ESD.PM.ViewModels
         private ProjectsModel _selectedProject;
 
         private ProjectsModel _selectedItem;
+
+        private ProjectsModel _selectedFolder;
 
         #endregion
 
@@ -49,6 +54,16 @@ namespace ESD.PM.ViewModels
             }
         }
 
+        public ProjectsModel SelectedFolder
+        {
+            get { return _selectedFolder; }
+            set
+            {
+                _selectedFolder = value;
+                Docs2();
+                NotifyOfPropertyChange(() => SelectedFolder);
+            }
+        }
 
 
         public ShellViewModel()
@@ -114,6 +129,16 @@ namespace ESD.PM.ViewModels
                     ItemsList.Add(new ProjectsModel(item));
             }
 
+        }
+
+        private void Docs2()
+        {
+            DocsList.Clear();
+            if (SelectedFolder != null)
+            {
+                foreach (var item in Directory.GetDirectories(SelectedFolder.FullName))
+                    DocsList.Add(new ProjectsModel(item));
+            }
         }
         #endregion
     }
