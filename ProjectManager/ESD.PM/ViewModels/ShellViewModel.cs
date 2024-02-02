@@ -63,10 +63,13 @@ namespace ESD.PM.ViewModels
 
         public void Items()
         {
+            var count = 0;
             ItemsList.Clear();
             foreach(var item in Directory.GetDirectories(SelectedProject.FullName))
             {
-                ItemsList.Add(new ProjectsModel(item));
+                if (item.EndsWith("Items"))
+                    foreach (var _item in Directory.GetDirectories(item))
+                        ItemsList.Add(new ProjectsModel(_item));
             }
         }
 

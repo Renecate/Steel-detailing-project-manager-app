@@ -33,6 +33,12 @@
 *.vsidx
 *.bin
 *.v2
+ProjectManager/.vs/ProjectManager/v17/
+*.editorconfig
+ProjectManager/ESD.PM/obj/Debug
+ProjectManager/ESD.PM/bin/Debug
+ProjectManager/ESD.PM/obj/Debug/net8.0-windows
+ProjectManager/.vs
+*.v2
 ProjectManager/.vs/ProjectManager/v17/.suo
-ProjectManager/.vs/ProjectManager/v17/.suo
-ProjectManager/.vs/ProjectManager/v17/.suo
+ProjectManager/.vs/ProjectManager/DesignTimeBuild/.dtbcache.v2
