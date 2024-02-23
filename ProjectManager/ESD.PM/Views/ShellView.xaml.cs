@@ -3,9 +3,6 @@ using System.Windows.Input;
 
 namespace ESD.PM.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для ShellView.xaml
-    /// </summary>
     public partial class ShellView : Window
     {
         public ShellView()

@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
-2712829198
+2-1391222359
 
-11-1175283282
+101124156172
 2021144194506
-Views\ItemsView.xaml;Views\ShellView.xaml;
+UserControl1.xaml;Views\ShellView.xaml;
 
 True
 

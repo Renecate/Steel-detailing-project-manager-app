@@ -2,6 +2,7 @@
 using ESD.PM.Models;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 
 
 
@@ -49,22 +50,10 @@ namespace ESD.PM.ViewModels
             set
             {
                 _selectedItem = value;
-                Docs();
+                Folders();
                 NotifyOfPropertyChange(() => SelectedItem);
             }
         }
-
-        public ProjectsModel SelectedFolder
-        {
-            get { return _selectedFolder; }
-            set
-            {
-                _selectedFolder = value;
-                Docs2();
-                NotifyOfPropertyChange(() => SelectedFolder);
-            }
-        }
-
 
         public ShellViewModel()
         {
@@ -120,24 +109,16 @@ namespace ESD.PM.ViewModels
                 }
         }
 
-        private void Docs()
+        private void Folders()
         {
             ItemsList.Clear();
+            DocsList.Clear();
             if (SelectedItem != null)
             {
                 foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
+                {
                     ItemsList.Add(new ProjectsModel(item));
-            }
-
-        }
-
-        private void Docs2()
-        {
-            DocsList.Clear();
-            if (SelectedFolder != null)
-            {
-                foreach (var item in Directory.GetDirectories(SelectedFolder.FullName))
-                    DocsList.Add(new ProjectsModel(item));
+                }
             }
         }
         #endregion

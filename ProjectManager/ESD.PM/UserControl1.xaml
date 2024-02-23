@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="ESD.PM.UserControl1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.PM"
+             mc:Ignorable="d">
+    <Grid Background="#FFE0F3F3" Width="750" Height="500">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ComboBox HorizontalAlignment="Left" Margin="21,15,0,0" VerticalAlignment="Top" Width="711" Height="73"/>
+        <TextBlock HorizontalAlignment="Left" Margin="297,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="401" Width="745" Grid.Row="1"><Run Text="DOC 1"/><LineBreak/><Run Text="DOC 2"/><LineBreak/><Run Text="DOC 3"/><LineBreak/><Run/></TextBlock>
+    </Grid>
+</UserControl>
