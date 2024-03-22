@@ -12,9 +12,8 @@ namespace ESD.PM.ViewModels
     {
         #region Public Properties
         public ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
-        public ObservableCollection<ProjectsModel> ItemsList { get; set; } = [];
+        public ObservableCollection<ItemsModel> ItemsList { get; set; } = [];
         public ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
-        public ObservableCollection<ProjectsModel> DocsList { get; set; } = [];
 
         #endregion
 
@@ -96,7 +95,7 @@ namespace ESD.PM.ViewModels
             {
                 foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
                 {
-                    ItemsList.Add(new ProjectsModel(item));
+                    ItemsList.Add(new ItemsModel(item));
                 }
             }
             else
@@ -112,12 +111,11 @@ namespace ESD.PM.ViewModels
         private void Folders()
         {
             ItemsList.Clear();
-            DocsList.Clear();
             if (SelectedItem != null)
             {
                 foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
                 {
-                    ItemsList.Add(new ProjectsModel(item));
+                    ItemsList.Add(new ItemsModel(item));
                 }
             }
         }
