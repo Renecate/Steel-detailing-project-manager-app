@@ -73,17 +73,12 @@ namespace ESD.PM.Models
             foreach (var tag in _tags)
                 Tags.Add(new TagsModel(tag));
             OpenCommand = new DelegateCommand(OnOpen);
-            ClearCommand = new DelegateCommand(ClearDocsList);
             FilteredDocsList = DocsList;
         }
 
         private void OnOpen(object obj)
         {
             Process.Start(new ProcessStartInfo("explorer.exe", _selectedDoc.FullName));
-        }
-        private void ClearDocsList(object obj)
-        {
-               
         }
     }
 }
