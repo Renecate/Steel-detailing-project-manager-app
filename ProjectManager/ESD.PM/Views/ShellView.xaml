@@ -54,12 +54,12 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160" />
+                <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"/>
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="49" Margin="5,0,0,0">
-                <Button Content="STRUCTURALS" Width="160" Height="35" Margin="10,0,10,0"/>
-                <Button Content="ARCHITECTURALS" Width="160" Height="35" Margin="10,0,10,0"/>
+                <Button Content="STRUCTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding StructuralOpenCommand}"/>
+                <Button Content="ARCHITECTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding ArchOpenCommand}"/>
                 <Button Content="+" Width="35" Height="35" Margin="10,0,10,0"/>
             </StackPanel>
 
@@ -79,7 +79,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Right">
                         </TextBlock>
-                        <ListBox Grid.Row="1" ItemsSource="{Binding DocsList}" HorizontalAlignment="Left" Width="400" SelectedItem="{Binding SelectedDoc}">
+                        <ListBox Grid.Row="1" ItemsSource="{Binding FilteredDocsList}" HorizontalAlignment="Left" Width="400" SelectedItem="{Binding SelectedDoc}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}"/>
@@ -92,6 +92,18 @@
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </ListBox>
+                        <ItemsControl ItemsSource="{Binding Tags}" HorizontalAlignment="Left" Margin="-1,64,0,0" VerticalAlignment="Top" Height="35" Width="399">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding Name}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

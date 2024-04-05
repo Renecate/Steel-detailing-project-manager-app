@@ -1,6 +1,8 @@
 ﻿using Caliburn.Micro;
+using ESD.PM.Commands;
 using ESD.PM.Models;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -28,6 +30,10 @@ namespace ESD.PM.ViewModels
         #endregion
 
         #region Commands
+
+        public DelegateCommand StructuralOpenCommand { get; set; }
+
+        public DelegateCommand ArchOpenCommand { get; set; }
 
         #endregion
 
@@ -57,18 +63,43 @@ namespace ESD.PM.ViewModels
         public ShellViewModel()
         {
             Projects();
+            StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
+            ArchOpenCommand = new DelegateCommand(OnOpenArch);
         }
 
         #endregion
 
         #region Commands Methods
+        private void OnOpenStructural(object obj)
+        {
+            string[] parts = null;
+            foreach (var item in Directory.GetFiles(SelectedProject.FullName))
+            {
+                parts = item.Split('\\');
+                if (parts[parts.Length - 1].Contains("Structural"))
+                {
+                    Process.Start(new ProcessStartInfo("explorer.exe", item));
+                }
+            }
+        }
+        private void OnOpenArch(object obj)
+        {
+            string[] parts = null;
+            foreach (var item in Directory.GetFiles(SelectedProject.FullName))
+            {
+                parts = item.Split('\\');
+                if (parts[parts.Length - 1].Contains("Architectural"))
+                {
+                    Process.Start(new ProcessStartInfo("explorer.exe", item));
+                }
+            }
 
+        }
         #endregion
 
         #region Private Methods
 
         #endregion
-
 
         #region Public Methods
 
@@ -98,6 +129,7 @@ namespace ESD.PM.ViewModels
                     ItemsList.Add(new ItemsModel(item));
                 }
             }
+            // Multi Item projects code below
             else
             {
 
@@ -108,15 +140,35 @@ namespace ESD.PM.ViewModels
                 }
         }
 
+        // Multi Item projects code below
         private void Folders()
         {
             ItemsList.Clear();
+            string[] parts = null; 
             if (SelectedItem != null)
             {
                 foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
                 {
-                    ItemsList.Add(new ItemsModel(item));
+                    parts = item.Split('-');
+                    if (parts[parts.Length - 1].Contains("Supplemental"))
+                        foreach (var _item in Directory.GetDirectories(item))
+                        {
+                            ItemsList.Add(new ItemsModel(_item));
+                        }
+                    if (parts[parts.Length - 1].Contains("Incoming"))
+                        foreach (var _item in Directory.GetDirectories(item))
+                        {
+                            ItemsList.Add(new ItemsModel(_item));
+                        }
+                    if (parts[parts.Length - 1].Contains("Outcoming"))
+                        foreach (var _item in Directory.GetDirectories(item))
+                        {
+                            ItemsList.Add(new ItemsModel(_item));
+                        }
+                    else
+                        ItemsList.Add(new ItemsModel(item));
                 }
+
             }
         }
         #endregion
