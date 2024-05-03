@@ -1,0 +1,2 @@
+C:\Learning WPF\Release\ESD.PM.pdb
+C:\Learning WPF\Release\ESD.PM.exe

@@ -1,0 +1,9 @@
+C:\Learning WPF\Release\ESD.PM.exe
+C:\Learning WPF\Release\ESD.PM.dll
+C:\Learning WPF\Release\ESD.PM.deps.json
+C:\Learning WPF\Release\ESD.PM.runtimeconfig.json
+C:\Learning WPF\Release\ESD.PM.pdb
+C:\Learning WPF\Release\Caliburn.Micro.Platform.Core.dll
+C:\Learning WPF\Release\Caliburn.Micro.Platform.dll
+C:\Learning WPF\Release\Caliburn.Micro.Core.dll
+C:\Learning WPF\Release\Microsoft.Xaml.Behaviors.dll
