@@ -40,14 +40,14 @@
         </Grid>
         <WrapPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
-                <ComboBox Width="350" Height="35" Margin="15,0,10,0" x:Name="ProjectsList" SelectedItem="{Binding SelectedProject}" FontSize="20">
+                <ComboBox Width="350" Height="35" Margin="15,0,10,0" x:Name="ProjectsList" SelectedItem="{Binding SelectedProject}" FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox Width="350" Height="35" Margin="10,0,10,0" x:Name="DisplayItemsList" SelectedItem="{Binding SelectedItem}">
+                <ComboBox Width="350" Height="35" Margin="10,0,10,0" x:Name="DisplayItemsList" SelectedItem="{Binding SelectedItem}" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}" FontSize="20" IsEnabled="False"/>
@@ -58,8 +58,9 @@
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="49" Margin="5,0,0,0">
-                <Button Content="STRUCTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding StructuralOpenCommand}"/>
-                <Button Content="ARCHITECTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding ArchOpenCommand}"/>
+                <Button Content="STRUCTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding StructuralOpenCommand}" IsEnabled="{Binding StructIsTrue}"/>
+                <Button Content="ARCHITECTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding ArchOpenCommand}" IsEnabled="{Binding ArchIsTrue}"/>
+                <Button Content="MASTER SET" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding MasterOpenCommand}" IsEnabled="{Binding MasterIsTrue}"/>
                 <Button Content="+" Width="35" Height="35" Margin="10,0,10,0"/>
             </StackPanel>
 
@@ -100,7 +101,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox Content="{Binding Name}"/>
+                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding State}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

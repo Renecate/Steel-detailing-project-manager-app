@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Caliburn.Micro;
+using System.Globalization;
 using System.IO;
 
 namespace ESD.PM.Models
@@ -11,7 +12,7 @@ namespace ESD.PM.Models
 
 
         public ProjectsModel(string name)
-        {              
+        {
             Name = new DirectoryInfo(name).Name;
 
             FullName = new DirectoryInfo(name).FullName;

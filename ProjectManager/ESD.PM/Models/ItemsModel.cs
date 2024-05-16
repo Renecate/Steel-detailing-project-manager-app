@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,12 +20,9 @@ namespace ESD.PM.Models
     public class ItemsModel : ProjectsModel
     {
         private ProjectsModel _selectedDoc;
-        private Collection<string> _tags { get; }
-
         public ObservableCollection<ProjectsModel> DocsList { get; }
         public ObservableCollection<ProjectsModel> FilteredDocsList { get; }
         public ObservableCollection<TagsModel> Tags { get; }
-
 
 
         public DelegateCommand OpenCommand { get; set; }
@@ -45,8 +43,8 @@ namespace ESD.PM.Models
             string[] files = { };
             string[] parts = { };
             DocsList = new ObservableCollection<ProjectsModel> { };
-            Tags = new ObservableCollection<TagsModel> { };
-            _tags = new Collection<string> { };
+            Tags = new ObservableCollection<TagsModel>();
+            FilteredDocsList = new ObservableCollection<ProjectsModel>();
             foreach (var item in Directory.GetDirectories(FullName))
             {
                 DocsList.Add(new ProjectsModel(item));
@@ -56,29 +54,55 @@ namespace ESD.PM.Models
                     if (parts[1].Length == 2)
                     {
                         string _tag = parts[1];
-                        if (_tags.Contains(_tag))
+                        if (!Tags.Any(t => t.Name == _tag))
                         {
-                            continue;
-                        }
-                        else
-                        {
-                            _tags.Add(_tag);
+                            Tags.Add(new TagsModel(_tag));
                         }
                     }
+                    else if (parts[1].Length > 2)
+                    {
+                        FilteredDocsList.Add(new ProjectsModel(item));
+                    }
             }
-            foreach (var item in Directory.GetFiles(FullName))
-            {
-                DocsList.Add(new ProjectsModel(item));
-            }
-            foreach (var tag in _tags)
-                Tags.Add(new TagsModel(tag));
+
             OpenCommand = new DelegateCommand(OnOpen);
-            FilteredDocsList = DocsList;
+
+            foreach (var item in Tags)
+            {
+                item.PropertyChanged += TagStateChanged;
+            }
         }
 
         private void OnOpen(object obj)
         {
             Process.Start(new ProcessStartInfo("explorer.exe", _selectedDoc.FullName));
+        }
+        private void TagStateChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] files = { };
+            string[] parts = { };
+            FilteredDocsList.Clear();
+            if (e.PropertyName == "State")
+            {
+                foreach (var doc in DocsList)
+                {
+                    foreach (var tag in Tags)
+                    {
+                        if (tag.State is true)
+                        {
+                            files = doc.Name.Split('\\');
+                            parts = files[files.Length - 1].Split(" - ");
+                            if (parts[1].Contains(tag.Name))
+                            {
+                                FilteredDocsList.Add((ProjectsModel)doc);
+                            }
+                        }
+                    }
+                }
+                var changedTag = (TagsModel)sender;
+                bool newState = changedTag.State;
+                string tagName = changedTag.Name;
+            }
         }
     }
 }

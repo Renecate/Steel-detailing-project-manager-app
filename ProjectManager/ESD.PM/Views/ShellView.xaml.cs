@@ -35,10 +35,5 @@ namespace ESD.PM.Views
         {
             DragMove();
         }
-
-        private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }
