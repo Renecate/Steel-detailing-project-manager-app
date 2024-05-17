@@ -23,6 +23,7 @@ namespace ESD.PM.ViewModels
         public bool ArchIsTrue { get; set; }
         public bool StructIsTrue { get; set; }
         public bool MasterIsTrue { get; set; }
+        public bool ItemsIsTrue { get; set; }
 
 
         public string SelectedProjectName
@@ -152,19 +153,25 @@ namespace ESD.PM.ViewModels
             MasterIsTrue = false;
             StructIsTrue = false;
             ArchIsTrue = false;
+            ItemsIsTrue = false;
             NotifyOfPropertyChange(() => StructIsTrue);
             NotifyOfPropertyChange(() => MasterIsTrue);
             NotifyOfPropertyChange(() => ArchIsTrue);
+            NotifyOfPropertyChange(() => ItemsIsTrue);
             var count = 0;
             DisplayItemsList.Clear();
             ItemsList.Clear();
             foreach (var project in ProjectsList)
                 if (project.Name == _selectedProjectName)
                     SelectedProject = project;
-            foreach(var item in Directory.GetDirectories(SelectedProject.FullName))
+            foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
             {
                 if (item.EndsWith("Items"))
-                    count ++;
+                {
+                    count++;
+                    ItemsIsTrue = true;
+                    NotifyOfPropertyChange(() => ItemsIsTrue);
+                }
             }
             if (count == 0)
             {
@@ -231,7 +238,6 @@ namespace ESD.PM.ViewModels
                 foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
                 {
                     ItemsList.Add(new ItemsModel(item));
-                    NotifyOfPropertyChange(() => ItemsList);
                 }
             }
         }

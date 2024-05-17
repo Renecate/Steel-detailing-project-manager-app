@@ -40,9 +40,14 @@
         </Grid>
         <WrapPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
-                <ComboBox Width="350" Height="35" Margin="15,0,10,0" x:Name="ProjectsNames" SelectedItem="{Binding SelectedProjectName}" FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
+                <ComboBox Width="350" Height="35" Margin="15,0,10,0" 
+                          x:Name="ProjectsNames" SelectedItem="{Binding SelectedProjectName}" 
+                          FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                 </ComboBox>
-                <ComboBox Width="350" Height="35" Margin="10,0,10,0" x:Name="DisplayItemsNames" SelectedItem="{Binding SelectedItemName}" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
+                <ComboBox Width="350" Height="35" Margin="10,0,10,0" 
+                          x:Name="DisplayItemsNames" SelectedItem="{Binding SelectedItemName}" 
+                          FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
+                          IsEnabled="{Binding ItemsIsTrue}">
                 </ComboBox>
                 <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"/>
 
