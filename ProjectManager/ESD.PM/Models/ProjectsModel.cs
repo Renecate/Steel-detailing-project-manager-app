@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ESD.PM.Models
 {
-    public class ProjectsModel
+    public class ProjectsModel : Screen
     {
         public string Name { get; }
 

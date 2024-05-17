@@ -32,6 +32,5 @@ namespace ESD.PM.Commands
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
-
     }
 }

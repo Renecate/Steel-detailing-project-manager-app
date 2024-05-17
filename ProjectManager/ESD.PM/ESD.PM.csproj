@@ -12,4 +12,8 @@
     <PackageReference Include="Caliburn.Micro" Version="4.0.212" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controls\" />
+  </ItemGroup>
+
 </Project>

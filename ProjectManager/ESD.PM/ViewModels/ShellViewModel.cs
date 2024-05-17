@@ -14,7 +14,7 @@ namespace ESD.PM.ViewModels
     {
         #region Public Properties
         private ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
-        public ObservableCollection<ItemsModel> ItemsList { get; set; } = [];
+        public ObservableCollection<FoldersModel> FoldersList { get; set; } = [];
         private ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
         public ObservableCollection<String> ProjectsNames { get; set; } = [ ];
         public ObservableCollection<String> DisplayItemsNames { get; set; } = [ ];
@@ -33,7 +33,6 @@ namespace ESD.PM.ViewModels
             {
                 _selectedProjectName = value;
                 Items();
-                NotifyOfPropertyChange(() => SelectedProjectName);
             }
         }
 
@@ -44,7 +43,6 @@ namespace ESD.PM.ViewModels
             {
                 _selectedItemName = value;
                 Folders();
-                NotifyOfPropertyChange(() => SelectedItem);
             }
         }
         #endregion
@@ -154,13 +152,15 @@ namespace ESD.PM.ViewModels
             StructIsTrue = false;
             ArchIsTrue = false;
             ItemsIsTrue = false;
+            SelectedItemName = null;
             NotifyOfPropertyChange(() => StructIsTrue);
             NotifyOfPropertyChange(() => MasterIsTrue);
             NotifyOfPropertyChange(() => ArchIsTrue);
             NotifyOfPropertyChange(() => ItemsIsTrue);
+            NotifyOfPropertyChange(() => SelectedItemName);
             var count = 0;
             DisplayItemsList.Clear();
-            ItemsList.Clear();
+            FoldersList.Clear();
             foreach (var project in ProjectsList)
                 if (project.Name == _selectedProjectName)
                     SelectedProject = project;
@@ -175,13 +175,11 @@ namespace ESD.PM.ViewModels
             }
             if (count == 0)
             {
-                foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
+                foreach (var folder in Directory.GetDirectories(SelectedProject.FullName))
                 {
-
-                    ItemsList.Add(new ItemsModel(item));
+                    FoldersList.Add(new FoldersModel(folder));
                 }
             }
-            // Multi Item projects code below
             else
             {
                 foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
@@ -229,15 +227,15 @@ namespace ESD.PM.ViewModels
 
         private void Folders()
         {
-            ItemsList.Clear();
+            FoldersList.Clear();
             foreach (var item in DisplayItemsList)
                 if (item.Name == _selectedItemName)
                     SelectedItem = item;
             if (SelectedItem != null)
             {
-                foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
+                foreach (var folder in Directory.GetDirectories(SelectedItem.FullName))
                 {
-                    ItemsList.Add(new ItemsModel(item));
+                    FoldersList.Add(new FoldersModel(folder));
                 }
             }
         }

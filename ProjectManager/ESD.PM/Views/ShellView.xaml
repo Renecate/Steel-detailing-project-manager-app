@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="clr-namespace:ESD.PM.Views" xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:ESD.PM"
         mc:Ignorable="d"
         Title="ShellView"     
         WindowStartupLocation="CenterScreen"
@@ -13,7 +14,7 @@
         MaxHeight="1080"
         MinWidth="990"
         MinHeight="1000"
-        WindowStyle="None">
+        WindowStyle="None" Margin="0,0,0,-4">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="55"/>
@@ -24,7 +25,7 @@
             <RowDefinition Height="Auto" 
                        MinHeight="49"
                        MaxHeight="98"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="980"/>
         </Grid.RowDefinitions>
 
         <Grid Height="29" Grid.Column="1" Background="#FFEDEDED" MouseLeftButtonDown="Window_MouseLeftButtonDown">
@@ -60,27 +61,23 @@
             </StackPanel>
 
         </WrapPanel>
-        <ItemsControl Grid.Column="1" Grid.Row="2" x:Name="ItemsList">
+        <ScrollViewer Grid.Column="1" Grid.Row="2" Background="#FFFDFDFD" VerticalScrollBarVisibility="Auto">
+        <ItemsControl x:Name="FoldersList">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <WrapPanel Margin="0,0,0,75"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid Background="#FFE0F3F3" Width="AUTO" Height="450" Margin="10,10,10,10">
+                    <Grid Background="#FFE0F3F3" Width="Auto" Height="450" Margin="10,10,10,10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="100"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Right">
                         </TextBlock>
-                        <ListBox Grid.Row="1" ItemsSource="{Binding FilteredDocsList}" HorizontalAlignment="Left" Width="400" SelectedItem="{Binding SelectedDoc}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                        <ListBox Grid.Row="1" ItemsSource="{Binding FilteredDocsList}" HorizontalAlignment="Center" Width="400" SelectedItem="{Binding SelectedFolderName}" Margin="0,0,0,5">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDoubleClick">
                                     <b:InvokeCommandAction
@@ -104,8 +101,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
-
-
+        </ScrollViewer>
     </Grid>
 </Window>
