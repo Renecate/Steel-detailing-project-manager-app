@@ -42,12 +42,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
                 <ComboBox Width="350" Height="35" Margin="15,0,10,0" x:Name="ProjectsNames" SelectedItem="{Binding SelectedProjectName}" FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                 </ComboBox>
-                <ComboBox Width="350" Height="35" Margin="10,0,10,0" x:Name="DisplayItemsList" SelectedItem="{Binding SelectedItem}" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" FontSize="20" IsEnabled="False"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                <ComboBox Width="350" Height="35" Margin="10,0,10,0" x:Name="DisplayItemsNames" SelectedItem="{Binding SelectedItemName}" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                 </ComboBox>
                 <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"/>
 
@@ -68,7 +63,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid Background="#FFE0F3F3" Width="450" Height="300" Margin="10,10,10,10">
+                    <Grid Background="#FFE0F3F3" Width="AUTO" Height="450" Margin="10,10,10,10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="100"/>
                             <RowDefinition/>

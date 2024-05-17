@@ -13,11 +13,16 @@ namespace ESD.PM.ViewModels
     public class ShellViewModel : Screen
     {
         #region Public Properties
-        public ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
+        private ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
         public ObservableCollection<ItemsModel> ItemsList { get; set; } = [];
-        public ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
+        private ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
         public ObservableCollection<String> ProjectsNames { get; set; } = [ ];
-        public ProjectsModel SelectedProject { get; set; } 
+        public ObservableCollection<String> DisplayItemsNames { get; set; } = [ ];
+        public ProjectsModel SelectedProject { get; set; }
+        public ProjectsModel SelectedItem { get; set; }
+        public bool ArchIsTrue { get; set; }
+        public bool StructIsTrue { get; set; }
+        public bool MasterIsTrue { get; set; }
 
 
         public string SelectedProjectName
@@ -31,12 +36,12 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        public ProjectsModel SelectedItem
+        public string SelectedItemName
         {
-            get { return _selectedItem; }
+            get { return _selectedItemName; }
             set
             {
-                _selectedItem = value;
+                _selectedItemName = value;
                 Folders();
                 NotifyOfPropertyChange(() => SelectedItem);
             }
@@ -47,7 +52,7 @@ namespace ESD.PM.ViewModels
 
         private string _selectedProjectName;
 
-        private ProjectsModel _selectedItem;
+        private string _selectedItemName;
 
         private ProjectsModel _selectedFolder;
 
@@ -60,10 +65,6 @@ namespace ESD.PM.ViewModels
         public DelegateCommand ArchOpenCommand { get; set; }
 
         public DelegateCommand MasterOpenCommand { get; set; }
-
-        public bool ArchIsTrue { get; set; }
-        public bool StructIsTrue { get; set; }
-        public bool MasterIsTrue { get; set; }
 
         #endregion
 
@@ -182,6 +183,10 @@ namespace ESD.PM.ViewModels
                         {
                             DisplayItemsList.Add(new ProjectsModel(_item));
                         }
+                foreach (var item in DisplayItemsList)
+                {
+                    DisplayItemsNames.Add(item.Name);
+                }
                 }
             {
                 string[] parts = null;
@@ -218,12 +223,15 @@ namespace ESD.PM.ViewModels
         private void Folders()
         {
             ItemsList.Clear();
-            string[] parts = null; 
+            foreach (var item in DisplayItemsList)
+                if (item.Name == _selectedItemName)
+                    SelectedItem = item;
             if (SelectedItem != null)
             {
                 foreach (var item in Directory.GetDirectories(SelectedItem.FullName))
                 {
                     ItemsList.Add(new ItemsModel(item));
+                    NotifyOfPropertyChange(() => ItemsList);
                 }
             }
         }
