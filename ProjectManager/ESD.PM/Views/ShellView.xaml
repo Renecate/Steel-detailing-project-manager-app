@@ -40,12 +40,7 @@
         </Grid>
         <WrapPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
-                <ComboBox Width="350" Height="35" Margin="15,0,10,0" x:Name="ProjectsList" SelectedItem="{Binding SelectedProject}" FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                <ComboBox Width="350" Height="35" Margin="15,0,10,0" x:Name="ProjectsNames" SelectedItem="{Binding SelectedProjectName}" FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                 </ComboBox>
                 <ComboBox Width="350" Height="35" Margin="10,0,10,0" x:Name="DisplayItemsList" SelectedItem="{Binding SelectedItem}" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                     <ComboBox.ItemTemplate>

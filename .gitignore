@@ -45,3 +45,6 @@ ProjectManager/.vs/ProjectManager/DesignTimeBuild/.dtbcache.v2
 *.targets
 *.json
 *.props
+/ProjectManager/ESD.PM/bin/Debug
+/ProjectManager/.vs/ProjectManager/v17
+/ProjectManager/.vs/ProjectManager/DesignTimeBuild

@@ -16,12 +16,36 @@ namespace ESD.PM.ViewModels
         public ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
         public ObservableCollection<ItemsModel> ItemsList { get; set; } = [];
         public ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
+        public ObservableCollection<String> ProjectsNames { get; set; } = [ ];
+        public ProjectsModel SelectedProject { get; set; } 
 
+
+        public string SelectedProjectName
+        {
+            get { return _selectedProjectName; }
+            set
+            {
+                _selectedProjectName = value;
+                Items();
+                NotifyOfPropertyChange(() => SelectedProjectName);
+            }
+        }
+
+        public ProjectsModel SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                Folders();
+                NotifyOfPropertyChange(() => SelectedItem);
+            }
+        }
         #endregion
 
         #region Private Properties
 
-        private ProjectsModel _selectedProject;
+        private string _selectedProjectName;
 
         private ProjectsModel _selectedItem;
 
@@ -44,27 +68,6 @@ namespace ESD.PM.ViewModels
         #endregion
 
         #region Constructor
-        public ProjectsModel SelectedProject
-        {
-            get { return _selectedProject; }
-            set
-            {
-                _selectedProject = value;
-                Items();
-                NotifyOfPropertyChange(() => SelectedProject);
-            }
-        }
-
-        public ProjectsModel SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                _selectedItem = value;
-                Folders();
-                NotifyOfPropertyChange(() => SelectedItem);
-            }
-        }
 
         public ShellViewModel()
         {
@@ -135,7 +138,12 @@ namespace ESD.PM.ViewModels
             {
                 ProjectsList.Add(new ProjectsModel(project));
             }
-            NotifyOfPropertyChange(() => ProjectsList);
+            foreach (var project in ProjectsList)
+            {
+                ProjectsNames.Add(project.Name);
+            }
+            ProjectsNames = new ObservableCollection<string>(ProjectsNames.OrderBy(x => x));
+            NotifyOfPropertyChange(() => ProjectsNames);
         }
 
         public void Items()
@@ -149,6 +157,9 @@ namespace ESD.PM.ViewModels
             var count = 0;
             DisplayItemsList.Clear();
             ItemsList.Clear();
+            foreach (var project in ProjectsList)
+                if (project.Name == _selectedProjectName)
+                    SelectedProject = project;
             foreach(var item in Directory.GetDirectories(SelectedProject.FullName))
             {
                 if (item.EndsWith("Items"))
