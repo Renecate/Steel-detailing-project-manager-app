@@ -9,5 +9,7 @@ namespace ESD.PM.Models
     public class AppSettings
     {
         public List<string> ProjectPaths { get; set; } = new List<string>();
+
+        public List<string> FavoriteProject { get; set; } = new List<string>();
     }
 }

@@ -59,8 +59,6 @@ namespace ESD.PM.ViewModels
 
         private AppSettings appSettings;
 
-
-
         #endregion
 
         #region Commands
@@ -161,13 +159,28 @@ namespace ESD.PM.ViewModels
         public void RemoveProjectPath(object path)
         {
                 appSettings.ProjectPaths.Clear();
+                appSettings.FavoriteProject.Clear();
                 SettingsManager.SaveSettings(appSettings);
                 LoadProjects();
         }
 
         private void AddFavoriteProject(object obj)
         {
-            throw new NotImplementedException();
+            if (!appSettings.FavoriteProject.Contains(_selectedProjectName))
+            {
+                appSettings.FavoriteProject.Add(_selectedProjectName);
+                ProjectsNames.Insert(0, _selectedProjectName);
+                SettingsManager.SaveSettings(appSettings);
+                NotifyOfPropertyChange(() => ProjectsNames);
+            }
+            else
+            {
+                appSettings.FavoriteProject.Remove(_selectedProjectName);
+                ProjectsNames.Remove(_selectedProjectName);
+                SettingsManager.SaveSettings(appSettings);
+                NotifyOfPropertyChange(() => ProjectsNames);
+            }
+
         }
 
         #endregion
@@ -294,9 +307,11 @@ namespace ESD.PM.ViewModels
             }
             ProjectsNames = new ObservableCollection<string>(ProjectsNames.OrderBy(x => x));
             NotifyOfPropertyChange(() => ProjectsNames);
+            foreach (var project in appSettings.FavoriteProject)
+            {
+                ProjectsNames.Insert(0, project);
+            }
         }
-
-
 
         #endregion
     }

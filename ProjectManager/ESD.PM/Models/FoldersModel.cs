@@ -12,6 +12,8 @@ namespace ESD.PM.Models
         private string _selectedFolderName;
         public ObservableCollection<ProjectsModel> FolderList { get; }
         public ObservableCollection<String> FilteredDocsList { get; set; }
+        public ObservableCollection<String> TaggedDocsList { get; set; }
+        public ObservableCollection<String> UntaggedDocsList {  get; set; }
         public ObservableCollection<TagsModel> Tags { get; }
 
 
@@ -35,24 +37,33 @@ namespace ESD.PM.Models
             FolderList = new ObservableCollection<ProjectsModel> { };
             Tags = new ObservableCollection<TagsModel>();
             FilteredDocsList = new ObservableCollection<string>();
+            UntaggedDocsList = new ObservableCollection<string>();
+            TaggedDocsList = new ObservableCollection<string>();
             foreach (var item in Directory.GetDirectories(FullName))
+                FolderList.Add(new ProjectsModel(item));
+            foreach (var item in Directory.GetFiles(FullName))
                 FolderList.Add(new ProjectsModel(item));
             foreach (var folder in FolderList)
             {
                 parts = [];
-                parts = folder.Name.Split(" - ");
+                parts = folder.Name.Split("-");
                 if (parts.Length > 1)
-                    if (parts[1].Length == 2)
+                {
+                    string _tag = parts[1].Trim(' ');
+                    if (_tag.Length == 2)
                     {
-                        string _tag = parts[1];
                         if (!Tags.Any(t => t.Name == _tag))
                         {
                             Tags.Add(new TagsModel(_tag));
                         }
                     }
-                    else if (parts[1].Length > 2)
-                        FilteredDocsList.Add(folder.Name);
+                    else
+                        UntaggedDocsList.Add(folder.Name);
+                }
+                else
+                    UntaggedDocsList.Add(folder.Name);
             }
+            FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
             FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
             NotifyOfPropertyChange(() => FilteredDocsList);
             OpenCommand = new DelegateCommand(OnOpen);
@@ -99,7 +110,7 @@ namespace ESD.PM.Models
         {
             string[] files = { };
             string[] parts = { };
-            FilteredDocsList.Clear();
+            TaggedDocsList.Clear();
             foreach (var tag in Tags)
             {
                 foreach (var doc in FolderList)
@@ -111,11 +122,12 @@ namespace ESD.PM.Models
                         foreach (var part in parts)
                             if (part.Contains(tag.Name))
                             {
-                                FilteredDocsList.Add(doc.Name);
+                                TaggedDocsList.Add(doc.Name);
                             }
                     }
                 }
             }
+            FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
             FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
             NotifyOfPropertyChange(() => FilteredDocsList);
 
