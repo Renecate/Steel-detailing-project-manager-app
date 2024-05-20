@@ -11,7 +11,7 @@ namespace ESD.PM.Views
         }
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void ExpandButton_OnClick(object sender, RoutedEventArgs e)

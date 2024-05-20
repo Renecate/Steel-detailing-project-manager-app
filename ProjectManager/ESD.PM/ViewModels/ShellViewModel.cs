@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace ESD.PM.ViewModels
 {
-    public class ShellViewModel : Screen
+    public class ShellViewModel : Caliburn.Micro.Screen
     {
         #region Public Properties
         private ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
@@ -55,6 +55,12 @@ namespace ESD.PM.ViewModels
 
         private ProjectsModel _selectedFolder;
 
+        private string _selectedProjectPath;
+
+        private AppSettings appSettings;
+
+
+
         #endregion
 
         #region Commands
@@ -65,16 +71,26 @@ namespace ESD.PM.ViewModels
 
         public DelegateCommand MasterOpenCommand { get; set; }
 
+        public DelegateCommand AddProjectPathCommand {  get; set; }
+
+        public DelegateCommand RemoveProjectPathCommand { get; set; }
+
+        public DelegateCommand AddFavoriteProjectCommand { get; set; }
+
         #endregion
 
         #region Constructor
 
         public ShellViewModel()
         {
-            Projects();
+            appSettings = SettingsManager.LoadSettings();
+            LoadProjects();
             StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
             ArchOpenCommand = new DelegateCommand(OnOpenArch);
             MasterOpenCommand = new DelegateCommand(OnOpenMaster);
+            AddProjectPathCommand = new DelegateCommand(AddProjectPath);
+            RemoveProjectPathCommand = new DelegateCommand(RemoveProjectPath);
+            AddFavoriteProjectCommand = new DelegateCommand(AddFavoriteProject);
         }
 
         #endregion
@@ -119,6 +135,41 @@ namespace ESD.PM.ViewModels
             }
 
         }
+        public void AddProjectPath(object path)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Выберите папку с проектами";
+                dialog.ShowNewFolderButton = false;
+
+                DialogResult result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    string selectedPath = dialog.SelectedPath;
+
+                    if (!appSettings.ProjectPaths.Contains(selectedPath))
+                    {
+                        appSettings.ProjectPaths.Add(selectedPath);
+                        SettingsManager.SaveSettings(appSettings);
+                        LoadProjects();
+                    }
+                }
+            }
+        }
+
+        public void RemoveProjectPath(object path)
+        {
+                appSettings.ProjectPaths.Clear();
+                SettingsManager.SaveSettings(appSettings);
+                LoadProjects();
+        }
+
+        private void AddFavoriteProject(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Private Methods
@@ -126,25 +177,6 @@ namespace ESD.PM.ViewModels
         #endregion
 
         #region Public Methods
-
-        public void Projects()
-        {
-            ProjectsList.Clear();
-            foreach (var project in Directory.GetDirectories("C:\\Dropbox\\Production\\Projects"))
-            {
-                ProjectsList.Add(new ProjectsModel(project));
-            }
-            foreach (var project in Directory.GetDirectories("C:\\Dropbox\\Projects"))
-            {
-                ProjectsList.Add(new ProjectsModel(project));
-            }
-            foreach (var project in ProjectsList)
-            {
-                ProjectsNames.Add(project.Name);
-            }
-            ProjectsNames = new ObservableCollection<string>(ProjectsNames.OrderBy(x => x));
-            NotifyOfPropertyChange(() => ProjectsNames);
-        }
 
         public void Items()
         {
@@ -239,6 +271,33 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
+
+        public void LoadProjects()
+        {
+            ProjectsList.Clear();
+
+            foreach (var path in appSettings.ProjectPaths)
+            {
+                if (Directory.Exists(path))
+                {
+                    foreach (var project in Directory.GetDirectories(path))
+                    {
+                        ProjectsList.Add(new ProjectsModel(project));
+                    }
+                }
+            }
+
+            ProjectsNames.Clear();
+            foreach (var project in ProjectsList)
+            {
+                ProjectsNames.Add(project.Name);
+            }
+            ProjectsNames = new ObservableCollection<string>(ProjectsNames.OrderBy(x => x));
+            NotifyOfPropertyChange(() => ProjectsNames);
+        }
+
+
+
         #endregion
     }
 }

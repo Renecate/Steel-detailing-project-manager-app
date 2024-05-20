@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "i8AVV+qNNCaL9NV91DHgK4+gLP/9CgZwy2YjoiMpItZU0hI4oimTAHOe9vJa+ZrL5F1ZR9EgvHAtMXkFXHt7ug==",
+  "dgSpecHash": "HYabWCiucxSc5BNa2UkGKE4ky+pFYdXFaa/qMUVutd3HrN9CcWEUhyK2/BsCClR1pg1PTpxSe0w4Lj9v6TaKuw==",
   "success": true,
   "projectFilePath": "C:\\Work stuff\\Repos\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\ESD.PM.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.37\\microsoft.xaml.behaviors.wpf.1.1.37.nupkg.sha512",
+    "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\runtime.any.system.globalization\\4.3.0\\runtime.any.system.globalization.4.3.0.nupkg.sha512",
     "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\runtime.any.system.io\\4.3.0\\runtime.any.system.io.4.3.0.nupkg.sha512",
     "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\runtime.any.system.reflection\\4.3.0\\runtime.any.system.reflection.4.3.0.nupkg.sha512",
