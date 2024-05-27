@@ -98,6 +98,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            <Button Content="TOGGLE VIEW" Width="100" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
