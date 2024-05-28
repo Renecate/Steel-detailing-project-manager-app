@@ -9,18 +9,13 @@ namespace ESD.PM.Models
 {
     public class FoldersModel : ProjectsModel
     {
-        private string _selectedFolderName;
+        #region Public Properties
+
         public ObservableCollection<ProjectsModel> FolderList { get; }
         public ObservableCollection<String> FilteredDocsList { get; set; }
         public ObservableCollection<String> TaggedDocsList { get; set; }
         public ObservableCollection<String> UntaggedDocsList {  get; set; }
         public ObservableCollection<TagsModel> Tags { get; }
-
-
-        public DelegateCommand OpenCommand { get; set; }
-        public DelegateCommand ClearCommand { get; set; }
-
-
         public string SelectedFolderName
         {
             get { return _selectedFolderName; }
@@ -29,6 +24,24 @@ namespace ESD.PM.Models
                 _selectedFolderName = value;
             }
         }
+
+        #endregion
+
+        #region Commands
+
+        public DelegateCommand OpenCommand { get; set; }
+        public DelegateCommand ClearCommand { get; set; }
+        public DelegateCommand ToggleViewCommand { get; set; }
+
+        #endregion
+
+        #region Private Properties
+
+        private string _selectedFolderName;
+
+        #endregion
+
+        #region Constructor
 
         public FoldersModel(string name) : base(name)
         {
@@ -67,13 +80,16 @@ namespace ESD.PM.Models
             FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
             NotifyOfPropertyChange(() => FilteredDocsList);
             OpenCommand = new DelegateCommand(OnOpen);
-
+            ToggleViewCommand = new DelegateCommand(OnToggleView);
             foreach (var item in Tags)
             {
                 item.PropertyChanged += TagStateChanged;
             }
         }
 
+        #endregion
+
+        #region Private Methods
         private static DateTime ExtrateDate(string doc)
         {
             var parts = doc.Split('-');
@@ -87,14 +103,6 @@ namespace ESD.PM.Models
             return DateTime.Now;
         }
 
-        private void OnOpen(object obj)
-        {
-            foreach (var folder in FolderList)
-                if (folder.Name == _selectedFolderName)
-                {
-                    Process.Start(new ProcessStartInfo("explorer.exe", folder.FullName));
-                }
-        }
         private void TagStateChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "State")
@@ -130,7 +138,32 @@ namespace ESD.PM.Models
             FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
             FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
             NotifyOfPropertyChange(() => FilteredDocsList);
-
         }
+
+        #endregion
+
+        #region Commands Methods
+
+        private void OnOpen(object obj)
+        {
+            foreach (var folder in FolderList)
+                if (folder.Name == _selectedFolderName)
+                {
+                    Process.Start(new ProcessStartInfo("explorer.exe", folder.FullName));
+                }
+        }
+
+        private void OnToggleView (object obj) 
+        {
+            foreach (var folder in FolderList)
+            {
+                foreach (var doc in Directory.GetFiles(folder.FullName))
+                {
+
+                }
+            }
+        }
+
+        #endregion
     }
 }
