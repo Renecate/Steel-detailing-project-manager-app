@@ -30,3 +30,35 @@ C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\UserControl1.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\UserControl1.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\ESD.PM.exe
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\ESD.PM.deps.json
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\ESD.PM.runtimeconfig.json
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\ESD.PM.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\ESD.PM.pdb
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\Caliburn.Micro.Platform.Core.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\Caliburn.Micro.Platform.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\Caliburn.Micro.Core.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.csproj.AssemblyReference.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\UserControl1.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\ShellView.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\App.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM_MarkupCompile.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM_MarkupCompile.lref
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\App.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\UserControl1.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\ShellView.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.g.resources
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.AssemblyInfoInputs.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.AssemblyInfo.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.csproj.CoreCompileInputs.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.sourcelink.json
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.csproj.Up2Date
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\refint\ESD.PM.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.pdb
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.genruntimeconfig.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ref\ESD.PM.dll

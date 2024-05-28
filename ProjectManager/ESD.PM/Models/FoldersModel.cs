@@ -11,11 +11,11 @@ namespace ESD.PM.Models
     {
         #region Public Properties
 
-        public ObservableCollection<ProjectsModel> FolderList { get; }
+        public ObservableCollection<ProjectsModel> FolderList { get; set; }
         public ObservableCollection<String> FilteredDocsList { get; set; }
         public ObservableCollection<String> TaggedDocsList { get; set; }
         public ObservableCollection<String> UntaggedDocsList {  get; set; }
-        public ObservableCollection<TagsModel> Tags { get; }
+        public ObservableCollection<TagsModel> Tags { get; set; }
         public string SelectedFolderName
         {
             get { return _selectedFolderName; }
@@ -39,52 +39,34 @@ namespace ESD.PM.Models
 
         private string _selectedFolderName;
 
+        private bool _viewIsToggled;
+
+        private string _location;
+
+        private ObservableCollection<ProjectsModel> _localList {  get; set; }
+
+        private ObservableCollection<ProjectsModel> _localListClearable { get; set; }
+
         #endregion
 
         #region Constructor
 
         public FoldersModel(string name) : base(name)
         {
-            string[] files = { };
-            string[] parts = { };
-            FolderList = new ObservableCollection<ProjectsModel> { };
+
+            _viewIsToggled = false;
+            _location = FullName;
+            FolderList = new ObservableCollection<ProjectsModel>();
             Tags = new ObservableCollection<TagsModel>();
             FilteredDocsList = new ObservableCollection<string>();
             UntaggedDocsList = new ObservableCollection<string>();
             TaggedDocsList = new ObservableCollection<string>();
-            foreach (var item in Directory.GetDirectories(FullName))
-                FolderList.Add(new ProjectsModel(item));
-            foreach (var item in Directory.GetFiles(FullName))
-                FolderList.Add(new ProjectsModel(item));
-            foreach (var folder in FolderList)
-            {
-                parts = [];
-                parts = folder.Name.Split("-");
-                if (parts.Length > 1)
-                {
-                    string _tag = parts[1].Trim(' ');
-                    if (_tag.Length == 2)
-                    {
-                        if (!Tags.Any(t => t.Name == _tag))
-                        {
-                            Tags.Add(new TagsModel(_tag));
-                        }
-                    }
-                    else
-                        UntaggedDocsList.Add(folder.Name);
-                }
-                else
-                    UntaggedDocsList.Add(folder.Name);
-            }
-            FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
-            FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
-            NotifyOfPropertyChange(() => FilteredDocsList);
+            _localList = new ObservableCollection<ProjectsModel>();
+            _localListClearable = new ObservableCollection<ProjectsModel>();
+            GetFolders();
+            GetTags(_location);
             OpenCommand = new DelegateCommand(OnOpen);
             ToggleViewCommand = new DelegateCommand(OnToggleView);
-            foreach (var item in Tags)
-            {
-                item.PropertyChanged += TagStateChanged;
-            }
         }
 
         #endregion
@@ -121,7 +103,7 @@ namespace ESD.PM.Models
             TaggedDocsList.Clear();
             foreach (var tag in Tags)
             {
-                foreach (var doc in FolderList)
+                foreach (var doc in _localList)
                 {
                     if (tag.State is true)
                     {
@@ -140,13 +122,73 @@ namespace ESD.PM.Models
             NotifyOfPropertyChange(() => FilteredDocsList);
         }
 
+        private void GetFolders()
+        {
+            FolderList.Clear();
+            foreach (var item in Directory.GetDirectories(FullName))
+                FolderList.Add(new ProjectsModel(item));
+            foreach (var item in Directory.GetFiles(FullName))
+                FolderList.Add(new ProjectsModel(item));
+        }
+
+        private void GetTags(string location)
+        {
+            _localListClearable.Clear();
+            string[] files = { };
+            string[] parts = { };
+            foreach (var item in Directory.GetDirectories(location))
+                if (!_localList.Any(t => t.FullName == item))
+                {
+                    _localList.Add(new ProjectsModel(item));
+                    _localListClearable.Add(new ProjectsModel(item));
+                }
+            foreach (var item in Directory.GetFiles(location))
+                if (!_localList.Any(t => t.FullName == item))
+                {
+                    _localList.Add(new ProjectsModel(item));
+                    _localListClearable.Add(new ProjectsModel(item));
+                }
+            foreach (var folder in _localListClearable)
+            {
+                parts = [];
+                parts = folder.Name.Split("-");
+                if (parts.Length > 1)
+                {
+                    string _tag = parts[1].Trim(' ');
+                    if (_tag.Length == 2)
+                    {
+                        if (!Tags.Any(t => t.Name == _tag))
+                        {
+                            Tags.Add(new TagsModel(_tag));
+                        }
+                    }
+                    else
+                    {
+                        UntaggedDocsList.Add(folder.Name);
+                    }
+                }
+                else
+                {
+                    UntaggedDocsList.Add(folder.Name);
+                }
+            }
+            FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
+            FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
+            NotifyOfPropertyChange(() => FilteredDocsList);
+            NotifyOfPropertyChange(() => Tags);
+            foreach (var item in Tags)
+            {
+                item.PropertyChanged += TagStateChanged;
+            }
+        }
+
         #endregion
 
         #region Commands Methods
 
         private void OnOpen(object obj)
         {
-            foreach (var folder in FolderList)
+            foreach (var folder in _localList)
                 if (folder.Name == _selectedFolderName)
                 {
                     Process.Start(new ProcessStartInfo("explorer.exe", folder.FullName));
@@ -155,11 +197,29 @@ namespace ESD.PM.Models
 
         private void OnToggleView (object obj) 
         {
-            foreach (var folder in FolderList)
+            if (_viewIsToggled == true)
             {
-                foreach (var doc in Directory.GetFiles(folder.FullName))
+                FilteredDocsList.Clear();
+                Tags.Clear();
+                UntaggedDocsList.Clear();
+                TaggedDocsList.Clear();
+                _localList.Clear();
+                _viewIsToggled = false;
+                _location = FullName;
+                GetTags(_location);
+            }
+            else if (_viewIsToggled == false)
+            {
+                FilteredDocsList.Clear();
+                Tags.Clear();
+                UntaggedDocsList.Clear();
+                TaggedDocsList.Clear();
+                _localList.Clear();
+                _viewIsToggled = true;
+                foreach (var folder in FolderList)
                 {
-
+                    _location = folder.FullName;
+                    GetTags(_location);
                 }
             }
         }

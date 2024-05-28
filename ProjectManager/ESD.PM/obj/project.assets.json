@@ -1022,24 +1022,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\renec\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Work stuff\\Repos\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\ESD.PM.csproj",
+      "projectUniqueName": "C:\\Dev\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\ESD.PM.csproj",
       "projectName": "ESD.PM",
-      "projectPath": "C:\\Work stuff\\Repos\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\ESD.PM.csproj",
-      "packagesPath": "C:\\Users\\Alexandra Puninskaya\\.nuget\\packages\\",
-      "outputPath": "C:\\Work stuff\\Repos\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\obj\\",
+      "projectPath": "C:\\Dev\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\ESD.PM.csproj",
+      "packagesPath": "C:\\Users\\renec\\.nuget\\packages\\",
+      "outputPath": "C:\\Dev\\Calibrum_ProjectManager\\ProjectManager\\ESD.PM\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Alexandra Puninskaya\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\renec\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1059,6 +1054,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -1093,7 +1093,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
