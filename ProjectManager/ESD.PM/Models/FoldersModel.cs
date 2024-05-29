@@ -16,6 +16,7 @@ namespace ESD.PM.Models
         public ObservableCollection<String> TaggedDocsList { get; set; }
         public ObservableCollection<String> UntaggedDocsList {  get; set; }
         public ObservableCollection<TagsModel> Tags { get; set; }
+        public bool ToggleViewCommandActive { get; set; }
         public string SelectedFolderName
         {
             get { return _selectedFolderName; }
@@ -53,7 +54,7 @@ namespace ESD.PM.Models
 
         public FoldersModel(string name) : base(name)
         {
-
+            ToggleViewCommandActive = true;
             _viewIsToggled = false;
             _location = FullName;
             FolderList = new ObservableCollection<ProjectsModel>();
@@ -65,6 +66,10 @@ namespace ESD.PM.Models
             _localListClearable = new ObservableCollection<ProjectsModel>();
             GetFolders();
             GetTags(_location);
+
+            if (Tags.Count > 0)
+                ToggleViewCommandActive = false;
+
             OpenCommand = new DelegateCommand(OnOpen);
             ToggleViewCommand = new DelegateCommand(OnToggleView);
         }
@@ -110,7 +115,7 @@ namespace ESD.PM.Models
                         files = doc.Name.Split('\\');
                         parts = files[files.Length - 1].Split(" - ");
                         foreach (var part in parts)
-                            if (part.Contains(tag.Name))
+                            if (part.Equals(tag.Name))
                             {
                                 TaggedDocsList.Add(doc.Name);
                             }
@@ -127,8 +132,6 @@ namespace ESD.PM.Models
             FolderList.Clear();
             foreach (var item in Directory.GetDirectories(FullName))
                 FolderList.Add(new ProjectsModel(item));
-            foreach (var item in Directory.GetFiles(FullName))
-                FolderList.Add(new ProjectsModel(item));
         }
 
         private void GetTags(string location)
@@ -137,12 +140,6 @@ namespace ESD.PM.Models
             string[] files = { };
             string[] parts = { };
             foreach (var item in Directory.GetDirectories(location))
-                if (!_localList.Any(t => t.FullName == item))
-                {
-                    _localList.Add(new ProjectsModel(item));
-                    _localListClearable.Add(new ProjectsModel(item));
-                }
-            foreach (var item in Directory.GetFiles(location))
                 if (!_localList.Any(t => t.FullName == item))
                 {
                     _localList.Add(new ProjectsModel(item));

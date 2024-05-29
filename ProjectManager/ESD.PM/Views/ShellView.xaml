@@ -98,7 +98,9 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <Button Content="TOGGLE VIEW" Width="100" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding ToggleViewCommand}"/>
+                            <Button Content="TOGGLE VIEW" Width="100" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                    Command="{Binding ToggleViewCommand}"
+                                    IsEnabled="{Binding ToggleViewCommandActive}"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
