@@ -62,3 +62,5 @@ C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\re
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.pdb
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.genruntimeconfig.cache
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ref\ESD.PM.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\CreateProjectDialog.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\CreateProjectDialog.baml

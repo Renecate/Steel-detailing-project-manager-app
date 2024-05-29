@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using ESD.PM.Commands;
 using ESD.PM.Models;
+using ESD.PM.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -75,6 +76,8 @@ namespace ESD.PM.ViewModels
 
         public DelegateCommand AddFavoriteProjectCommand { get; set; }
 
+        public DelegateCommand CreateProjectCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -89,6 +92,7 @@ namespace ESD.PM.ViewModels
             AddProjectPathCommand = new DelegateCommand(AddProjectPath);
             RemoveProjectPathCommand = new DelegateCommand(RemoveProjectPath);
             AddFavoriteProjectCommand = new DelegateCommand(AddFavoriteProject);
+            CreateProjectCommand = new DelegateCommand(OnCreateProject);
         }
 
         #endregion
@@ -183,9 +187,52 @@ namespace ESD.PM.ViewModels
 
         }
 
+        private void OnCreateProject(object obj)
+        {
+            var dialog = new CreateProjectDialog(appSettings.ProjectPaths);
+            if (dialog.ShowDialog() == true)
+            {
+                string selectedPath = dialog.SelectedProjectPath;
+                if (string.IsNullOrEmpty(selectedPath))
+                {
+                    // Обработка случая, когда путь не выбран
+                    System.Windows.MessageBox.Show("Please select a parent folder.");
+                    return;
+                }
+
+                string projectPath = Path.Combine(selectedPath, dialog.ProjectName);
+                Directory.CreateDirectory(projectPath);
+
+                if (dialog.ItemsIncluded)
+                {
+                    string itemsPath = Path.Combine(projectPath, "Items");
+                    Directory.CreateDirectory(itemsPath);
+
+                    foreach (var item in dialog.Items)
+                    {
+                        string itemPath = Path.Combine(itemsPath, item.Trim());
+                        Directory.CreateDirectory(itemPath);
+                        CreateSubfolders(itemPath);
+                    }
+                }
+                else
+                {
+                    CreateSubfolders(projectPath);
+                }
+            }
+            LoadProjects();
+        }
+
         #endregion
 
         #region Private Methods
+
+        private void CreateSubfolders(string basePath)
+        {
+            Directory.CreateDirectory(Path.Combine(basePath, "1 - Incoming"));
+            Directory.CreateDirectory(Path.Combine(basePath, "2 - Outcoming"));
+            Directory.CreateDirectory(Path.Combine(basePath, "3 - Misc Files"));
+        }
 
         #endregion
 
@@ -206,6 +253,7 @@ namespace ESD.PM.ViewModels
             var count = 0;
             DisplayItemsList.Clear();
             FoldersList.Clear();
+            DisplayItemsNames.Clear();
             foreach (var project in ProjectsList)
                 if (project.Name == _selectedProjectName)
                     SelectedProject = project;

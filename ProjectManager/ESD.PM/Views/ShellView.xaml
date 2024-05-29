@@ -52,7 +52,8 @@
                           FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
                           IsEnabled="{Binding ItemsIsTrue}">
                 </ComboBox>
-                <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"/>
+                <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"
+                        Command="{Binding CreateProjectCommand}"/>
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="49" Margin="5,0,0,0">
@@ -101,6 +102,9 @@
                             <Button Content="TOGGLE VIEW" Width="100" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" 
                                     Command="{Binding ToggleViewCommand}"
                                     IsEnabled="{Binding ToggleViewCommandActive}"/>
+                            <Button Content="OPEN FOLDER" Width="100" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                    Command="{Binding OpenFolderCommand}"
+                                    Margin="100,0,0,0"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

@@ -1,9 +1,11 @@
 ﻿using ESD.PM.Commands;
+using ESD.PM.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Windows.Controls;
 
 namespace ESD.PM.Models
 {
@@ -31,7 +33,7 @@ namespace ESD.PM.Models
         #region Commands
 
         public DelegateCommand OpenCommand { get; set; }
-        public DelegateCommand ClearCommand { get; set; }
+        public DelegateCommand OpenFolderCommand { get; set; }
         public DelegateCommand ToggleViewCommand { get; set; }
 
         #endregion
@@ -72,7 +74,9 @@ namespace ESD.PM.Models
 
             OpenCommand = new DelegateCommand(OnOpen);
             ToggleViewCommand = new DelegateCommand(OnToggleView);
+            OpenFolderCommand = new DelegateCommand(OnOpenFolder);
         }
+
 
         #endregion
 
@@ -219,6 +223,12 @@ namespace ESD.PM.Models
                     GetTags(_location);
                 }
             }
+
+        }
+
+        private void OnOpenFolder(object obj)
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", FullName));
         }
 
         #endregion
