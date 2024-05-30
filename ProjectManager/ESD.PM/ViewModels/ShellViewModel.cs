@@ -14,7 +14,6 @@ namespace ESD.PM.ViewModels
     {
         #region Public Properties
         public ObservableCollection<FoldersModel> FoldersList { get; set; } = [];
-        private ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
         public ObservableCollection<ProjectsModel> ProjectsNames { get; set; } = [];
         public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [];
         public bool ArchIsTrue { get; set; }
@@ -142,12 +141,13 @@ namespace ESD.PM.ViewModels
                 {
                     string selectedPath = dialog.SelectedPath;
 
-                    if (!appSettings.ProjectPaths.Contains(selectedPath))
+                    if (!appSettings.ProjectPaths.Contains(selectedPath) && selectedPath.EndsWith("Projects"))
                     {
                         appSettings.ProjectPaths.Add(selectedPath);
                         SettingsManager.SaveSettings(appSettings);
                         LoadProjects();
                     }
+                    else System.Windows.MessageBox.Show($"Folder '{selectedPath}' is not Projects folder");
                 }
             }
         }
@@ -236,7 +236,13 @@ namespace ESD.PM.ViewModels
             {
                 var itemNames = dialog.ItemNames.Where(item => !string.IsNullOrWhiteSpace(item.Name)).Select(item => item.Name).ToList();
                 CreateItemsFolders(itemNames);
+                DisplayItemsNames.Clear();
+                foreach (var item in Directory.GetDirectories(itemsPath))
+                    DisplayItemsNames.Add(new ProjectsModel(item));
+                DisplayItemsNames = new ObservableCollection<ProjectsModel>(DisplayItemsNames.OrderBy(item => item.Name));
             }
+            NotifyOfPropertyChange(() => DisplayItemsNames);
+            NotifyOfPropertyChange(() => SelectedItem);
         }
         #endregion
 
@@ -264,7 +270,6 @@ namespace ESD.PM.ViewModels
             NotifyOfPropertyChange(() => SelectedItem);
 
             var count = 0;
-            DisplayItemsList.Clear();
             FoldersList.Clear();
             DisplayItemsNames.Clear();
 
@@ -294,12 +299,8 @@ namespace ESD.PM.ViewModels
                     if (item.EndsWith("Items"))
                         foreach (var _item in Directory.GetDirectories(item))
                         {
-                            DisplayItemsList.Add(new ProjectsModel(_item));
+                            DisplayItemsNames.Add(new ProjectsModel(_item));
                         }
-                foreach (var item in DisplayItemsList)
-                {
-                    DisplayItemsNames.Add(item);
-                }
             }
 
             {
@@ -330,7 +331,7 @@ namespace ESD.PM.ViewModels
         private void Folders()
         {
             FoldersList.Clear();
-            foreach (var item in DisplayItemsList)
+            foreach (var item in DisplayItemsNames)
                 if (item == _selectedItem)
                     _selectedItem = item;
             if (_selectedItem != null)
@@ -382,7 +383,6 @@ namespace ESD.PM.ViewModels
                     CreateSubfolders(itemPath);
                 }
             }
-
 
             #endregion
 
