@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
 namespace ESD.PM.Models
 {
@@ -11,6 +6,6 @@ namespace ESD.PM.Models
     {
         public ObservableCollection<string> ProjectPaths { get; set; } = new ObservableCollection<string>();
 
-        public List<string> FavoriteProject { get; set; } = new List<string>();
+        public ObservableCollection<string> FavoriteProjects { get; set; } = new ObservableCollection<string>();
     }
 }

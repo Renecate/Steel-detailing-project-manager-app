@@ -1,12 +1,4 @@
-﻿using ESD.PM.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace ESD.PM.Models
 {
@@ -44,6 +36,7 @@ namespace ESD.PM.Models
         public TagsModel(string name)
         {
             Name = name;
+            State = true;
         }
     }
 }

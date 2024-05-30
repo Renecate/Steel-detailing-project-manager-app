@@ -1,11 +1,10 @@
-﻿using Caliburn.Micro;
-using ESD.PM.Commands;
+﻿using ESD.PM.Commands;
 using ESD.PM.Models;
 using ESD.PM.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
+
 
 
 
@@ -14,35 +13,32 @@ namespace ESD.PM.ViewModels
     public class ShellViewModel : Caliburn.Micro.Screen
     {
         #region Public Properties
-        private ObservableCollection<ProjectsModel> ProjectsList { get; set; } = [];
         public ObservableCollection<FoldersModel> FoldersList { get; set; } = [];
         private ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
-        public ObservableCollection<String> ProjectsNames { get; set; } = [ ];
-        public ObservableCollection<String> DisplayItemsNames { get; set; } = [ ];
-        public ProjectsModel SelectedProject { get; set; }
-        public ProjectsModel SelectedItem { get; set; }
+        public ObservableCollection<ProjectsModel> ProjectsNames { get; set; } = [ ];
+        public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [ ];
         public bool ArchIsTrue { get; set; }
         public bool StructIsTrue { get; set; }
         public bool MasterIsTrue { get; set; }
         public bool ItemsIsTrue { get; set; }
 
 
-        public string SelectedProjectName
+        public ProjectsModel SelectedProject
         {
-            get { return _selectedProjectName; }
+            get { return _selectedProject; }
             set
             {
-                _selectedProjectName = value;
+                _selectedProject = value;
                 Items();
             }
         }
 
-        public string SelectedItemName
+        public ProjectsModel SelectedItem
         {
-            get { return _selectedItemName; }
+            get { return _selectedItem; }
             set
             {
-                _selectedItemName = value;
+                _selectedItem = value;
                 Folders();
             }
         }
@@ -50,9 +46,9 @@ namespace ESD.PM.ViewModels
 
         #region Private Properties
 
-        private string _selectedProjectName;
+        private ProjectsModel _selectedProject;
 
-        private string _selectedItemName;
+        private ProjectsModel _selectedItem;
 
         private ProjectsModel _selectedFolder;
 
@@ -101,7 +97,7 @@ namespace ESD.PM.ViewModels
         private void OnOpenStructural(object obj)
         {
             string[] parts = null;
-            foreach (var item in Directory.GetFiles(SelectedProject.FullName))
+            foreach (var item in Directory.GetFiles(_selectedProject.FullName))
             {
                 parts = item.Split('\\');
                 if (parts[parts.Length - 1].Contains("Structural"))
@@ -113,7 +109,7 @@ namespace ESD.PM.ViewModels
         private void OnOpenArch(object obj)
         {
             string[] parts = null;
-            foreach (var item in Directory.GetFiles(SelectedProject.FullName))
+            foreach (var item in Directory.GetFiles(_selectedProject.FullName))
             {
                 parts = item.Split('\\');
                 if (parts[parts.Length - 1].Contains("Architectural"))
@@ -127,7 +123,7 @@ namespace ESD.PM.ViewModels
         private void OnOpenMaster(object obj)
         {
             string[] parts = null;
-            foreach (var item in Directory.GetFiles(SelectedProject.FullName))
+            foreach (var item in Directory.GetFiles(_selectedProject.FullName))
             {
                 parts = item.Split('\\');
                 if (parts[parts.Length - 1].Contains("Master"))
@@ -163,28 +159,32 @@ namespace ESD.PM.ViewModels
         public void RemoveProjectPath(object path)
         {
                 appSettings.ProjectPaths.Clear();
-                appSettings.FavoriteProject.Clear();
+                appSettings.FavoriteProjects.Clear();
                 SettingsManager.SaveSettings(appSettings);
                 LoadProjects();
         }
 
         private void AddFavoriteProject(object obj)
         {
-            if (!appSettings.FavoriteProject.Contains(_selectedProjectName))
+            var selectedProject = _selectedProject;
+            if (selectedProject != null)
             {
-                appSettings.FavoriteProject.Add(_selectedProjectName);
-                ProjectsNames.Insert(0, _selectedProjectName);
+                if (!appSettings.FavoriteProjects.Contains(selectedProject.FullName))
+                {
+                    appSettings.FavoriteProjects.Add(selectedProject.FullName);
+                    ProjectsNames.Insert(0, selectedProject);
+                    NotifyOfPropertyChange(() => ProjectsNames);
+                }
+                else
+                {
+                    appSettings.FavoriteProjects.Remove(selectedProject.FullName);                 
+                    ProjectsNames.Remove(selectedProject);
+                    SelectedProject = null;
+                    NotifyOfPropertyChange(() => SelectedProject);
+                    NotifyOfPropertyChange(() => ProjectsNames);
+                }
                 SettingsManager.SaveSettings(appSettings);
-                NotifyOfPropertyChange(() => ProjectsNames);
             }
-            else
-            {
-                appSettings.FavoriteProject.Remove(_selectedProjectName);
-                ProjectsNames.Remove(_selectedProjectName);
-                SettingsManager.SaveSettings(appSettings);
-                NotifyOfPropertyChange(() => ProjectsNames);
-            }
-
         }
 
         private void OnCreateProject(object obj)
@@ -195,7 +195,6 @@ namespace ESD.PM.ViewModels
                 string selectedPath = dialog.SelectedProjectPath;
                 if (string.IsNullOrEmpty(selectedPath))
                 {
-                    // Обработка случая, когда путь не выбран
                     System.Windows.MessageBox.Show("Please select a parent folder.");
                     return;
                 }
@@ -219,8 +218,8 @@ namespace ESD.PM.ViewModels
                 {
                     CreateSubfolders(projectPath);
                 }
+                LoadProjects();
             }
-            LoadProjects();
         }
 
         #endregion
@@ -234,48 +233,48 @@ namespace ESD.PM.ViewModels
             Directory.CreateDirectory(Path.Combine(basePath, "3 - Misc Files"));
         }
 
-        #endregion
-
-        #region Public Methods
-
-        public void Items()
+        private void Items()
         {
             MasterIsTrue = false;
             StructIsTrue = false;
             ArchIsTrue = false;
             ItemsIsTrue = false;
-            SelectedItemName = null;
+            SelectedItem = null;
+
             NotifyOfPropertyChange(() => StructIsTrue);
             NotifyOfPropertyChange(() => MasterIsTrue);
             NotifyOfPropertyChange(() => ArchIsTrue);
             NotifyOfPropertyChange(() => ItemsIsTrue);
-            NotifyOfPropertyChange(() => SelectedItemName);
+            NotifyOfPropertyChange(() => SelectedItem);
+
             var count = 0;
             DisplayItemsList.Clear();
             FoldersList.Clear();
             DisplayItemsNames.Clear();
-            foreach (var project in ProjectsList)
-                if (project.Name == _selectedProjectName)
-                    SelectedProject = project;
-            foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
+
+            if (SelectedProject == null)
+                return;
+
+            foreach (var item in Directory.GetDirectories(_selectedProject.FullName))
             {
                 if (item.EndsWith("Items"))
                 {
                     count++;
                     ItemsIsTrue = true;
                     NotifyOfPropertyChange(() => ItemsIsTrue);
+                    break;
                 }
             }
             if (count == 0)
             {
-                foreach (var folder in Directory.GetDirectories(SelectedProject.FullName))
+                foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
                 {
                     FoldersList.Add(new FoldersModel(folder));
                 }
             }
             else
             {
-                foreach (var item in Directory.GetDirectories(SelectedProject.FullName))
+                foreach (var item in Directory.GetDirectories(_selectedProject.FullName))
                     if (item.EndsWith("Items"))
                         foreach (var _item in Directory.GetDirectories(item))
                         {
@@ -283,12 +282,13 @@ namespace ESD.PM.ViewModels
                         }
                 foreach (var item in DisplayItemsList)
                 {
-                    DisplayItemsNames.Add(item.Name);
+                    DisplayItemsNames.Add(item);
                 }
-                }
+            }
+
             {
                 string[] parts = null;
-                foreach (var item in Directory.GetFiles(SelectedProject.FullName))
+                foreach (var item in Directory.GetFiles(_selectedProject.FullName))
                 {
                     parts = item.Split('\\');
                     if (parts[parts.Length - 1].Contains("Structural"))
@@ -296,18 +296,11 @@ namespace ESD.PM.ViewModels
                         StructIsTrue = true;
                         NotifyOfPropertyChange(() => StructIsTrue);
                     }
-                }
-                foreach (var item in Directory.GetFiles(SelectedProject.FullName))
-                {
-                    parts = item.Split('\\');
                     if (parts[parts.Length - 1].Contains("Architectural"))
                     {
                         ArchIsTrue = true;
                         NotifyOfPropertyChange(() => ArchIsTrue);
                     }
-                }
-                foreach (var item in Directory.GetFiles(SelectedProject.FullName))
-                {
                     parts = item.Split('\\');
                     if (parts[parts.Length - 1].Contains("Master"))
                     {
@@ -322,20 +315,20 @@ namespace ESD.PM.ViewModels
         {
             FoldersList.Clear();
             foreach (var item in DisplayItemsList)
-                if (item.Name == _selectedItemName)
-                    SelectedItem = item;
-            if (SelectedItem != null)
+                if (item == _selectedItem)
+                    _selectedItem = item;
+            if (_selectedItem != null)
             {
-                foreach (var folder in Directory.GetDirectories(SelectedItem.FullName))
+                foreach (var folder in Directory.GetDirectories(_selectedItem.FullName))
                 {
                     FoldersList.Add(new FoldersModel(folder));
                 }
             }
         }
 
-        public void LoadProjects()
+        private void LoadProjects()
         {
-            ProjectsList.Clear();
+            ProjectsNames.Clear();
 
             foreach (var path in appSettings.ProjectPaths)
             {
@@ -343,23 +336,22 @@ namespace ESD.PM.ViewModels
                 {
                     foreach (var project in Directory.GetDirectories(path))
                     {
-                        ProjectsList.Add(new ProjectsModel(project));
+                        ProjectsNames.Add(new ProjectsModel(project));
                     }
                 }
             }
-
-            ProjectsNames.Clear();
-            foreach (var project in ProjectsList)
-            {
-                ProjectsNames.Add(project.Name);
-            }
-            ProjectsNames = new ObservableCollection<string>(ProjectsNames.OrderBy(x => x));
+            ProjectsNames = new ObservableCollection<ProjectsModel>(ProjectsNames.OrderBy(x => x.Name));
             NotifyOfPropertyChange(() => ProjectsNames);
-            foreach (var project in appSettings.FavoriteProject)
-            {
-                ProjectsNames.Insert(0, project);
+
+            foreach (var project in appSettings.FavoriteProjects)
+            {           
+                ProjectsNames.Insert(0, new ProjectsModel(project));
             }
         }
+
+        #endregion
+
+        #region Public Methods
 
         #endregion
     }

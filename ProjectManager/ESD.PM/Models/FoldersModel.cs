@@ -1,11 +1,9 @@
 ﻿using ESD.PM.Commands;
-using ESD.PM.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Windows.Controls;
 
 namespace ESD.PM.Models
 {
@@ -14,12 +12,12 @@ namespace ESD.PM.Models
         #region Public Properties
 
         public ObservableCollection<ProjectsModel> FolderList { get; set; }
-        public ObservableCollection<String> FilteredDocsList { get; set; }
-        public ObservableCollection<String> TaggedDocsList { get; set; }
-        public ObservableCollection<String> UntaggedDocsList {  get; set; }
+        public ObservableCollection<ProjectsModel> FilteredDocsList { get; set; }
+        public ObservableCollection<ProjectsModel> TaggedDocsList { get; set; }
+        public ObservableCollection<ProjectsModel> UntaggedDocsList {  get; set; }
         public ObservableCollection<TagsModel> Tags { get; set; }
         public bool ToggleViewCommandActive { get; set; }
-        public string SelectedFolderName
+        public ProjectsModel SelectedFolderName
         {
             get { return _selectedFolderName; }
             set
@@ -40,7 +38,7 @@ namespace ESD.PM.Models
 
         #region Private Properties
 
-        private string _selectedFolderName;
+        private ProjectsModel _selectedFolderName;
 
         private bool _viewIsToggled;
 
@@ -61,13 +59,14 @@ namespace ESD.PM.Models
             _location = FullName;
             FolderList = new ObservableCollection<ProjectsModel>();
             Tags = new ObservableCollection<TagsModel>();
-            FilteredDocsList = new ObservableCollection<string>();
-            UntaggedDocsList = new ObservableCollection<string>();
-            TaggedDocsList = new ObservableCollection<string>();
+            FilteredDocsList = new ObservableCollection<ProjectsModel>();
+            UntaggedDocsList = new ObservableCollection<ProjectsModel>();
+            TaggedDocsList = new ObservableCollection<ProjectsModel>();
             _localList = new ObservableCollection<ProjectsModel>();
             _localListClearable = new ObservableCollection<ProjectsModel>();
             GetFolders();
             GetTags(_location);
+            FilterFolders();
 
             if (Tags.Count > 0)
                 ToggleViewCommandActive = false;
@@ -121,13 +120,13 @@ namespace ESD.PM.Models
                         foreach (var part in parts)
                             if (part.Equals(tag.Name))
                             {
-                                TaggedDocsList.Add(doc.Name);
+                                TaggedDocsList.Add(doc);
                             }
                     }
                 }
             }
-            FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
-            FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
+            FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
+            FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderBy(a => ExtrateDate(a.Name)));
             NotifyOfPropertyChange(() => FilteredDocsList);
         }
 
@@ -165,16 +164,16 @@ namespace ESD.PM.Models
                     }
                     else
                     {
-                        UntaggedDocsList.Add(folder.Name);
+                        UntaggedDocsList.Add(folder);
                     }
                 }
                 else
                 {
-                    UntaggedDocsList.Add(folder.Name);
+                    UntaggedDocsList.Add(folder);
                 }
             }
-            FilteredDocsList = new ObservableCollection<string>(UntaggedDocsList.Concat(TaggedDocsList));
-            FilteredDocsList = new ObservableCollection<string>(FilteredDocsList.OrderBy(a => ExtrateDate(a)));
+            FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
+            FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderBy(a => ExtrateDate(a.Name)));
             NotifyOfPropertyChange(() => FilteredDocsList);
             NotifyOfPropertyChange(() => Tags);
             foreach (var item in Tags)
@@ -189,11 +188,7 @@ namespace ESD.PM.Models
 
         private void OnOpen(object obj)
         {
-            foreach (var folder in _localList)
-                if (folder.Name == _selectedFolderName)
-                {
-                    Process.Start(new ProcessStartInfo("explorer.exe", folder.FullName));
-                }
+            Process.Start(new ProcessStartInfo("explorer.exe", _selectedFolderName.FullName));
         }
 
         private void OnToggleView (object obj) 
@@ -208,6 +203,7 @@ namespace ESD.PM.Models
                 _viewIsToggled = false;
                 _location = FullName;
                 GetTags(_location);
+                FilterFolders();
             }
             else if (_viewIsToggled == false)
             {
@@ -221,6 +217,7 @@ namespace ESD.PM.Models
                 {
                     _location = folder.FullName;
                     GetTags(_location);
+                    FilterFolders();
                 }
             }
 

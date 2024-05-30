@@ -1,6 +1,4 @@
-﻿using Caliburn.Micro;
-using System.Globalization;
-using System.IO;
+﻿using System.IO;
 
 namespace ESD.PM.Models
 {
@@ -10,12 +8,16 @@ namespace ESD.PM.Models
 
         public string FullName { get; }
 
-
         public ProjectsModel(string name)
         {
             Name = new DirectoryInfo(name).Name;
 
             FullName = new DirectoryInfo(name).FullName;
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

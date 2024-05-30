@@ -44,11 +44,11 @@
         <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="54,2,0,979" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
                 <ComboBox Width="350" Height="35" Margin="15,0,10,0" 
-                          x:Name="ProjectsNames" SelectedItem="{Binding SelectedProjectName}" 
+                          ItemsSource="{Binding ProjectsNames}" SelectedItem="{Binding SelectedProject}" 
                           FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
                 </ComboBox>
                 <ComboBox Width="350" Height="35" Margin="10,0,10,0" 
-                          x:Name="DisplayItemsNames" SelectedItem="{Binding SelectedItemName}" 
+                          ItemsSource="{Binding DisplayItemsNames}" SelectedItem="{Binding SelectedItem}" 
                           FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
                           IsEnabled="{Binding ItemsIsTrue}">
                 </ComboBox>
@@ -79,7 +79,9 @@
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding Name}" HorizontalAlignment="Right">
                             </TextBlock>
-                            <ListBox Grid.Row="1" ItemsSource="{Binding FilteredDocsList}" HorizontalAlignment="Center" Width="400" SelectedItem="{Binding SelectedFolderName}" Margin="0,0,0,5">
+                            <ListBox Grid.Row="1" ItemsSource="{Binding FilteredDocsList}"
+                                     HorizontalAlignment="Center" Width="400" 
+                                     SelectedItem="{Binding SelectedFolderName}" Margin="0,0,0,5">
                                 <b:Interaction.Triggers>
                                     <b:EventTrigger EventName="MouseDoubleClick">
                                         <b:InvokeCommandAction

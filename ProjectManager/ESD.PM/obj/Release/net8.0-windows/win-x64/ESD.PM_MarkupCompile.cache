@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\
 ESD.PM
 none
 false
 TRACE;RELEASE;NET;NET8_0;NETCOREAPP
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
 3-985847324
 
-14561744727
-212-173364334
+151645446899
+2121281338344
 UserControl1.xaml;Views\CreateProjectDialog.xaml;Views\ShellView.xaml;
 
 False
