@@ -15,8 +15,8 @@ namespace ESD.PM.ViewModels
         #region Public Properties
         public ObservableCollection<FoldersModel> FoldersList { get; set; } = [];
         private ObservableCollection<ProjectsModel> DisplayItemsList { get; set; } = [];
-        public ObservableCollection<ProjectsModel> ProjectsNames { get; set; } = [ ];
-        public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [ ];
+        public ObservableCollection<ProjectsModel> ProjectsNames { get; set; } = [];
+        public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [];
         public bool ArchIsTrue { get; set; }
         public bool StructIsTrue { get; set; }
         public bool MasterIsTrue { get; set; }
@@ -61,18 +61,13 @@ namespace ESD.PM.ViewModels
         #region Commands
 
         public DelegateCommand StructuralOpenCommand { get; set; }
-
         public DelegateCommand ArchOpenCommand { get; set; }
-
         public DelegateCommand MasterOpenCommand { get; set; }
-
-        public DelegateCommand AddProjectPathCommand {  get; set; }
-
+        public DelegateCommand AddProjectPathCommand { get; set; }
         public DelegateCommand RemoveProjectPathCommand { get; set; }
-
         public DelegateCommand AddFavoriteProjectCommand { get; set; }
-
         public DelegateCommand CreateProjectCommand { get; set; }
+        public DelegateCommand AddItemCommand { get; set; }
 
         #endregion
 
@@ -89,6 +84,7 @@ namespace ESD.PM.ViewModels
             RemoveProjectPathCommand = new DelegateCommand(RemoveProjectPath);
             AddFavoriteProjectCommand = new DelegateCommand(AddFavoriteProject);
             CreateProjectCommand = new DelegateCommand(OnCreateProject);
+            AddItemCommand = new DelegateCommand(OnAddItem);
         }
 
         #endregion
@@ -158,10 +154,10 @@ namespace ESD.PM.ViewModels
 
         public void RemoveProjectPath(object path)
         {
-                appSettings.ProjectPaths.Clear();
-                appSettings.FavoriteProjects.Clear();
-                SettingsManager.SaveSettings(appSettings);
-                LoadProjects();
+            appSettings.ProjectPaths.Clear();
+            appSettings.FavoriteProjects.Clear();
+            SettingsManager.SaveSettings(appSettings);
+            LoadProjects();
         }
 
         private void AddFavoriteProject(object obj)
@@ -177,7 +173,7 @@ namespace ESD.PM.ViewModels
                 }
                 else
                 {
-                    appSettings.FavoriteProjects.Remove(selectedProject.FullName);                 
+                    appSettings.FavoriteProjects.Remove(selectedProject.FullName);
                     ProjectsNames.Remove(selectedProject);
                     SelectedProject = null;
                     NotifyOfPropertyChange(() => SelectedProject);
@@ -222,6 +218,26 @@ namespace ESD.PM.ViewModels
             }
         }
 
+        private void OnAddItem(object obj)
+        {
+            string itemsPath = Path.Combine(SelectedProject.FullName, "Items");
+            ObservableCollection<string> existingItemNames = new ObservableCollection<string>();
+
+            if (Directory.Exists(itemsPath))
+            {
+                foreach (var directory in Directory.GetDirectories(itemsPath))
+                {
+                    existingItemNames.Add(Path.GetFileName(directory));
+                }
+            }
+
+            var dialog = new AddItemDialog(existingItemNames);
+            if (dialog.ShowDialog() == true)
+            {
+                var itemNames = dialog.ItemNames.Where(item => !string.IsNullOrWhiteSpace(item.Name)).Select(item => item.Name).ToList();
+                CreateItemsFolders(itemNames);
+            }
+        }
         #endregion
 
         #region Private Methods
@@ -344,15 +360,35 @@ namespace ESD.PM.ViewModels
             NotifyOfPropertyChange(() => ProjectsNames);
 
             foreach (var project in appSettings.FavoriteProjects)
-            {           
+            {
                 ProjectsNames.Insert(0, new ProjectsModel(project));
             }
         }
 
-        #endregion
+        private void CreateItemsFolders(List<string> itemNames)
+        {
+            string itemsPath = Path.Combine(SelectedProject.FullName, "Items");
+            if (!Directory.Exists(itemsPath))
+            {
+                Directory.CreateDirectory(itemsPath);
+            }
 
-        #region Public Methods
+            foreach (var itemName in itemNames)
+            {
+                string itemPath = Path.Combine(itemsPath, itemName);
+                if (!Directory.Exists(itemPath))
+                {
+                    Directory.CreateDirectory(itemPath);
+                    CreateSubfolders(itemPath);
+                }
+            }
 
-        #endregion
+
+            #endregion
+
+            #region Public Methods
+
+            #endregion
+        }
     }
 }

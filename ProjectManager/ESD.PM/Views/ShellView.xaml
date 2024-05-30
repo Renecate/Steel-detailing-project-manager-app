@@ -60,7 +60,8 @@
                 <Button Content="STRUCTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding StructuralOpenCommand}" IsEnabled="{Binding StructIsTrue}"/>
                 <Button Content="ARCHITECTURALS" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding ArchOpenCommand}" IsEnabled="{Binding ArchIsTrue}"/>
                 <Button Content="MASTER SET" Width="160" Height="35" Margin="10,0,10,0" Command="{Binding MasterOpenCommand}" IsEnabled="{Binding MasterIsTrue}"/>
-                <Button Content="+" Width="35" Height="35" Margin="10,0,10,0"/>
+                <Button Content="+" Width="35" Height="35" Margin="10,0,10,0" Command="{Binding AddItemCommand}"
+                        IsEnabled="{Binding ItemsIsTrue}"/>
             </StackPanel>
         </WrapPanel>
         <ScrollViewer Grid.Column="1" Grid.Row="2" Background="#FFFDFDFD" VerticalScrollBarVisibility="Auto" MaxHeight="950">
