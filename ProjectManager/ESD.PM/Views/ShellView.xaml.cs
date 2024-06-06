@@ -35,5 +35,6 @@ namespace ESD.PM.Views
         {
             DragMove();
         }
+
     }
 }

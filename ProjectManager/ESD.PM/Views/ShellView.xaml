@@ -38,8 +38,13 @@
             <Button Grid.Column="1" Content="-" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="29" Click="HideButton_OnClick"/>
             <Button Grid.Column="2" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="29" Click="ExpandButton_OnClick"/>
             <Button Grid.Column="3" Content="X" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="29" Click="CloseButton_OnClick"/>
-            <Button Content="ADD PROJECTS FOLDER" Command="{Binding AddProjectPathCommand}" Height="25" VerticalAlignment="Center" Margin="15,0,0,0" Width="150" HorizontalAlignment="Left" />
-            <Button Content="CLEAR FOLDERS" Command="{Binding RemoveProjectPathCommand}" Height="25" VerticalAlignment="Center" Margin="180,0,0,0" Width="100" HorizontalAlignment="Left" />
+
+            <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                <Button Content="ADD PROJECTS FOLDER" Command="{Binding AddProjectPathCommand}" Height="25" Width="150" Margin="15,0,5,0" />
+                <Button Content="CLEAR FOLDERS" Command="{Binding RemoveProjectPathCommand}" Height="25" Width="100" Margin="0,0,5,0" />
+                <Button Content="CREATE PROJECT" Height="25" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"
+                Command="{Binding CreateProjectCommand}"/>
+            </StackPanel>
         </Grid>
         <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="54,2,0,979" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
@@ -52,8 +57,9 @@
                           FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
                           IsEnabled="{Binding ItemsIsTrue}">
                 </ComboBox>
-                <Button Content="CREATE PROJECT" Height="35" MinWidth="100" Margin="10,0,15,0" HorizontalContentAlignment="Center" Width="160"
-                        Command="{Binding CreateProjectCommand}"/>
+                <Button Content="OPEN PROJECT FOLDER" Command="{Binding OpenProjectFolderCommand}" 
+                        Height="35" MinWidth="175" Margin="0,0,5,0" Background="#FF346667" Foreground="White" 
+                        IsEnabled ="{Binding ProjectIsTrue}"/>
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="49" Margin="5,0,0,0">

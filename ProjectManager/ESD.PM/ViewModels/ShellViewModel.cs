@@ -20,6 +20,7 @@ namespace ESD.PM.ViewModels
         public bool StructIsTrue { get; set; }
         public bool MasterIsTrue { get; set; }
         public bool ItemsIsTrue { get; set; }
+        public bool ProjectIsTrue { get; set; }
 
 
         public ProjectsModel SelectedProject
@@ -28,6 +29,8 @@ namespace ESD.PM.ViewModels
             set
             {
                 _selectedProject = value;
+                ProjectIsTrue = true;
+                NotifyOfPropertyChange(() => ProjectIsTrue);
                 Items();
             }
         }
@@ -68,6 +71,8 @@ namespace ESD.PM.ViewModels
         public DelegateCommand CreateProjectCommand { get; set; }
         public DelegateCommand AddItemCommand { get; set; }
 
+        public DelegateCommand OpenProjectFolderCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -75,6 +80,7 @@ namespace ESD.PM.ViewModels
         public ShellViewModel()
         {
             appSettings = SettingsManager.LoadSettings();
+            ProjectIsTrue = false;
             LoadProjects();
             StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
             ArchOpenCommand = new DelegateCommand(OnOpenArch);
@@ -84,6 +90,7 @@ namespace ESD.PM.ViewModels
             AddFavoriteProjectCommand = new DelegateCommand(AddFavoriteProject);
             CreateProjectCommand = new DelegateCommand(OnCreateProject);
             AddItemCommand = new DelegateCommand(OnAddItem);
+            OpenProjectFolderCommand = new DelegateCommand(OnOpenProjectFolder);
         }
 
         #endregion
@@ -114,7 +121,6 @@ namespace ESD.PM.ViewModels
             }
 
         }
-
         private void OnOpenMaster(object obj)
         {
             string[] parts = null;
@@ -127,6 +133,10 @@ namespace ESD.PM.ViewModels
                 }
             }
 
+        }
+        private void OnOpenProjectFolder(object obj) 
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
         }
         public void AddProjectPath(object path)
         {
@@ -151,7 +161,6 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
-
         public void RemoveProjectPath(object path)
         {
             appSettings.ProjectPaths.Clear();
@@ -159,7 +168,6 @@ namespace ESD.PM.ViewModels
             SettingsManager.SaveSettings(appSettings);
             LoadProjects();
         }
-
         private void AddFavoriteProject(object obj)
         {
             var selectedProject = _selectedProject;
@@ -176,13 +184,14 @@ namespace ESD.PM.ViewModels
                     appSettings.FavoriteProjects.Remove(selectedProject.FullName);
                     ProjectsNames.Remove(selectedProject);
                     SelectedProject = null;
+                    ProjectIsTrue = false;
+                    NotifyOfPropertyChange(() =>  ProjectIsTrue);
                     NotifyOfPropertyChange(() => SelectedProject);
                     NotifyOfPropertyChange(() => ProjectsNames);
                 }
                 SettingsManager.SaveSettings(appSettings);
             }
         }
-
         private void OnCreateProject(object obj)
         {
             var dialog = new CreateProjectDialog(appSettings.ProjectPaths);
@@ -217,7 +226,6 @@ namespace ESD.PM.ViewModels
                 LoadProjects();
             }
         }
-
         private void OnAddItem(object obj)
         {
             string itemsPath = Path.Combine(SelectedProject.FullName, "Items");
