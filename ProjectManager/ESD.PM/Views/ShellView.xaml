@@ -95,11 +95,28 @@
                     <DataTemplate>
                         <Grid Background="#FFE0F3F3" Width="Auto" Height="450" Margin="10,10,10,10">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="100"/>
+                                <RowDefinition Height="150"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Name}" HorizontalAlignment="Right">
-                            </TextBlock>
+                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Right"/>
+                                <TextBox Text="{Binding SelectedFolderName.FullName, Mode=OneWay}" HorizontalAlignment="Left" TextWrapping="Wrap" IsReadOnly="True"
+                                           Height="50" Width="400" Background="White" Margin="0,50,0,0" 
+                                           />
+                                <ItemsControl ItemsSource="{Binding Tags}" HorizontalAlignment="Left" Margin="0,5,0,0" 
+                                VerticalAlignment="Top" Height="35" Width="399">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding State}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                             <ListBox Grid.Row="1" ItemsSource="{Binding FilteredDocsList}"
                                      HorizontalAlignment="Center" Width="400" 
                                      SelectedItem="{Binding SelectedFolderName}" Margin="0,0,0,5">
@@ -110,19 +127,7 @@
                                     </b:EventTrigger>
                                 </b:Interaction.Triggers>
                             </ListBox>
-                            <ItemsControl ItemsSource="{Binding Tags}" HorizontalAlignment="Left" Margin="-1,64,0,0" 
-                                          VerticalAlignment="Top" Height="35" Width="399">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding State}"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            
                             <Button Content="TOGGLE VIEW" Width="100" Height="50" HorizontalAlignment="Left" 
                                     VerticalAlignment="Top" 
                                     Command="{Binding ToggleViewCommand}"

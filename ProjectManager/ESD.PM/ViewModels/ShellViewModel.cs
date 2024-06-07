@@ -258,9 +258,11 @@ namespace ESD.PM.ViewModels
 
         private void CreateSubfolders(string basePath)
         {
+            Directory.CreateDirectory(Path.Combine(basePath, "0 - Scope Of Work"));
             Directory.CreateDirectory(Path.Combine(basePath, "1 - Incoming"));
             Directory.CreateDirectory(Path.Combine(basePath, "2 - Outcoming"));
-            Directory.CreateDirectory(Path.Combine(basePath, "3 - Misc Files"));
+            Directory.CreateDirectory(Path.Combine(basePath, "3 - Checking"));
+            Directory.CreateDirectory(Path.Combine(basePath, "4 - MiscFiles"));
         }
 
         private void Items()
@@ -396,12 +398,12 @@ namespace ESD.PM.ViewModels
                     CreateSubfolders(itemPath);
                 }
             }
-
-            #endregion
-
-            #region Public Methods
-
-            #endregion
         }
+        #endregion
+
+        #region Public Methods
+
+        #endregion
+        
     }
 }

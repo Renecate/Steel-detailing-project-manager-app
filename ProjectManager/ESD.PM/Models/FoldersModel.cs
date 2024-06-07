@@ -23,6 +23,7 @@ namespace ESD.PM.Models
             set
             {
                 _selectedFolderName = value;
+                OnPropertyChanged(nameof(SelectedFolderName));
             }
         }
 
