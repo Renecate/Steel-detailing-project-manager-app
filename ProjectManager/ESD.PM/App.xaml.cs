@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace ESD.PM
+﻿namespace ESD.PM
 {
     /// <summary>
     /// Interaction logic for App.xaml

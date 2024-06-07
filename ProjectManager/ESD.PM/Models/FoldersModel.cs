@@ -14,7 +14,7 @@ namespace ESD.PM.Models
         public ObservableCollection<ProjectsModel> FolderList { get; set; }
         public ObservableCollection<ProjectsModel> FilteredDocsList { get; set; }
         public ObservableCollection<ProjectsModel> TaggedDocsList { get; set; }
-        public ObservableCollection<ProjectsModel> UntaggedDocsList {  get; set; }
+        public ObservableCollection<ProjectsModel> UntaggedDocsList { get; set; }
         public ObservableCollection<TagsModel> Tags { get; set; }
         public bool ToggleViewCommandActive { get; set; }
         public ProjectsModel SelectedFolderName
@@ -44,7 +44,7 @@ namespace ESD.PM.Models
 
         private string _location;
 
-        private ObservableCollection<ProjectsModel> _localList {  get; set; }
+        private ObservableCollection<ProjectsModel> _localList { get; set; }
 
         private ObservableCollection<ProjectsModel> _localListClearable { get; set; }
 
@@ -130,7 +130,7 @@ namespace ESD.PM.Models
             }
             FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
             FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderBy(a => ExtrateDate(a.Name)));
-            NotifyOfPropertyChange(() => FilteredDocsList);
+            OnPropertyChanged(nameof(FilteredDocsList));
         }
 
         private void GetFolders()
@@ -197,8 +197,8 @@ namespace ESD.PM.Models
         private void UpdateFilteredDocsList()
         {
             FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
-            NotifyOfPropertyChange(() => FilteredDocsList);
-            NotifyOfPropertyChange(() => Tags);
+            OnPropertyChanged(nameof(FilteredDocsList));
+            OnPropertyChanged(nameof(Tags));
             foreach (var item in Tags)
             {
                 item.PropertyChanged += TagStateChanged;
@@ -214,7 +214,7 @@ namespace ESD.PM.Models
             Process.Start(new ProcessStartInfo("explorer.exe", _selectedFolderName.FullName));
         }
 
-        private void OnToggleView (object obj) 
+        private void OnToggleView(object obj)
         {
             if (_viewIsToggled == true)
             {

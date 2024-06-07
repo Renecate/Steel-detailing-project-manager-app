@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace ESD.PM.Models
 {
-    public class ProjectsModel : Caliburn.Micro.Screen
+    public class ProjectsModel : INotifyPropertyChanged
     {
         public string Name { get; }
 
@@ -13,6 +15,13 @@ namespace ESD.PM.Models
             Name = new DirectoryInfo(name).Name;
 
             FullName = new DirectoryInfo(name).FullName;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         public override string ToString()

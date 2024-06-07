@@ -134,7 +134,7 @@ namespace ESD.PM.ViewModels
             }
 
         }
-        private void OnOpenProjectFolder(object obj) 
+        private void OnOpenProjectFolder(object obj)
         {
             Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
         }
@@ -185,7 +185,7 @@ namespace ESD.PM.ViewModels
                     ProjectsNames.Remove(selectedProject);
                     SelectedProject = null;
                     ProjectIsTrue = false;
-                    NotifyOfPropertyChange(() =>  ProjectIsTrue);
+                    NotifyOfPropertyChange(() => ProjectIsTrue);
                     NotifyOfPropertyChange(() => SelectedProject);
                     NotifyOfPropertyChange(() => ProjectsNames);
                 }
