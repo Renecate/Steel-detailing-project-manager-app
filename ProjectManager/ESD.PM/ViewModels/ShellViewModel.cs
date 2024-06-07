@@ -81,7 +81,7 @@ namespace ESD.PM.ViewModels
         {
             appSettings = SettingsManager.LoadSettings();
             ProjectIsTrue = false;
-            LoadProjects();
+            LoadProjectsAsync();
             StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
             ArchOpenCommand = new DelegateCommand(OnOpenArch);
             MasterOpenCommand = new DelegateCommand(OnOpenMaster);
@@ -155,7 +155,7 @@ namespace ESD.PM.ViewModels
                     {
                         appSettings.ProjectPaths.Add(selectedPath);
                         SettingsManager.SaveSettings(appSettings);
-                        LoadProjects();
+                        LoadProjectsAsync();
                     }
                     else System.Windows.MessageBox.Show($"Folder '{selectedPath}' is not Projects folder");
                 }
@@ -166,7 +166,7 @@ namespace ESD.PM.ViewModels
             appSettings.ProjectPaths.Clear();
             appSettings.FavoriteProjects.Clear();
             SettingsManager.SaveSettings(appSettings);
-            LoadProjects();
+            LoadProjectsAsync();
         }
         private void AddFavoriteProject(object obj)
         {
@@ -223,7 +223,7 @@ namespace ESD.PM.ViewModels
                 {
                     CreateSubfolders(projectPath);
                 }
-                LoadProjects();
+                LoadProjectsAsync();
             }
         }
         private void OnAddItem(object obj)
@@ -351,29 +351,34 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        private void LoadProjects()
+        private async Task LoadProjectsAsync()
         {
-            ProjectsNames.Clear();
-
-            foreach (var path in appSettings.ProjectPaths)
+            try
             {
-                if (Directory.Exists(path))
+                ProjectsNames.Clear();
+                foreach (var path in appSettings.ProjectPaths)
                 {
-                    foreach (var project in Directory.GetDirectories(path))
+                    if (Directory.Exists(path))
                     {
-                        ProjectsNames.Add(new ProjectsModel(project));
+                        var projects = await Task.Run(() => Directory.GetDirectories(path));
+                        foreach (var project in projects)
+                        {
+                            ProjectsNames.Add(new ProjectsModel(project));
+                        }
                     }
                 }
+                ProjectsNames = new ObservableCollection<ProjectsModel>(ProjectsNames.OrderBy(x => x.Name));
+                NotifyOfPropertyChange(() => ProjectsNames);
+                foreach (var project in appSettings.FavoriteProjects)
+                {
+                    ProjectsNames.Insert(0, new ProjectsModel(project));
+                }
             }
-            ProjectsNames = new ObservableCollection<ProjectsModel>(ProjectsNames.OrderBy(x => x.Name));
-            NotifyOfPropertyChange(() => ProjectsNames);
-
-            foreach (var project in appSettings.FavoriteProjects)
+            catch (Exception ex)
             {
-                ProjectsNames.Insert(0, new ProjectsModel(project));
+                // Логирование ошибки или уведомление пользователя
             }
         }
-
         private void CreateItemsFolders(List<string> itemNames)
         {
             string itemsPath = Path.Combine(SelectedProject.FullName, "Items");

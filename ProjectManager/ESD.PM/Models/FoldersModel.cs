@@ -116,12 +116,15 @@ namespace ESD.PM.Models
                     if (tag.State is true)
                     {
                         files = doc.Name.Split('\\');
-                        parts = files[files.Length - 1].Split(" - ");
+                        parts = files[files.Length - 1].Split("-");
                         foreach (var part in parts)
-                            if (part.Equals(tag.Name))
+                        {
+                            var partTrimmed = part.Trim();
+                            if (partTrimmed.Equals(tag.Name))
                             {
                                 TaggedDocsList.Add(doc);
                             }
+                        }
                     }
                 }
             }
@@ -140,27 +143,35 @@ namespace ESD.PM.Models
         private void GetTags(string location)
         {
             _localListClearable.Clear();
-            string[] files = { };
-            string[] parts = { };
             foreach (var item in Directory.GetDirectories(location))
+            {
                 if (!_localList.Any(t => t.FullName == item))
                 {
-                    _localList.Add(new ProjectsModel(item));
-                    _localListClearable.Add(new ProjectsModel(item));
+                    AddToLocalLists(item);
                 }
+            }
+
+            ProcessLocalList();
+        }
+
+        private void AddToLocalLists(string item)
+        {
+            var project = new ProjectsModel(item);
+            _localList.Add(project);
+            _localListClearable.Add(project);
+        }
+
+        private void ProcessLocalList()
+        {
             foreach (var folder in _localListClearable)
             {
-                parts = [];
-                parts = folder.Name.Split("-");
+                var parts = folder.Name.Split("-");
                 if (parts.Length > 1)
                 {
-                    string _tag = parts[1].Trim(' ');
-                    if (_tag.Length == 2)
+                    string tag = parts[1].Trim(' ');
+                    if (tag.Length == 2)
                     {
-                        if (!Tags.Any(t => t.Name == _tag))
-                        {
-                            Tags.Add(new TagsModel(_tag));
-                        }
+                        AddTagIfNotExist(tag);
                     }
                     else
                     {
@@ -172,8 +183,20 @@ namespace ESD.PM.Models
                     UntaggedDocsList.Add(folder);
                 }
             }
-            FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
-            FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderBy(a => ExtrateDate(a.Name)));
+            UpdateFilteredDocsList();
+        }
+
+        private void AddTagIfNotExist(string tag)
+        {
+            if (!Tags.Any(t => t.Name == tag))
+            {
+                Tags.Add(new TagsModel(tag));
+            }
+        }
+
+        private void UpdateFilteredDocsList()
+        {
+            FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
             NotifyOfPropertyChange(() => FilteredDocsList);
             NotifyOfPropertyChange(() => Tags);
             foreach (var item in Tags)
