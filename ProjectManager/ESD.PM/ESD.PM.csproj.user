@@ -9,7 +9,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UserControl1.xaml.cs">
+    <Compile Update="Views\FolderRepresentation.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\AddItemDialog.xaml.cs">
@@ -23,7 +23,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControl1.xaml">
+    <Page Update="Views\FolderRepresentation.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\AddItemDialog.xaml">
