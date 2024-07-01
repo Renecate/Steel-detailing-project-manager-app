@@ -10,9 +10,9 @@ namespace ESD.PM.Views
 {
     public partial class ShellView : Window
     {
-        private const double WindowWidth = 400;
-        private const double WindowHeight = 450;
-        private const double Margin = 10;
+        private const double WindowWidth = 800;
+        private const double WindowHeight = 440;
+        private const double Margin = 5;
 
         public ShellView()
         {
@@ -87,23 +87,19 @@ namespace ESD.PM.Views
                 var border = new Border
                 {
                     Child = folderView,
-                    Width = WindowWidth,
-                    Height = WindowHeight,
-                    BorderBrush = new SolidColorBrush(Colors.Black),
-                    BorderThickness = new Thickness(1)
                 };
 
-                Canvas.SetLeft(border, x);
-                Canvas.SetTop(border, y);
+                ////Canvas.SetLeft(border, x);
+                //Canvas.SetTop(border, y);
 
                 FoldersCanvas.Children.Add(border);
 
-                x += WindowWidth + Margin;
-                if (x + WindowWidth > FoldersCanvas.ActualWidth)
-                {
-                    x = Margin;
-                    y += WindowHeight + Margin;
-                }
+                //x += WindowWidth + Margin;
+                //if (x + WindowWidth > FoldersCanvas.ActualWidth)
+                //{
+                //    x = Margin;
+                //    y += WindowHeight + Margin;
+                //}
             }
         }
     }

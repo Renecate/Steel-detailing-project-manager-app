@@ -84,9 +84,12 @@
                         IsEnabled="{Binding ItemsIsTrue}"/>
             </StackPanel>
         </WrapPanel>
-        <Canvas Name= "FoldersCanvas" Grid.Column="1" Grid.Row="2" Background="#FFFDFDFD" 
-                      MaxHeight="950">
-        </Canvas>
+        <ScrollViewer Grid.Column="1" Grid.Row="2" MaxHeight="950">
+            <WrapPanel Name= "FoldersCanvas" Background="#FFFDFDFD" 
+                       Orientation="Horizontal" HorizontalAlignment="Left" 
+                       VerticalAlignment="Top">
+            </WrapPanel>
+        </ScrollViewer>
         <Button Content="favorite" HorizontalAlignment="Center" Grid.Row="1" 
                 VerticalAlignment="Top" Height="31" Width="50" 
                 Command="{Binding AddFavoriteProjectCommand}" Margin="0,10,0,0"/>
