@@ -85,7 +85,7 @@
             </StackPanel>
         </WrapPanel>
         <Canvas Name= "FoldersCanvas" Grid.Column="1" Grid.Row="2" Background="#FFFDFDFD" 
-                      MaxHeight="950" ScrollViewer.CanContentScroll="True">
+                      MaxHeight="950">
         </Canvas>
         <Button Content="favorite" HorizontalAlignment="Center" Grid.Row="1" 
                 VerticalAlignment="Top" Height="31" Width="50" 
