@@ -89,17 +89,7 @@ namespace ESD.PM.Views
                     Child = folderView,
                 };
 
-                ////Canvas.SetLeft(border, x);
-                //Canvas.SetTop(border, y);
-
                 FoldersCanvas.Children.Add(border);
-
-                //x += WindowWidth + Margin;
-                //if (x + WindowWidth > FoldersCanvas.ActualWidth)
-                //{
-                //    x = Margin;
-                //    y += WindowHeight + Margin;
-                //}
             }
         }
     }
