@@ -13,7 +13,6 @@ namespace ESD.PM.ViewModels
     public class ShellViewModel : Caliburn.Micro.Screen
     {
         #region Public Properties
-        public ObservableCollection<FoldersModel> FoldersList { get; set; } = [];
         public ObservableCollection<ProjectsModel> ProjectsNames { get; set; } = [];
         public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [];
         public bool ArchIsTrue { get; set; }
@@ -41,7 +40,6 @@ namespace ESD.PM.ViewModels
             set
             {
                 _selectedItem = value;
-                Folders();
             }
         }
         #endregion
@@ -280,7 +278,6 @@ namespace ESD.PM.ViewModels
             NotifyOfPropertyChange(() => SelectedItem);
 
             var count = 0;
-            FoldersList.Clear();
             DisplayItemsNames.Clear();
 
             if (SelectedProject == null)
@@ -296,14 +293,7 @@ namespace ESD.PM.ViewModels
                     break;
                 }
             }
-            if (count == 0)
-            {
-                foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
-                {
-                    FoldersList.Add(new FoldersModel(folder));
-                }
-            }
-            else
+            if (count != 0)
             {
                 foreach (var item in Directory.GetDirectories(_selectedProject.FullName))
                     if (item.EndsWith("Items"))
@@ -338,20 +328,6 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        private void Folders()
-        {
-            FoldersList.Clear();
-            foreach (var item in DisplayItemsNames)
-                if (item == _selectedItem)
-                    _selectedItem = item;
-            if (_selectedItem != null)
-            {
-                foreach (var folder in Directory.GetDirectories(_selectedItem.FullName))
-                {
-                    FoldersList.Add(new FoldersModel(folder));
-                }
-            }
-        }
 
         private async Task LoadProjectsAsync()
         {

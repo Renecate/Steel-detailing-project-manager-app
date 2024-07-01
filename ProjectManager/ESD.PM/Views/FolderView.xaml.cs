@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ESD.PM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +18,13 @@ namespace ESD.PM.Views
     /// <summary>
     /// Логика взаимодействия для FolderRepresentation.xaml
     /// </summary>
-    public partial class FolderRepresentation : Window
+    public partial class FolderView
     {
-        public FolderRepresentation()
+        public FolderView(FoldersViewModel folder)
         {
             InitializeComponent();
+            DataContext = folder;
         }
     }
 }
+

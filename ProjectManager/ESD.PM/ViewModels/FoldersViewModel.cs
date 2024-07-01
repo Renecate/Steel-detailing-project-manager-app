@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ESD.PM.Models
 {
-    public class FoldersModel : ProjectsModel
+    public class FoldersViewModel : ProjectsModel
     {
         #region Public Properties
 
@@ -53,7 +53,7 @@ namespace ESD.PM.Models
 
         #region Constructor
 
-        public FoldersModel(string name) : base(name)
+        public FoldersViewModel(string name) : base(name)
         {
             ToggleViewCommandActive = true;
             _viewIsToggled = false;
