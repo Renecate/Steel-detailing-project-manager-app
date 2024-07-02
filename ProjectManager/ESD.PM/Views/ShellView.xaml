@@ -11,87 +11,167 @@
         WindowState="Maximized"
         Width="1920"
         Height="1080"
-        MaxHeight="1080"
         MinWidth="990"
-        MinHeight="1000"
+        MinHeight="600"
         WindowStyle="None" Margin="0,0,0,-4">
-    <Grid>
+    <Grid Background="#FFC3CFD9">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="55"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="29"/>
-            <RowDefinition Height="Auto" 
-                       MinHeight="49"
-                       MaxHeight="96"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <Grid Height="29" Grid.Column="1" Background="#FFEDEDED" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        <Grid Grid.Column="1" Background="#FFEDEDED" MouseLeftButtonDown="Window_MouseLeftButtonDown">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
-                <ColumnDefinition Width="50"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="1" Content="-" HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" Width="50" Height="29" Click="HideButton_OnClick"/>
-            <Button Grid.Column="2" Content="+" HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" Width="50" Height="29" Click="ExpandButton_OnClick"/>
-            <Button Grid.Column="3" Content="X" HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" Width="50" Height="29" Click="CloseButton_OnClick"/>
+            <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" 
+                        Background="#FF9EADBA" FlowDirection="RightToLeft">
+                <Border Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                        BorderThickness="2,0,1,2" CornerRadius="0,0,0,2" BorderBrush="#FF788896" Background="#FF788896">
+                    <Button Click="CloseButton_OnClick" 
+                            BorderBrush="{x:Null}" Background="{x:Null}">
+                        <Image StretchDirection="DownOnly" RenderTransformOrigin="0.5,0.5" 
+                               Source="/Views/Resourses/close.png">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="1.2" ScaleX="1.2"/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                    </Button>
+                </Border>
+                <Border Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                        BorderThickness="1,0,1,2" BorderBrush="#FF788896" Background="#FF788896">
+                    <Button Click="ExpandButton_OnClick" 
+                            BorderBrush="{x:Null}" Background="{x:Null}">
+                        <Image Source="/Views/Resourses/fullscreen.png">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform Y="-3" X="-4"/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                    </Button>
+                </Border>
+                <Border Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                        BorderThickness="1,0,2,2" CornerRadius="0,0,2,0" BorderBrush="#FF788896" Background="#FF788896">
+                    <Button Click="HideButton_OnClick" 
+                            BorderBrush="{x:Null}" Background="{x:Null}" ClipToBounds="True">
+                        <Image Source="/Views/Resourses/line.png" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.5"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
 
-            <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                <Button Content="ADD PROJECTS FOLDER" Command="{Binding AddProjectPathCommand}" 
+                        </Image>
+                    </Button>
+                </Border>
+            </StackPanel>
+        </Grid>
+        <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Background="#FFC3CFD9">
+            <Border HorizontalAlignment="Left" Height="49" BorderThickness="2,0,0,0" BorderBrush="#FF9EADBA">
+                <StackPanel Orientation="Horizontal" Background="#FFC3CFD9">
+                    <Border BorderThickness="2,2,2,2" BorderBrush="#FF9EADBA" Margin="10,0,10,0" Height="35" 
+                            CornerRadius="2,2,2,2">
+                        <ComboBox Name="ProjectComboBox" Width="346" 
+                              ItemsSource="{Binding ProjectsNames}" SelectedItem="{Binding SelectedProject}" 
+                              FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
+                              SelectionChanged="ProjectComboBox_SelectionChanged" BorderThickness="0,0,0,0" 
+                                  BorderBrush="{x:Null}" FontFamily="Bahnschrift Light"/>
+                    </Border>
+                    <Border BorderThickness="2,2,2,2" BorderBrush="#FF9EADBA" Margin="10,0,10,0" Height="35" 
+                            CornerRadius="2,2,2,2">
+                        <ComboBox Name="ItemsComboBox" Width="346"  
+                                  ItemsSource="{Binding DisplayItemsNames}" SelectedItem="{Binding SelectedItem}" 
+                                  FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
+                                  IsEnabled="{Binding ItemsIsTrue}" SelectionChanged="ItemsComboBox_SelectionChanged" 
+                                  BorderBrush="{x:Null}" BorderThickness="0,0,0,0" FontFamily="Bahnschrift Light">
+                        </ComboBox>
+                    </Border>
+                    <Border Height="35" Width="166" Margin="0,0,10,0" BorderThickness="2,2,2,2" 
+                            CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
+                        <Button Content="OPEN PROJECT FOLDER" Command="{Binding OpenProjectFolderCommand}" 
+                                Foreground="White" 
+                                IsEnabled ="{Binding ProjectIsTrue}" UseLayoutRounding="False" 
+                                FontFamily="Bahnschrift Light" BorderBrush="{x:Null}" Padding="0,0,0,0" 
+                                BorderThickness="0,0,0,0" Background="{x:Null}" FontSize="14"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+            <Border HorizontalAlignment="Left" Height="49" BorderThickness="2,0,2,0" BorderBrush="#FF9EADBA">
+                <StackPanel Orientation="Horizontal"  Background="#FFC3CFD9">
+                    <Border Width="165" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
+                            CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
+                        <Button Content="STRUCTURALS"  
+                                Command="{Binding StructuralOpenCommand}" 
+                                IsEnabled="{Binding StructIsTrue}"
+                                Background="{x:Null}" BorderBrush="{x:Null}" 
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                    </Border>
+                    <Border Width="165" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
+                            CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
+                        <Button Content="ARCHITECTURALS"  
+                                Command="{Binding ArchOpenCommand}" 
+                                IsEnabled="{Binding ArchIsTrue}"
+                                Background="{x:Null}" BorderBrush="{x:Null}" 
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                    </Border>
+                    <Border Width="160" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
+                            CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
+                        <Button Content="MASTER SET"  
+                                Command="{Binding MasterOpenCommand}" 
+                                IsEnabled="{Binding MasterIsTrue}"
+                                Background="{x:Null}" BorderBrush="{x:Null}" 
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                    </Border>
+                    <Border Width="35" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
+                            CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
+                        <Button Content="+"  
+                                Command="{Binding AddItemCommand}"
+                                IsEnabled="{Binding ItemsIsTrue}" 
+                                Background="{x:Null}" BorderBrush="{x:Null}" 
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="24"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+        <Border Grid.Column="1" Grid.Row="2" 
+                BorderThickness="2,2,5,1" BorderBrush="#FF9EADBA">
+            <ScrollViewer Background="#FFE1E5EC">
+                <WrapPanel Name= "FoldersCanvas" Background="#FFE1E5EC" 
+                       Orientation="Horizontal" HorizontalAlignment="Left" 
+                       VerticalAlignment="Top">
+                </WrapPanel>
+            </ScrollViewer>
+        </Border>
+        <Button Content="favorite" HorizontalAlignment="Center" Grid.Row="1" 
+                VerticalAlignment="Top" Height="31" Width="50" 
+                Command="{Binding AddFavoriteProjectCommand}" Margin="0,10,0,0"/>
+        <Border Grid.Row="3" Grid.Column="1" 
+                BorderBrush="#FF9EADBA" BorderThickness="2,1,2,0">
+            <StackPanel Background="White">
+
+            </StackPanel>
+        </Border>
+        <!--                <Button Content="ADD PROJECTS FOLDER" Command="{Binding AddProjectPathCommand}" 
                         Height="25" Width="150" Margin="15,0,5,0" />
                 <Button Content="CLEAR FOLDERS" Command="{Binding RemoveProjectPathCommand}" 
                         Height="25" Width="100" Margin="0,0,5,0" />
                 <Button Content="CREATE PROJECT" Height="25" MinWidth="100" Margin="10,0,15,0" 
                         HorizontalContentAlignment="Center" Width="160"
-                Command="{Binding CreateProjectCommand}"/>
-            </StackPanel>
-        </Grid>
-        <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="54,2,0,979" Grid.RowSpan="2" Grid.ColumnSpan="2">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="930" Height="49">
-                <ComboBox Name="ProjectComboBox" Width="350" Height="35" Margin="15,0,10,0" 
-                          ItemsSource="{Binding ProjectsNames}" SelectedItem="{Binding SelectedProject}" 
-                          FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
-                          SelectionChanged="ProjectComboBox_SelectionChanged">
-                </ComboBox>
-                <ComboBox Name="ItemsComboBox" Width="350" Height="35" Margin="10,0,10,0" 
-                          ItemsSource="{Binding DisplayItemsNames}" SelectedItem="{Binding SelectedItem}" 
-                          FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
-                          IsEnabled="{Binding ItemsIsTrue}" SelectionChanged="ItemsComboBox_SelectionChanged">
-                </ComboBox>
-                <Button Content="OPEN PROJECT FOLDER" Command="{Binding OpenProjectFolderCommand}" 
-                        Height="35" MinWidth="175" Margin="0,0,5,0" Background="#FF346667" Foreground="White" 
-                        IsEnabled ="{Binding ProjectIsTrue}"/>
-
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="49" Margin="5,0,0,0">
-                <Button Content="STRUCTURALS" Width="160" Height="35" Margin="10,0,10,0" 
-                        Command="{Binding StructuralOpenCommand}" 
-                        IsEnabled="{Binding StructIsTrue}"/>
-                <Button Content="ARCHITECTURALS" Width="160" Height="35" Margin="10,0,10,0" 
-                        Command="{Binding ArchOpenCommand}" 
-                        IsEnabled="{Binding ArchIsTrue}"/>
-                <Button Content="MASTER SET" Width="160" Height="35" Margin="10,0,10,0" 
-                        Command="{Binding MasterOpenCommand}" 
-                        IsEnabled="{Binding MasterIsTrue}"/>
-                <Button Content="+" Width="35" Height="35" Margin="10,0,10,0" 
-                        Command="{Binding AddItemCommand}"
-                        IsEnabled="{Binding ItemsIsTrue}"/>
-            </StackPanel>
-        </WrapPanel>
-        <ScrollViewer Grid.Column="1" Grid.Row="2" MaxHeight="950">
-            <WrapPanel Name= "FoldersCanvas" Background="#FFFDFDFD" 
-                       Orientation="Horizontal" HorizontalAlignment="Left" 
-                       VerticalAlignment="Top">
-            </WrapPanel>
-        </ScrollViewer>
-        <Button Content="favorite" HorizontalAlignment="Center" Grid.Row="1" 
-                VerticalAlignment="Top" Height="31" Width="50" 
-                Command="{Binding AddFavoriteProjectCommand}" Margin="0,10,0,0"/>
+                Command="{Binding CreateProjectCommand}"/>-->
     </Grid>
 </Window>
