@@ -10,9 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\create proj.png" />
+    <None Remove="Views\Resourses\add path.png" />
     <None Remove="Views\Resourses\close.png" />
+    <None Remove="Views\Resourses\create proj.png" />
     <None Remove="Views\Resourses\fullscreen.png" />
     <None Remove="Views\Resourses\line.png" />
+    <None Remove="Views\Resourses\remove path.png" />
+    <None Remove="Views\Resourses\star.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,9 +30,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Views\create proj.png" />
+    <Resource Include="Views\Resourses\add path.png" />
     <Resource Include="Views\Resourses\close.png" />
+    <Resource Include="Views\Resourses\create proj.png" />
     <Resource Include="Views\Resourses\fullscreen.png" />
     <Resource Include="Views\Resourses\line.png" />
+    <Resource Include="Views\Resourses\remove path.png" />
+    <Resource Include="Views\Resourses\star.png" />
   </ItemGroup>
 
 </Project>
