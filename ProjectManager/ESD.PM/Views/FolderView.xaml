@@ -84,6 +84,11 @@
                             <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy path" Command="{Binding CopyPathCommand}"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                 </ListBox>
             </Border>
         </Grid>

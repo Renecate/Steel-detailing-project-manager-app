@@ -34,14 +34,7 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        public ProjectsModel SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                _selectedItem = value;
-            }
-        }
+        public ProjectsModel SelectedItem { get; set; }
         #endregion
 
         #region Private Properties
@@ -68,7 +61,7 @@ namespace ESD.PM.ViewModels
         public DelegateCommand AddFavoriteProjectCommand { get; set; }
         public DelegateCommand CreateProjectCommand { get; set; }
         public DelegateCommand AddItemCommand { get; set; }
-
+        public DelegateCommand UpdateCommand { get; set; }
         public DelegateCommand OpenProjectFolderCommand { get; set; }
 
         #endregion
@@ -89,6 +82,7 @@ namespace ESD.PM.ViewModels
             CreateProjectCommand = new DelegateCommand(OnCreateProject);
             AddItemCommand = new DelegateCommand(OnAddItem);
             OpenProjectFolderCommand = new DelegateCommand(OnOpenProjectFolder);
+            UpdateCommand = new DelegateCommand(OnUpdate);
         }
 
         #endregion
@@ -249,6 +243,26 @@ namespace ESD.PM.ViewModels
             }
             NotifyOfPropertyChange(() => DisplayItemsNames);
             NotifyOfPropertyChange(() => SelectedItem);
+        }
+
+        private void OnUpdate (object obj) 
+        {
+            var _selectedProj = SelectedProject;
+            var _selectedItem = SelectedItem;
+            if (SelectedItem != null)
+            {
+                SelectedItem = null;
+                NotifyOfPropertyChange(() => SelectedItem);
+                SelectedItem = _selectedItem;
+                NotifyOfPropertyChange(() => SelectedItem);
+            }
+            else
+            {
+                SelectedProject = null;
+                NotifyOfPropertyChange(() => SelectedProject);
+                SelectedProject = _selectedProj;
+                NotifyOfPropertyChange(() => SelectedProject);
+            }
         }
         #endregion
 

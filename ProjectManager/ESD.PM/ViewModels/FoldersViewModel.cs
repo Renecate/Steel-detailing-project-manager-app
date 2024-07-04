@@ -34,6 +34,7 @@ namespace ESD.PM.Models
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand OpenFolderCommand { get; set; }
         public DelegateCommand ToggleViewCommand { get; set; }
+        public DelegateCommand CopyPathCommand { get; set; }
 
         #endregion
 
@@ -75,6 +76,7 @@ namespace ESD.PM.Models
             OpenCommand = new DelegateCommand(OnOpen);
             ToggleViewCommand = new DelegateCommand(OnToggleView);
             OpenFolderCommand = new DelegateCommand(OnOpenFolder);
+            CopyPathCommand = new DelegateCommand(OnCopyPath);
         }
 
 
@@ -130,7 +132,7 @@ namespace ESD.PM.Models
                 }
             }
             FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
-            FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderBy(a => ExtrateDate(a.Name)));
+            FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderByDescending(a => ExtrateDate(a.Name)));
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
@@ -151,7 +153,6 @@ namespace ESD.PM.Models
                     AddToLocalLists(item);
                 }
             }
-
             ProcessLocalList();
         }
 
@@ -252,6 +253,10 @@ namespace ESD.PM.Models
             Process.Start(new ProcessStartInfo("explorer.exe", FullName));
         }
 
+        private void OnCopyPath(object obj)
+        {
+            Clipboard.SetText(SelectedFolderName.FullName);
+        }
         #endregion
     }
 }

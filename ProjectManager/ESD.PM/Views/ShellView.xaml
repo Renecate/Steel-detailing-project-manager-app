@@ -12,6 +12,7 @@
         Width="1920"
         Height="1080"
         MinWidth="990"
+        MaxWidth="2000"
         MinHeight="600"
         WindowStyle="None" Margin="0,0,0,-4">
     <Grid Background="#FFC3CFD9">
@@ -22,9 +23,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="29"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="450"/>
+            <RowDefinition Height="250"/>
             <RowDefinition/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Column="1" Background="#FFEDEDED" MouseLeftButtonDown="Window_MouseLeftButtonDown">
@@ -102,7 +103,7 @@
                                   BorderBrush="{x:Null}" BorderThickness="0,0,0,0" FontFamily="Bahnschrift Light">
                         </ComboBox>
                     </Border>
-                    <Border Height="35" Width="166" Margin="0,0,10,0" BorderThickness="2,2,2,2" 
+                    <Border Height="35" Width="165" Margin="0,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
                         <Button Content="OPEN PROJECT FOLDER" Command="{Binding OpenProjectFolderCommand}" 
                                 Foreground="White" 
@@ -130,7 +131,7 @@
                                 Background="{x:Null}" BorderBrush="{x:Null}" 
                                 Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
                     </Border>
-                    <Border Width="160" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
+                    <Border Width="165" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
                         <Button Content="MASTER SET"  
                                 Command="{Binding MasterOpenCommand}" 
@@ -138,49 +139,45 @@
                                 Background="{x:Null}" BorderBrush="{x:Null}" 
                                 Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
                     </Border>
-                    <Border Width="35" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
+                </StackPanel>
+            </Border>
+            <StackPanel Orientation="Horizontal">
+                <Border Width="163" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
-                        <Button Content="+"  
+                    <Button Content="ADD ITEM"  
                                 Command="{Binding AddItemCommand}"
                                 IsEnabled="{Binding ItemsIsTrue}" 
                                 Background="{x:Null}" BorderBrush="{x:Null}" 
-                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="24"/>
-                    </Border>
-                </StackPanel>
-            </Border>
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                </Border>
+                <Border Width="165" Height="35" Margin="0" CornerRadius="2,2,2,2" Background="#FF788896">
+                    <Button Command="{Binding CreateProjectCommand}" Background="{x:Null}" 
+                        BorderBrush="{x:Null}" Content="ADD PROJECT"
+                        Foreground="White" FontFamily="Bahnschrift Light" FontSize="14">
+                    </Button>
+                </Border>
+            </StackPanel>
         </WrapPanel>
         <Border Grid.Column="1" Grid.Row="2" 
                 BorderThickness="2,2,5,1" BorderBrush="#FF9EADBA" Grid.RowSpan="3">
             <ScrollViewer Background="#FFE1E5EC">
-                <WrapPanel Name= "FoldersCanvas" Background="#FFE1E5EC" 
-                       Orientation="Horizontal" HorizontalAlignment="Left" 
+                <WrapPanel Name= "FoldersCanvas" Background="#FFE1E5EC"
+                       Orientation="Horizontal" HorizontalAlignment="Left"
                        VerticalAlignment="Top">
                 </WrapPanel>
             </ScrollViewer>
         </Border>
 
-        <Border Grid.Row="4" Grid.Column="1" 
-                BorderBrush="#FF9EADBA" BorderThickness="2,1,2,0">
+        <Border Grid.Row="4" Grid.Column="1"
+                BorderBrush="#FF9EADBA" BorderThickness="2,1,0,0">
             <StackPanel Background="White">
 
             </StackPanel>
-        </Border>
-        <Border Grid.Row="1" Grid.Column="0" Width="49" Height="45">
-            <Button Command="{Binding AddFavoriteProjectCommand}"
-                        BorderBrush="{x:Null}" Background="{x:Null}">
-                <Image Source="/Views/Resourses/star.png" Width="40"/>
-            </Button>
         </Border>
         <StackPanel Grid.Row="2" Grid.Column="0" FlowDirection="LeftToRight" VerticalAlignment="Top">
 
         </StackPanel>
         <StackPanel Grid.Row="3" Grid.Column="0" VerticalAlignment="Bottom">
-            <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
-                <Button Command="{Binding CreateProjectCommand}" Background="{x:Null}" 
-                        BorderBrush="{x:Null}">
-                    <Image Source="/Views/Resourses/create proj.png"/>
-                </Button>
-            </Border>
             <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
                 <Button Command="{Binding AddProjectPathCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}">
@@ -194,6 +191,18 @@
 
                 </Button>
             </Border>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="0">
+            <Button Command="{Binding AddFavoriteProjectCommand}"
+                        BorderBrush="{x:Null}" Background="{x:Null}"
+                        Width="45" Margin="0,10,0,0">
+                <Image Source="/Views/Resourses/star.png" Width="40"/>
+            </Button>
+            <Button Command="{Binding UpdateCommand}" Background="{x:Null}" 
+                        BorderBrush="{x:Null}" Width="45" Margin="0,10,0,0">
+                <Image Source="/Views/Resourses/update.png"/>
+
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

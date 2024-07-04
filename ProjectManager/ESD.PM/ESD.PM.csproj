@@ -18,6 +18,7 @@
     <None Remove="Views\Resourses\line.png" />
     <None Remove="Views\Resourses\remove path.png" />
     <None Remove="Views\Resourses\star.png" />
+    <None Remove="Views\Resourses\update.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,7 @@
     <Resource Include="Views\Resourses\line.png" />
     <Resource Include="Views\Resourses\remove path.png" />
     <Resource Include="Views\Resourses\star.png" />
+    <Resource Include="Views\Resourses\update.png" />
   </ItemGroup>
 
 </Project>
