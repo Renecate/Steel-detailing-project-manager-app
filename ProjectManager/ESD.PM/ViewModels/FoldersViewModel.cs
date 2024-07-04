@@ -35,6 +35,7 @@ namespace ESD.PM.Models
         public DelegateCommand OpenFolderCommand { get; set; }
         public DelegateCommand ToggleViewCommand { get; set; }
         public DelegateCommand CopyPathCommand { get; set; }
+        public DelegateCommand DateSortCommand { get; set; }
 
         #endregion
 
@@ -66,6 +67,7 @@ namespace ESD.PM.Models
             TaggedDocsList = new ObservableCollection<ProjectsModel>();
             _localList = new ObservableCollection<ProjectsModel>();
             _localListClearable = new ObservableCollection<ProjectsModel>();
+
             GetFolders();
             GetTags(_location);
             FilterFolders();
@@ -77,6 +79,7 @@ namespace ESD.PM.Models
             ToggleViewCommand = new DelegateCommand(OnToggleView);
             OpenFolderCommand = new DelegateCommand(OnOpenFolder);
             CopyPathCommand = new DelegateCommand(OnCopyPath);
+            DateSortCommand = new DelegateCommand(OnDateSort);
         }
 
 
@@ -93,7 +96,7 @@ namespace ESD.PM.Models
                     return date;
                 }
             }
-            return DateTime.Now;
+            return File.GetCreationTime(doc);
         }
 
         private void TagStateChanged(object sender, PropertyChangedEventArgs e)
@@ -111,6 +114,7 @@ namespace ESD.PM.Models
         {
             string[] files = { };
             string[] parts = { };
+            var _filterdDocsList = FilteredDocsList;
             TaggedDocsList.Clear();
             foreach (var tag in Tags)
             {
@@ -132,7 +136,20 @@ namespace ESD.PM.Models
                 }
             }
             FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
-            FilteredDocsList = new ObservableCollection<ProjectsModel>(FilteredDocsList.OrderByDescending(a => ExtrateDate(a.Name)));
+            if (_filterdDocsList.Count == 0)
+                _filterdDocsList = FilteredDocsList;
+            if (_filterdDocsList.Count > 0)
+            {
+                if (ExtrateDate(_filterdDocsList.First().Name) < ExtrateDate(_filterdDocsList.Last().Name))
+                {
+
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                }
+                else
+                {
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+                }
+            }
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
@@ -198,7 +215,19 @@ namespace ESD.PM.Models
 
         private void UpdateFilteredDocsList()
         {
-            FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+            if (FilteredDocsList.Count > 1)
+            {
+                if (ExtrateDate(FilteredDocsList.First().Name) < ExtrateDate(FilteredDocsList.Last().Name))
+                {
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+                    OnPropertyChanged(nameof(FilteredDocsList));
+                }
+                else
+                {
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                    OnPropertyChanged(nameof(FilteredDocsList));
+                }
+            }
             OnPropertyChanged(nameof(FilteredDocsList));
             OnPropertyChanged(nameof(Tags));
             foreach (var item in Tags)
@@ -256,6 +285,23 @@ namespace ESD.PM.Models
         private void OnCopyPath(object obj)
         {
             Clipboard.SetText(SelectedFolderName.FullName);
+        }
+
+        private void OnDateSort(object obj)
+        {
+            if (FilteredDocsList.Count > 1)
+            {
+                if (ExtrateDate(FilteredDocsList.First().Name) < ExtrateDate(FilteredDocsList.Last().Name))
+                {
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+                    OnPropertyChanged(nameof(FilteredDocsList));
+                }
+                else
+                {
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                    OnPropertyChanged(nameof(FilteredDocsList));
+                }
+            }
         }
         #endregion
     }

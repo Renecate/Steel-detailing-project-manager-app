@@ -152,7 +152,7 @@
                 </Border>
                 <Border Width="165" Height="35" Margin="0" CornerRadius="2,2,2,2" Background="#FF788896">
                     <Button Command="{Binding CreateProjectCommand}" Background="{x:Null}" 
-                        BorderBrush="{x:Null}" Content="ADD PROJECT"
+                        BorderBrush="{x:Null}" Content="CREATE PROJECT"
                         Foreground="White" FontFamily="Bahnschrift Light" FontSize="14">
                     </Button>
                 </Border>
@@ -192,10 +192,10 @@
                 </Button>
             </Border>
         </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0">
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
             <Button Command="{Binding AddFavoriteProjectCommand}"
                         BorderBrush="{x:Null}" Background="{x:Null}"
-                        Width="45" Margin="0,10,0,0">
+                        Width="45" Margin="0,0,0,0">
                 <Image Source="/Views/Resourses/star.png" Width="40"/>
             </Button>
             <Button Command="{Binding UpdateCommand}" Background="{x:Null}" 

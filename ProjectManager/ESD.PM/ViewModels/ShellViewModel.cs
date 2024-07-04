@@ -28,7 +28,8 @@ namespace ESD.PM.ViewModels
             set
             {
                 _selectedProject = value;
-                ProjectIsTrue = true;
+                if (_selectedProject != null)
+                    ProjectIsTrue = true;
                 NotifyOfPropertyChange(() => ProjectIsTrue);
                 Items();
             }

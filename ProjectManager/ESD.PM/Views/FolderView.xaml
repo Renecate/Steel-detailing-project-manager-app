@@ -13,6 +13,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="65"/>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.Column="0">
@@ -73,8 +74,8 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
-            <Border Grid.Row="2" Grid.Column="0" CornerRadius="2,2,2,2" 
-                    BorderThickness="2,2,2,2" BorderBrush="#FFB9C4CE" Margin="25,5,5,25" >
+            <Border Grid.Row="3" Grid.Column="0" CornerRadius="2,2,2,2" 
+                    BorderThickness="2,2,2,2" BorderBrush="#FFB9C4CE" Margin="25,5,5,25" Grid.RowSpan="2" >
                 <ListBox ItemsSource="{Binding FilteredDocsList}" 
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         SelectedItem="{Binding SelectedFolderName}" 
@@ -91,6 +92,12 @@
                     </ListBox.ContextMenu>
                 </ListBox>
             </Border>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" Margin="25,0,0,0" 
+                        Command="{Binding DateSortCommand}">
+                    <Image Source = "/Views/Resourses/sort_date.png"/>
+                </Button>
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
