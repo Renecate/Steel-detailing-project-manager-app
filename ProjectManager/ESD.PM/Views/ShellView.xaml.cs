@@ -96,7 +96,7 @@ namespace ESD.PM.Views
         }
         private async void Window_OnMouseMove(object sender, MouseEventArgs e)
         {
-            await Task.Delay(200);
+            await Task.Delay(10);
             if (e.LeftButton == MouseButtonState.Pressed && WindowState == WindowState.Normal)
                 DragMove();
             else if (e.LeftButton == MouseButtonState.Pressed && WindowState != WindowState.Normal)
