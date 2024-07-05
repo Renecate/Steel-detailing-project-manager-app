@@ -86,7 +86,6 @@ namespace ESD.PM.Models
             FileDropCommand = new DelegateCommand(OnFileDrop);
         }
 
-
         #endregion
 
         #region Private Methods
