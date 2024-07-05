@@ -14,7 +14,7 @@ namespace ESD.PM.Commands
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameter) => _canExecute == null ? true : _canExecute.Invoke(parameter);
+        public bool CanExecute(object parameter) => _canExecute == null || _canExecute.Invoke(parameter);
 
         public void Execute(object parameter)
         {

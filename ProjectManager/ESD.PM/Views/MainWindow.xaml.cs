@@ -9,12 +9,14 @@ using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace ESD.PM.Views
 {
-    public partial class ShellView : Window
+    public partial class MainWindow : Window
     {
-
-        public ShellView()
+        public MainWindowViewModel mainWindowViewModel { get; set; }
+        public MainWindow()
         {
             InitializeComponent();
+            mainWindowViewModel = new MainWindowViewModel();
+            DataContext = mainWindowViewModel;
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
@@ -58,11 +60,9 @@ namespace ESD.PM.Views
         {
             FoldersCanvas.Children.Clear();
 
-            var selectedProject = ProjectComboBox.SelectedItem as ProjectsModel;
-            if (selectedProject != null && ItemsComboBox.IsEnabled == false)
+            if (mainWindowViewModel.SelectedProject!= null && ItemsComboBox.IsEnabled == false)
             {
-                var folders = Directory.GetDirectories(selectedProject.FullName);
-                CreateAndPlaceWindows(folders);
+                CreateAndPlaceWindows();
             }
         }
 
@@ -70,20 +70,19 @@ namespace ESD.PM.Views
         {
             FoldersCanvas.Children.Clear();
 
-            var selectedItem = ItemsComboBox.SelectedItem as ProjectsModel;
-            if (selectedItem != null)
+            if (mainWindowViewModel.SelectedItem != null)
             {
-                var folders = Directory.GetDirectories(selectedItem.FullName);
-                CreateAndPlaceWindows(folders);
+                var folders = Directory.GetDirectories(mainWindowViewModel.SelectedItem.FullName);
+                CreateAndPlaceWindows();
             }
         }
 
-        private void CreateAndPlaceWindows(string[] folders)
+        private void CreateAndPlaceWindows()
         {
 
-            foreach (var folder in folders)
+            foreach (var folder in mainWindowViewModel.FoldersNames)
             {
-                var folderModel = new FoldersViewModel(folder);
+                var folderModel = new FoldersViewModel(folder.FullName);
                 var folderView = new FolderView(folderModel);
 
                 var border = new Border
@@ -96,7 +95,7 @@ namespace ESD.PM.Views
         }
         private async void Window_OnMouseMove(object sender, MouseEventArgs e)
         {
-            await Task.Delay(10);
+            await Task.Delay(40);
             if (e.LeftButton == MouseButtonState.Pressed && WindowState == WindowState.Normal)
                 DragMove();
             else if (e.LeftButton == MouseButtonState.Pressed && WindowState != WindowState.Normal)

@@ -76,10 +76,19 @@
             </StackPanel>
             <Border Grid.Row="3" Grid.Column="0" CornerRadius="2,2,2,2" 
                     BorderThickness="2,2,2,2" BorderBrush="#FFB9C4CE" Margin="25,5,5,25" Grid.RowSpan="2" >
-                <ListBox ItemsSource="{Binding FilteredDocsList}" 
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        SelectedItem="{Binding SelectedFolderName}" AllowDrop="True"
+                <ListBox Name="FilesListBox" ItemsSource="{Binding FilteredDocsList}" 
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseLeftButtonDown="FilesListBoxSelection_MouseButtonDown"
+                        SelectedItem="{Binding SelectedFolderName}"
                         FontFamily="Bahnschrift Light" FontSize="16">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"
+                                       AllowDrop="True"
+                                       Drop="FileDropListBox_Drop">
+                                
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
@@ -97,6 +106,7 @@
                         Command="{Binding DateSortCommand}">
                     <Image Source = "/Views/Resourses/sort_date.png"/>
                 </Button>
+                <Label Name="FileNameLabel"/>
             </StackPanel>
         </Grid>
     </Border>

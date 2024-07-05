@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace ESD.PM.Models
 {
@@ -114,8 +116,8 @@ namespace ESD.PM.Models
 
         private void FilterFolders()
         {
-            string[] files = { };
-            string[] parts = { };
+            string[] files = [];
+            string[] parts = [];
             var _filterdDocsList = FilteredDocsList;
             TaggedDocsList.Clear();
             foreach (var tag in Tags)
@@ -125,7 +127,7 @@ namespace ESD.PM.Models
                     if (tag.State is true)
                     {
                         files = doc.Name.Split('\\');
-                        parts = files[files.Length - 1].Split("-");
+                        parts = files[^1].Split("-");
                         foreach (var part in parts)
                         {
                             var partTrimmed = part.Trim();
@@ -307,7 +309,20 @@ namespace ESD.PM.Models
         }
 
         private void OnFileDrop(object obj) 
-        { 
+        {
+            var pathCollection = obj as string[];
+            foreach (string path in pathCollection)
+            {
+                var destination = SelectedFolderName.FullName + "\\" + Path.GetFileName(path);
+                if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+                {
+                    Directory.Move(path, destination);
+                }
+                else if (Path.GetFileName(path) != null)
+                {
+                    File.Move(path, destination);
+                }
+            }
         }
         #endregion
     }

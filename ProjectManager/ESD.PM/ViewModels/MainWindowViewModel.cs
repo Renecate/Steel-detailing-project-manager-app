@@ -2,18 +2,22 @@
 using ESD.PM.Models;
 using ESD.PM.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 
 
 
 namespace ESD.PM.ViewModels
 {
-    public class ShellViewModel : Caliburn.Micro.Screen
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         #region Public Properties
         public ObservableCollection<ProjectsModel> ProjectsNames { get; set; } = [];
+        public ObservableCollection<ProjectsModel> FoldersNames { get; set; } = [];
         public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [];
         public bool ArchIsTrue { get; set; }
         public bool StructIsTrue { get; set; }
@@ -30,12 +34,21 @@ namespace ESD.PM.ViewModels
                 _selectedProject = value;
                 if (_selectedProject != null)
                     ProjectIsTrue = true;
-                NotifyOfPropertyChange(() => ProjectIsTrue);
-                Items();
+                OnPropertyChanged(nameof(ProjectIsTrue));
+                GetFoldersOrItems();
             }
         }
 
-        public ProjectsModel SelectedItem { get; set; }
+        public ProjectsModel SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {   
+                _selectedItem = value;
+                GetFoldersIfItemsExist();
+            }
+        }
+
         #endregion
 
         #region Private Properties
@@ -69,7 +82,7 @@ namespace ESD.PM.ViewModels
 
         #region Constructor
 
-        public ShellViewModel()
+        public MainWindowViewModel()
         {
             appSettings = SettingsManager.LoadSettings();
             ProjectIsTrue = false;
@@ -107,7 +120,7 @@ namespace ESD.PM.ViewModels
             foreach (var item in Directory.GetFiles(_selectedProject.FullName))
             {
                 parts = item.Split('\\');
-                if (parts[parts.Length - 1].Contains("Architectural"))
+                if (parts[^1].Contains("Architectural"))
                 {
                     Process.Start(new ProcessStartInfo("explorer.exe", item));
                 }
@@ -120,7 +133,7 @@ namespace ESD.PM.ViewModels
             foreach (var item in Directory.GetFiles(_selectedProject.FullName))
             {
                 parts = item.Split('\\');
-                if (parts[parts.Length - 1].Contains("Master"))
+                if (parts[^1].Contains("Master"))
                 {
                     Process.Start(new ProcessStartInfo("explorer.exe", item));
                 }
@@ -131,7 +144,7 @@ namespace ESD.PM.ViewModels
         {
             Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
         }
-        public void AddProjectPath(object path)
+        private void AddProjectPath(object path)
         {
             using (var dialog = new FolderBrowserDialog())
             {
@@ -154,13 +167,6 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
-        public void RemoveProjectPath(object path)
-        {
-            appSettings.ProjectPaths.Clear();
-            appSettings.FavoriteProjects.Clear();
-            SettingsManager.SaveSettings(appSettings);
-            LoadProjectsAsync();
-        }
         private void AddFavoriteProject(object obj)
         {
             var selectedProject = _selectedProject;
@@ -170,7 +176,7 @@ namespace ESD.PM.ViewModels
                 {
                     appSettings.FavoriteProjects.Add(selectedProject.FullName);
                     ProjectsNames.Insert(0, selectedProject);
-                    NotifyOfPropertyChange(() => ProjectsNames);
+                    OnPropertyChanged(nameof(ProjectsNames));
                 }
                 else
                 {
@@ -178,9 +184,9 @@ namespace ESD.PM.ViewModels
                     ProjectsNames.Remove(selectedProject);
                     SelectedProject = null;
                     ProjectIsTrue = false;
-                    NotifyOfPropertyChange(() => ProjectIsTrue);
-                    NotifyOfPropertyChange(() => SelectedProject);
-                    NotifyOfPropertyChange(() => ProjectsNames);
+                    OnPropertyChanged(nameof(ProjectIsTrue));
+                    OnPropertyChanged(nameof(SelectedProject));
+                    OnPropertyChanged(nameof(ProjectsNames));
                 }
                 SettingsManager.SaveSettings(appSettings);
             }
@@ -242,34 +248,41 @@ namespace ESD.PM.ViewModels
                     DisplayItemsNames.Add(new ProjectsModel(item));
                 DisplayItemsNames = new ObservableCollection<ProjectsModel>(DisplayItemsNames.OrderBy(item => item.Name));
             }
-            NotifyOfPropertyChange(() => DisplayItemsNames);
-            NotifyOfPropertyChange(() => SelectedItem);
+            OnPropertyChanged(nameof(DisplayItemsNames));
+            OnPropertyChanged(nameof(SelectedItem));
         }
-
-        private void OnUpdate (object obj) 
+        private void OnUpdate(object obj)
         {
             var _selectedProj = SelectedProject;
             var _selectedItem = SelectedItem;
             if (SelectedItem != null)
             {
                 SelectedItem = null;
-                NotifyOfPropertyChange(() => SelectedItem);
+                OnPropertyChanged(nameof(SelectedItem));
                 SelectedItem = _selectedItem;
-                NotifyOfPropertyChange(() => SelectedItem);
+                OnPropertyChanged(nameof(SelectedItem));
             }
             else
             {
                 SelectedProject = null;
-                NotifyOfPropertyChange(() => SelectedProject);
+                OnPropertyChanged(nameof(SelectedProject));
                 SelectedProject = _selectedProj;
-                NotifyOfPropertyChange(() => SelectedProject);
+                OnPropertyChanged(nameof(SelectedProject));
             }
         }
+        private void RemoveProjectPath(object path)
+        {
+            appSettings.ProjectPaths.Clear();
+            appSettings.FavoriteProjects.Clear();
+            SettingsManager.SaveSettings(appSettings);
+            LoadProjectsAsync();
+        }
+
         #endregion
 
         #region Private Methods
 
-        private void CreateSubfolders(string basePath)
+        private static void CreateSubfolders(string basePath)
         {
             Directory.CreateDirectory(Path.Combine(basePath, "0 - Scope Of Work"));
             Directory.CreateDirectory(Path.Combine(basePath, "1 - Incoming"));
@@ -277,20 +290,18 @@ namespace ESD.PM.ViewModels
             Directory.CreateDirectory(Path.Combine(basePath, "3 - Checking"));
             Directory.CreateDirectory(Path.Combine(basePath, "4 - MiscFiles"));
         }
-
-        private void Items()
+        private void GetFoldersOrItems()
         {
             MasterIsTrue = false;
             StructIsTrue = false;
             ArchIsTrue = false;
             ItemsIsTrue = false;
-            SelectedItem = null;
-
-            NotifyOfPropertyChange(() => StructIsTrue);
-            NotifyOfPropertyChange(() => MasterIsTrue);
-            NotifyOfPropertyChange(() => ArchIsTrue);
-            NotifyOfPropertyChange(() => ItemsIsTrue);
-            NotifyOfPropertyChange(() => SelectedItem);
+            FoldersNames.Clear();
+            OnPropertyChanged(nameof(StructIsTrue));
+            OnPropertyChanged(nameof(MasterIsTrue));
+            OnPropertyChanged(nameof(ArchIsTrue));
+            OnPropertyChanged(nameof(ItemsIsTrue));
+            OnPropertyChanged(nameof(SelectedItem));
 
             var count = 0;
             DisplayItemsNames.Clear();
@@ -298,21 +309,25 @@ namespace ESD.PM.ViewModels
             if (SelectedProject == null)
                 return;
 
-            foreach (var item in Directory.GetDirectories(_selectedProject.FullName))
+            foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
             {
-                if (item.EndsWith("Items"))
+                if (folder.EndsWith("Items"))
                 {
                     count++;
                     ItemsIsTrue = true;
-                    NotifyOfPropertyChange(() => ItemsIsTrue);
+                    OnPropertyChanged(nameof(ItemsIsTrue));
                     break;
+                }
+                else
+                {
+                    FoldersNames.Add(new ProjectsModel(folder));
                 }
             }
             if (count != 0)
             {
-                foreach (var item in Directory.GetDirectories(_selectedProject.FullName))
-                    if (item.EndsWith("Items"))
-                        foreach (var _item in Directory.GetDirectories(item))
+                foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
+                    if (folder.EndsWith("Items"))
+                        foreach (var _item in Directory.GetDirectories(folder))
                         {
                             DisplayItemsNames.Add(new ProjectsModel(_item));
                         }
@@ -320,30 +335,28 @@ namespace ESD.PM.ViewModels
 
             {
                 string[] parts = null;
-                foreach (var item in Directory.GetFiles(_selectedProject.FullName))
+                foreach (var folder in Directory.GetFiles(_selectedProject.FullName))
                 {
-                    parts = item.Split('\\');
+                    parts = folder.Split('\\');
                     if (parts[parts.Length - 1].Contains("Structural"))
                     {
                         StructIsTrue = true;
-                        NotifyOfPropertyChange(() => StructIsTrue);
+                        OnPropertyChanged(nameof(StructIsTrue));
                     }
                     if (parts[parts.Length - 1].Contains("Architectural"))
                     {
                         ArchIsTrue = true;
-                        NotifyOfPropertyChange(() => ArchIsTrue);
+                        OnPropertyChanged(nameof(ArchIsTrue));
                     }
-                    parts = item.Split('\\');
+                    parts = folder.Split('\\');
                     if (parts[parts.Length - 1].Contains("Master"))
                     {
                         MasterIsTrue = true;
-                        NotifyOfPropertyChange(() => MasterIsTrue);
+                        OnPropertyChanged(nameof(MasterIsTrue));
                     }
                 }
             }
         }
-
-
         private async Task LoadProjectsAsync()
         {
             try
@@ -361,7 +374,7 @@ namespace ESD.PM.ViewModels
                     }
                 }
                 ProjectsNames = new ObservableCollection<ProjectsModel>(ProjectsNames.OrderBy(x => x.Name));
-                NotifyOfPropertyChange(() => ProjectsNames);
+                OnPropertyChanged(nameof(ProjectsNames));
                 foreach (var project in appSettings.FavoriteProjects)
                 {
                     ProjectsNames.Insert(0, new ProjectsModel(project));
@@ -390,11 +403,24 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
+        private void GetFoldersIfItemsExist()
+        {
+            FoldersNames.Clear();
+            foreach (var folder in Directory.GetDirectories(_selectedItem.FullName))
+            {
+                FoldersNames.Add(new ProjectsModel(folder));
+            }
+        }
         #endregion
 
         #region Public Methods
-
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
         #endregion
-        
+
     }
 }
