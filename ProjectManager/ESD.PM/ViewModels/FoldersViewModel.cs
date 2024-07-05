@@ -36,6 +36,7 @@ namespace ESD.PM.Models
         public DelegateCommand ToggleViewCommand { get; set; }
         public DelegateCommand CopyPathCommand { get; set; }
         public DelegateCommand DateSortCommand { get; set; }
+        public DelegateCommand FileDropCommand { get; set; }
 
         #endregion
 
@@ -80,6 +81,7 @@ namespace ESD.PM.Models
             OpenFolderCommand = new DelegateCommand(OnOpenFolder);
             CopyPathCommand = new DelegateCommand(OnCopyPath);
             DateSortCommand = new DelegateCommand(OnDateSort);
+            FileDropCommand = new DelegateCommand(OnFileDrop);
         }
 
 
@@ -302,6 +304,10 @@ namespace ESD.PM.Models
                     OnPropertyChanged(nameof(FilteredDocsList));
                 }
             }
+        }
+
+        private void OnFileDrop(object obj) 
+        { 
         }
         #endregion
     }

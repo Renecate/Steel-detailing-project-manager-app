@@ -25,6 +25,11 @@ namespace ESD.PM.Views
             InitializeComponent();
             DataContext = folder;
         }
+
+        private void ListBox_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+
+        }
     }
 }
 

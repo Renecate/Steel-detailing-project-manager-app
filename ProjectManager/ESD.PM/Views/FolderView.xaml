@@ -78,8 +78,8 @@
                     BorderThickness="2,2,2,2" BorderBrush="#FFB9C4CE" Margin="25,5,5,25" Grid.RowSpan="2" >
                 <ListBox ItemsSource="{Binding FilteredDocsList}" 
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        SelectedItem="{Binding SelectedFolderName}" 
-                             FontFamily="Bahnschrift Light" FontSize="16">
+                        SelectedItem="{Binding SelectedFolderName}" AllowDrop="True"
+                        FontFamily="Bahnschrift Light" FontSize="16">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
