@@ -6,14 +6,14 @@
         xmlns:ui="clr-namespace:ESD.PM.Views" xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:ESD.PM"
         mc:Ignorable="d"
-        Title="ShellView"     
-        WindowStartupLocation="CenterScreen"
+        Title="ShellView"
         WindowState="Maximized"
-        Width="1920"
+        Width="990"
         Height="1080"
         MinWidth="990"
         MaxWidth="2000"
         MinHeight="600"
+        MaxHeight="1100"
         WindowStyle="None" Margin="0,0,0,-4">
     <Grid Background="#FFC3CFD9">
         <Grid.ColumnDefinitions>
@@ -27,12 +27,7 @@
             <RowDefinition/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-
-        <Grid Grid.Column="1" Background="#FFEDEDED" MouseLeftButtonDown="Window_MouseLeftButtonDown">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" 
+        <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" 
                         Background="#FF9EADBA" FlowDirection="RightToLeft">
                 <Border Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" 
                         BorderThickness="2,0,1,2" CornerRadius="0,0,0,2" BorderBrush="#FF788896" Background="#FF788896">
@@ -64,25 +59,26 @@
                         </Image>
                     </Button>
                 </Border>
-                <Border Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" 
+            <Border Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" 
                         BorderThickness="1,0,2,2" CornerRadius="0,0,2,0" BorderBrush="#FF788896" Background="#FF788896">
-                    <Button Click="HideButton_OnClick" 
+                <Button Click="HideButton_OnClick" 
                             BorderBrush="{x:Null}" Background="{x:Null}" ClipToBounds="True">
-                        <Image Source="/Views/Resourses/line.png" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX="1.5"/>
-                                    <SkewTransform/>
-                                    <RotateTransform/>
-                                    <TranslateTransform/>
-                                </TransformGroup>
-                            </Image.RenderTransform>
+                    <Image Source="/Views/Resourses/line.png" RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
 
-                        </Image>
-                    </Button>
-                </Border>
-            </StackPanel>
-        </Grid>
+                    </Image>
+                </Button>
+            </Border>
+        </StackPanel>
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#FF9EADBA" 
+                    MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseMove="Window_OnMouseMove" Margin="0,0,150,0"/>
         <WrapPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
             <Border HorizontalAlignment="Left" Height="49" BorderThickness="2,0,0,0" BorderBrush="#FF9EADBA">
                 <StackPanel Orientation="Horizontal" Background="#FFC3CFD9">
@@ -141,7 +137,7 @@
                     </Border>
                 </StackPanel>
             </Border>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Height="49">
                 <Border Width="163" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
                     <Button Content="ADD ITEM"  

@@ -5,14 +5,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace ESD.PM.Views
 {
     public partial class ShellView : Window
     {
-        private const double WindowWidth = 800;
-        private const double WindowHeight = 440;
-        private const double Margin = 5;
 
         public ShellView()
         {
@@ -41,9 +39,19 @@ namespace ESD.PM.Views
             WindowState = WindowState.Minimized;
         }
 
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+            {
+                if (WindowState == WindowState.Normal)
+                {
+                    WindowState = WindowState.Maximized;
+                }
+                else if (WindowState == WindowState.Maximized)
+                {
+                    WindowState = WindowState.Normal;
+                }
+            }
         }
 
         private void ProjectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -72,17 +80,11 @@ namespace ESD.PM.Views
 
         private void CreateAndPlaceWindows(string[] folders)
         {
-            double x = Margin;
-            double y = Margin;
 
             foreach (var folder in folders)
             {
                 var folderModel = new FoldersViewModel(folder);
-                var folderView = new FolderView(folderModel)
-                {
-                    Width = WindowWidth,
-                    Height = WindowHeight
-                };
+                var folderView = new FolderView(folderModel);
 
                 var border = new Border
                 {
@@ -90,6 +92,21 @@ namespace ESD.PM.Views
                 };
 
                 FoldersCanvas.Children.Add(border);
+            }
+        }
+        private async void Window_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            await Task.Delay(200);
+            if (e.LeftButton == MouseButtonState.Pressed && WindowState == WindowState.Normal)
+                DragMove();
+            else if (e.LeftButton == MouseButtonState.Pressed && WindowState != WindowState.Normal)
+            {
+                var mousePosition = e.GetPosition(this);
+                var screenMousePosition = PointToScreen(mousePosition);
+                WindowState = WindowState.Normal;
+                Left = screenMousePosition.X - 450;
+                Top = screenMousePosition.Y - 25;
+                DragMove();
             }
         }
     }
