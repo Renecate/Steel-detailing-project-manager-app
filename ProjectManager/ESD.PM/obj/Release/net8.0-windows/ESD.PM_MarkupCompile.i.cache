@@ -10,11 +10,11 @@ none
 false
 TRACE;RELEASE;NET;NET8_0;NETCOREAPP
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
-4903271064
+4610313253
 11048287951
-18-1293911286
-2121281338344
-Views\AddItemDialog.xaml;Views\CreateProjectDialog.xaml;Views\FolderView.xaml;Views\ShellView.xaml;
+171949979428
+2096120121
+Views\AddItemDialog.xaml;Views\CreateProjectDialog.xaml;Views\FolderView.xaml;Views\MainWindow.xaml;
 
-False
+True
 

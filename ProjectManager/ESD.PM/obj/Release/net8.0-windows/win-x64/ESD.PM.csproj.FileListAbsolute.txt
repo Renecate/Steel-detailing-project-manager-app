@@ -3,18 +3,11 @@ C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\ne
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\ESD.PM.runtimeconfig.json
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\ESD.PM.dll
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\ESD.PM.pdb
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Caliburn.Micro.Platform.Core.dll
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Caliburn.Micro.Platform.dll
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Caliburn.Micro.Core.dll
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Microsoft.Xaml.Behaviors.dll
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.csproj.AssemblyReference.cache
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\ShellView.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\App.g.cs
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\GeneratedInternalTypeHelper.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM_MarkupCompile.cache
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM_MarkupCompile.lref
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\App.baml
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\ShellView.baml
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.g.resources
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.GeneratedMSBuildEditorConfig.editorconfig
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.AssemblyInfoInputs.cache
@@ -69,3 +62,5 @@ C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\ne
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\FolderView.baml
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\FolderView.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM_Content.g.cs
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\MainWindow.g.cs
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\MainWindow.baml
