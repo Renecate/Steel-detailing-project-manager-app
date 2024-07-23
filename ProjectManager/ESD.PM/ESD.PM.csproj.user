@@ -18,6 +18,9 @@
     <Compile Update="Views\CreateProjectDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\HiddenFolderView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\MainWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -30,6 +33,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\CreateProjectDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\HiddenFolderView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MainWindow.xaml">

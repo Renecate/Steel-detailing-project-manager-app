@@ -19,6 +19,18 @@ namespace ESD.PM.Models
         public ObservableCollection<ProjectsModel> UntaggedDocsList { get; set; }
         public ObservableCollection<TagsModel> Tags { get; set; }
         public bool ToggleViewCommandActive { get; set; }
+        public bool HideFolder
+        {
+            get => hideFolder;
+            set
+            {
+                if (hideFolder != value)
+                {
+                    hideFolder = value;
+                    OnPropertyChanged(nameof(HideFolder));
+                }
+            }
+        }
         public ProjectsModel SelectedFolderName
         {
             get { return _selectedFolderName; }
@@ -39,6 +51,7 @@ namespace ESD.PM.Models
         public DelegateCommand CopyPathCommand { get; set; }
         public DelegateCommand DateSortCommand { get; set; }
         public DelegateCommand FileDropCommand { get; set; }
+        public DelegateCommand HideFolderCommand { get; set; }
 
         #endregion
 
@@ -49,6 +62,8 @@ namespace ESD.PM.Models
         private bool _viewIsToggled;
 
         private string _location;
+
+        private bool hideFolder;
 
         private ObservableCollection<ProjectsModel> _localList { get; set; }
 
@@ -61,6 +76,7 @@ namespace ESD.PM.Models
         public FoldersViewModel(string name) : base(name)
         {
             ToggleViewCommandActive = true;
+            HideFolder = false;
             _viewIsToggled = false;
             _location = FullName;
             FolderList = new ObservableCollection<ProjectsModel>();
@@ -84,6 +100,7 @@ namespace ESD.PM.Models
             CopyPathCommand = new DelegateCommand(OnCopyPath);
             DateSortCommand = new DelegateCommand(OnDateSort);
             FileDropCommand = new DelegateCommand(OnFileDrop);
+            HideFolderCommand = new DelegateCommand(OnHideFolder);
         }
 
         #endregion
@@ -322,6 +339,11 @@ namespace ESD.PM.Models
                     File.Move(path, destination);
                 }
             }
+        }
+
+        private void OnHideFolder(object obj) 
+        {
+            HideFolder = true;
         }
         #endregion
     }

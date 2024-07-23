@@ -87,7 +87,7 @@
                         <ComboBox Name="ProjectComboBox" Width="346" 
                               ItemsSource="{Binding ProjectsNames}" SelectedItem="{Binding SelectedProject}" 
                               FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
-                              SelectionChanged="ProjectComboBox_SelectionChanged" BorderThickness="0,0,0,0" 
+                              BorderThickness="0,0,0,0" 
                                   BorderBrush="{x:Null}" FontFamily="Bahnschrift Light"/>
                     </Border>
                     <Border BorderThickness="2,2,2,2" BorderBrush="#FF9EADBA" Margin="10,0,10,0" Height="35" 
@@ -95,7 +95,7 @@
                         <ComboBox Name="ItemsComboBox" Width="346"  
                                   ItemsSource="{Binding DisplayItemsNames}" SelectedItem="{Binding SelectedItem}" 
                                   FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
-                                  IsEnabled="{Binding ItemsIsTrue}" SelectionChanged="ItemsComboBox_SelectionChanged" 
+                                  IsEnabled="{Binding ItemsIsTrue}"
                                   BorderBrush="{x:Null}" BorderThickness="0,0,0,0" FontFamily="Bahnschrift Light">
                         </ComboBox>
                     </Border>
@@ -157,10 +157,21 @@
         <Border Grid.Column="1" Grid.Row="2" 
                 BorderThickness="2,2,5,1" BorderBrush="#FF9EADBA" Grid.RowSpan="3">
             <ScrollViewer Background="#FFE1E5EC">
-                <WrapPanel Name= "FoldersCanvas" Background="#FFE1E5EC"
-                       Orientation="Horizontal" HorizontalAlignment="Left"
-                       VerticalAlignment="Top">
-                </WrapPanel>
+                <ItemsControl ItemsSource="{Binding Folders}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Background="#FFE1E5EC"
+                           Orientation="Horizontal"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ui:FolderView/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
         </Border>
 

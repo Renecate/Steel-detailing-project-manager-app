@@ -15,6 +15,7 @@
     <None Remove="Views\Resourses\add path.png" />
     <None Remove="Views\Resourses\close.png" />
     <None Remove="Views\Resourses\fullscreen.png" />
+    <None Remove="Views\Resourses\hide.png" />
     <None Remove="Views\Resourses\line.png" />
     <None Remove="Views\Resourses\remove path.png" />
     <None Remove="Views\Resourses\sort_date.png" />
@@ -39,6 +40,7 @@
     <Resource Include="Views\Resourses\add path.png" />
     <Resource Include="Views\Resourses\close.png" />
     <Resource Include="Views\Resourses\fullscreen.png" />
+    <Resource Include="Views\Resourses\hide.png" />
     <Resource Include="Views\Resourses\line.png" />
     <Resource Include="Views\Resourses\remove path.png" />
     <Resource Include="Views\Resourses\sort_date.png" />

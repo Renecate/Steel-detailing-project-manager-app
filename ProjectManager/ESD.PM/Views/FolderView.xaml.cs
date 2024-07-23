@@ -1,6 +1,4 @@
 ﻿using ESD.PM.Models;
-using ESD.PM.ViewModels;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,17 +8,11 @@ using DragEventArgs = System.Windows.DragEventArgs;
 
 namespace ESD.PM.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для FolderRepresentation.xaml
-    /// </summary>
     public partial class FolderView
     {
-        public FoldersViewModel foldersViewModel { get; set; }
-        public FolderView(FoldersViewModel folder)
+        public FolderView()
         {
             InitializeComponent();
-            foldersViewModel = folder;
-            DataContext = foldersViewModel;
         }
 
         private void FileDropListBox_Drop(object sender, DragEventArgs e)
@@ -29,28 +21,27 @@ namespace ESD.PM.Views
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                var viewModel = DataContext as FoldersViewModel;
+                if (viewModel != null)
                 {
-                    var textBlock = sender as TextBlock;
-                    if (textBlock != null)
+                    if (e.Data.GetDataPresent(DataFormats.FileDrop))
                     {
-                        var listBoxItem = FindParent<ListBoxItem>(textBlock);
-                        if (listBoxItem != null)
+                        var textBlock = sender as TextBlock;
+                        if (textBlock != null)
                         {
-                            listBoxItem.IsSelected = true;
-                        
+                            var listBoxItem = FindParent<ListBoxItem>(textBlock);
+                            if (listBoxItem != null)
+                            {
+                                listBoxItem.IsSelected = true;
+                            }
                         }
                     }
+                    e.Handled = true;
+                    viewModel.FileDropCommand.Execute(files);
                 }
-                e.Handled = true;
-
-                foldersViewModel.FileDropCommand.Execute(files);
             }
         }
 
-        private void FilesListBoxSelection_MouseButtonDown(object sender, MouseButtonEventArgs e)
-        {
-        }
         private T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);
