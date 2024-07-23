@@ -262,7 +262,10 @@ namespace ESD.PM.Models
 
         private void OnOpen(object obj)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", _selectedFolderName.FullName));
+            if (_selectedFolderName != null)
+            {
+                Process.Start(new ProcessStartInfo("explorer.exe", _selectedFolderName.FullName));
+            }
         }
 
         private void OnToggleView(object obj)
