@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="250"/>
             <RowDefinition/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" 
                         Background="#FF9EADBA" FlowDirection="RightToLeft">
@@ -198,7 +198,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Border>
-        <StackPanel Grid.Row="3" Grid.Column="0" VerticalAlignment="Bottom">
+        <StackPanel Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
             <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
                 <Button Command="{Binding AddProjectPathCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}">
