@@ -177,13 +177,20 @@
 
         <Border Grid.Row="4" Grid.Column="1"
                 BorderBrush="#FF9EADBA" BorderThickness="2,1,0,0">
-            <StackPanel Background="White">
-
-            </StackPanel>
+            <ItemsControl ItemsSource="{Binding HiddenFolders}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Background="White"
+                                   Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:HiddenFolderView/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Border>
-        <StackPanel Grid.Row="2" Grid.Column="0" FlowDirection="LeftToRight" VerticalAlignment="Top">
-
-        </StackPanel>
         <StackPanel Grid.Row="3" Grid.Column="0" VerticalAlignment="Bottom">
             <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
                 <Button Command="{Binding AddProjectPathCommand}" Background="{x:Null}" 

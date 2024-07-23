@@ -76,7 +76,7 @@ namespace ESD.PM.Models
         public FoldersViewModel(string name) : base(name)
         {
             ToggleViewCommandActive = true;
-            HideFolder = false;
+            hideFolder = false;
             _viewIsToggled = false;
             _location = FullName;
             FolderList = new ObservableCollection<ProjectsModel>();
@@ -324,19 +324,22 @@ namespace ESD.PM.Models
             }
         }
 
-        private void OnFileDrop(object obj) 
+        private void OnFileDrop(object obj)
         {
             var pathCollection = obj as string[];
-            foreach (string path in pathCollection)
+            if (pathCollection != null)
             {
-                var destination = SelectedFolderName.FullName + "\\" + Path.GetFileName(path);
-                if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+                foreach (string path in pathCollection)
                 {
-                    Directory.Move(path, destination);
-                }
-                else if (Path.GetFileName(path) != null)
-                {
-                    File.Move(path, destination);
+                    var destination = SelectedFolderName.FullName + "\\" + Path.GetFileName(path);
+                    if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+                    {
+                        Directory.Move(path, destination);
+                    }
+                    else if (Path.GetFileName(path) != null)
+                    {
+                        File.Move(path, destination);
+                    }
                 }
             }
         }

@@ -27,7 +27,7 @@ namespace ESD.PM.ViewModels
                 OnPropertyChanged(nameof(Folders));
             }
         }
-        public ObservableCollection<HiddenFolderViewModel> HiddenFolders
+        public ObservableCollection<HiddenFoldersViewModel> HiddenFolders
         {
             get => hiddenFolders;
             set
@@ -81,7 +81,7 @@ namespace ESD.PM.ViewModels
 
         private ObservableCollection<FoldersViewModel> folders;
 
-        private ObservableCollection<HiddenFolderViewModel> hiddenFolders;
+        private ObservableCollection<HiddenFoldersViewModel> hiddenFolders;
 
         #endregion
 
@@ -105,8 +105,10 @@ namespace ESD.PM.ViewModels
         public MainWindowViewModel()
         {
             Folders = new ObservableCollection<FoldersViewModel>();
-            HiddenFolders = new ObservableCollection<HiddenFolderViewModel>();
+            HiddenFolders = new ObservableCollection<HiddenFoldersViewModel>();
+
             Folders.CollectionChanged += OnFoldersCollectionChanged;
+            HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
 
             appSettings = SettingsManager.LoadSettings();
             ProjectIsTrue = false;
@@ -321,6 +323,7 @@ namespace ESD.PM.ViewModels
             ArchIsTrue = false;
             ItemsIsTrue = false;
             Folders.Clear();
+            HiddenFolders.Clear();
             OnPropertyChanged(nameof(StructIsTrue));
             OnPropertyChanged(nameof(MasterIsTrue));
             OnPropertyChanged(nameof(ArchIsTrue));
@@ -456,6 +459,24 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
+        private void OnHiddenFoldersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (HiddenFoldersViewModel folder in e.NewItems)
+                {
+                    folder.PropertyChanged += OnFolderPropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (HiddenFoldersViewModel folder in e.OldItems)
+                {
+                    folder.PropertyChanged -= OnFolderPropertyChanged;
+                }
+            }
+        }
         private void OnFolderPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(FoldersViewModel.HideFolder))
@@ -463,8 +484,17 @@ namespace ESD.PM.ViewModels
                 var folder = sender as FoldersViewModel;
                 if (folder.HideFolder)
                 {
-                    HiddenFolders.Add(new HiddenFolderViewModel(folder.FullName));
+                    HiddenFolders.Add(new HiddenFoldersViewModel(folder.FullName));
                     Folders.Remove(folder);
+                }
+            }
+            if (e.PropertyName == nameof(HiddenFoldersViewModel.ShowFolder))
+            {
+                var folder = sender as HiddenFoldersViewModel;
+                if (folder.ShowFolder)
+                {
+                    HiddenFolders.Remove(folder);
+                    Folders.Add(new FoldersViewModel(folder.FullName));
                 }
             }
         }

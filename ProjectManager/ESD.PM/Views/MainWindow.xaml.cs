@@ -41,7 +41,7 @@ namespace ESD.PM.Views
             WindowState = WindowState.Minimized;
         }
 
-        private async void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
             {

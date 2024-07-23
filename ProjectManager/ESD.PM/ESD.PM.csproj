@@ -18,9 +18,14 @@
     <None Remove="Views\Resourses\hide.png" />
     <None Remove="Views\Resourses\line.png" />
     <None Remove="Views\Resourses\remove path.png" />
+    <None Remove="Views\Resourses\show.png" />
     <None Remove="Views\Resourses\sort_date.png" />
     <None Remove="Views\Resourses\star.png" />
     <None Remove="Views\Resourses\update.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Resourses\show.png" />
   </ItemGroup>
 
   <ItemGroup>

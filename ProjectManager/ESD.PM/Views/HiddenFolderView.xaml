@@ -4,11 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ESD.PM.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="200"
-             Height="40" MinWidth="120"
-             Margin="5,2,5,0">
-    <Grid>
-            
-    </Grid>
+             Height="40" 
+             MinWidth="50"
+             Width="Auto"
+             Margin="1,2,1,0">
+    <Border BorderThickness="1,1,1,0" BorderBrush="#FF788896" Background="#FFC3CFD9" 
+            CornerRadius="5,5,0,0">
+        <Grid Margin="0,5,0,0">
+            <StackPanel Orientation="Horizontal" Background="#FFC3CFD9">
+                <TextBlock Text="{Binding Name}" MinWidth="50" FontFamily="Bahnschrift Light" 
+                           FontSize="20" TextWrapping="Wrap" Margin="5,0,0,0" Foreground="White">
+                </TextBlock>
+                <Button Width="25" Height="25" Margin="5,0,5,0" Background="{x:Null}" 
+                        BorderBrush="{x:Null}" VerticalAlignment="Top" Command="{Binding ShowFolderCommand}">
+                    <Image Source="/Views/Resourses/show.png"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>
