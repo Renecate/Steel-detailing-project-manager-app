@@ -7,9 +7,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows;
-
-
 
 
 namespace ESD.PM.ViewModels
@@ -97,6 +94,7 @@ namespace ESD.PM.ViewModels
         public DelegateCommand AddItemCommand { get; set; }
         public DelegateCommand UpdateCommand { get; set; }
         public DelegateCommand OpenProjectFolderCommand { get; set; }
+        public DelegateCommand RemoveItemSelectionCommand { get; set; }
 
         #endregion
 
@@ -123,6 +121,7 @@ namespace ESD.PM.ViewModels
             AddItemCommand = new DelegateCommand(OnAddItem);
             OpenProjectFolderCommand = new DelegateCommand(OnOpenProjectFolder);
             UpdateCommand = new DelegateCommand(OnUpdate);
+            RemoveItemSelectionCommand = new DelegateCommand(OnRemoveItemSelection);
         }
 
         #endregion
@@ -303,7 +302,11 @@ namespace ESD.PM.ViewModels
             SettingsManager.SaveSettings(appSettings);
             LoadProjectsAsync();
         }
-
+        private void OnRemoveItemSelection (object obj)
+        {
+            if (SelectedItem != null) 
+                GetFoldersOrItems();
+        }
         #endregion
 
         #region Private Methods
@@ -343,7 +346,6 @@ namespace ESD.PM.ViewModels
                     count++;
                     ItemsIsTrue = true;
                     OnPropertyChanged(nameof(ItemsIsTrue));
-                    break;
                 }
                 else
                 {
@@ -432,6 +434,7 @@ namespace ESD.PM.ViewModels
         }
         private void GetFoldersIfItemsExist()
         {
+            HiddenFolders.Clear();
             Folders.Clear();
             if (_selectedItem != null)
             {

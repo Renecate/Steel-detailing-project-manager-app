@@ -14,7 +14,7 @@
         MaxWidth="2000"
         MinHeight="600"
         MaxHeight="1100"
-        WindowStyle="None" Margin="0,0,0,-4">
+        WindowStyle="None" Margin="0,0,0,0">
     <Grid Background="#FFC3CFD9">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="55"/>
@@ -90,14 +90,21 @@
                               BorderThickness="0,0,0,0" 
                                   BorderBrush="{x:Null}" FontFamily="Bahnschrift Light"/>
                     </Border>
-                    <Border BorderThickness="2,2,2,2" BorderBrush="#FF9EADBA" Margin="10,0,10,0" Height="35" 
-                            CornerRadius="2,2,2,2">
-                        <ComboBox Name="ItemsComboBox" Width="346"  
+                    <Border BorderThickness="2,2,1,2" BorderBrush="#FF9EADBA" Margin="10,0,0,0" Height="35" 
+                            CornerRadius="2,0,0,2">
+                        <ComboBox Name="ItemsComboBox" Width="316"  
                                   ItemsSource="{Binding DisplayItemsNames}" SelectedItem="{Binding SelectedItem}" 
                                   FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
                                   IsEnabled="{Binding ItemsIsTrue}"
                                   BorderBrush="{x:Null}" BorderThickness="0,0,0,0" FontFamily="Bahnschrift Light">
                         </ComboBox>
+                    </Border>
+                    <Border BorderThickness="1,2,2,2" BorderBrush="#FF9EADBA" Margin="0,0,10,0" Height="35" 
+                            CornerRadius="0,2,2,0" Width="30" Background="#FF9EADBA">
+                        <Button Content="X" FontFamily="Bahnschrift Light" FontSize="20" Foreground="White" 
+                                BorderBrush="{x:Null}" Background="{x:Null}" 
+                                Command="{Binding RemoveItemSelectionCommand}"
+                                IsEnabled="{Binding ItemsIsTrue}"/>
                     </Border>
                     <Border Height="35" Width="165" Margin="0,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">

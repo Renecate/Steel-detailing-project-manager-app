@@ -97,6 +97,7 @@
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Copy path" Command="{Binding CopyPathCommand}"/>
+                            <MenuItem Header="Rename"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

@@ -307,7 +307,8 @@ namespace ESD.PM.Models
 
         private void OnCopyPath(object obj)
         {
-            Clipboard.SetText(SelectedFolderName.FullName);
+            if (SelectedFolderName != null)
+                Clipboard.SetText(SelectedFolderName.FullName);
         }
 
         private void OnDateSort(object obj)

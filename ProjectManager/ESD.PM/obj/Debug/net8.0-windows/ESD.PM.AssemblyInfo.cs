@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ESD.PM")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1bfe7905fc052a1483202bbad15e992f033bbd5b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d4649da9857a69d4cd0db7e9878460f9db22eb7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ESD.PM")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ESD.PM")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
