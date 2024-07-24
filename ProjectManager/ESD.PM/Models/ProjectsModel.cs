@@ -10,7 +10,7 @@ namespace ESD.PM.Models
 
         public string _fullName;
 
-        public string Name 
+        public string Name
         {
             get { return _name; }
             set
@@ -20,8 +20,8 @@ namespace ESD.PM.Models
             }
         }
 
-        public string FullName 
-        { 
+        public string FullName
+        {
             get { return _fullName; }
             set
             {

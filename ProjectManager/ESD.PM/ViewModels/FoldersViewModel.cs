@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Path = System.IO.Path;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace ESD.PM.Models
 {
@@ -68,6 +67,8 @@ namespace ESD.PM.Models
 
         private ObservableCollection<ProjectsModel> _localList { get; set; }
 
+        private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
+
         private ObservableCollection<ProjectsModel> _localListClearable { get; set; }
 
         #endregion
@@ -87,6 +88,7 @@ namespace ESD.PM.Models
             TaggedDocsList = new ObservableCollection<ProjectsModel>();
             _localList = new ObservableCollection<ProjectsModel>();
             _localListClearable = new ObservableCollection<ProjectsModel>();
+            _tagsToRemove = new ObservableCollection<TagsModel>();
 
             GetFolders();
             GetTags(_location);
@@ -137,9 +139,11 @@ namespace ESD.PM.Models
             string[] files = [];
             string[] parts = [];
             var _filterdDocsList = FilteredDocsList;
+            _tagsToRemove.Clear();
             TaggedDocsList.Clear();
             foreach (var tag in Tags)
             {
+                var count = 0;
                 foreach (var doc in _localList)
                 {
                     if (tag.State is true)
@@ -152,11 +156,23 @@ namespace ESD.PM.Models
                             if (partTrimmed.Equals(tag.Name))
                             {
                                 TaggedDocsList.Add(doc);
+                                count++;
+                                break;
                             }
                         }
                     }
                 }
+                if (count == 0 && tag.State is true)
+                {
+                    _tagsToRemove.Add(tag);
+                }
             }
+
+            foreach (var tag in _tagsToRemove)
+            {
+                Tags.Remove(tag);
+            }
+
             FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList));
             if (_filterdDocsList.Count == 0)
                 _filterdDocsList = FilteredDocsList;
@@ -164,7 +180,6 @@ namespace ESD.PM.Models
             {
                 if (ExtrateDate(_filterdDocsList.First().Name) < ExtrateDate(_filterdDocsList.Last().Name))
                 {
-
                     FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
                 }
                 else
@@ -204,6 +219,7 @@ namespace ESD.PM.Models
 
         private void ProcessLocalList()
         {
+            UntaggedDocsList.Clear();
             foreach (var folder in _localListClearable)
             {
                 var parts = folder.Name.Split("-");
@@ -241,12 +257,13 @@ namespace ESD.PM.Models
             {
                 if (ExtrateDate(FilteredDocsList.First().Name) < ExtrateDate(FilteredDocsList.Last().Name))
                 {
-                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
                     OnPropertyChanged(nameof(FilteredDocsList));
                 }
                 else
                 {
-                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                    FilteredDocsList = new ObservableCollection<ProjectsModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
                     OnPropertyChanged(nameof(FilteredDocsList));
                 }
             }
@@ -348,7 +365,7 @@ namespace ESD.PM.Models
             }
         }
 
-        private void OnHideFolder(object obj) 
+        private void OnHideFolder(object obj)
         {
             HideFolder = true;
         }
@@ -357,23 +374,23 @@ namespace ESD.PM.Models
         {
             if (_selectedFolderName != null)
             {
-                    var dialog = new RenameDialog(_selectedFolderName.Name);
-                    if (dialog.ShowDialog() == true)
+                var dialog = new RenameDialog(_selectedFolderName.Name);
+                if (dialog.ShowDialog() == true)
+                {
+                    var newFolderName = dialog.NewFolderName;
+                    if (Directory.Exists(FullName + "\\" + newFolderName) != true)
                     {
-                        var newFolderName = dialog.NewFolderName;
-                        if (Directory.Exists(FullName + "\\" + newFolderName) != true)
-                        {
-                            Directory.Move(_selectedFolderName.FullName, FullName + "\\" + newFolderName);
-                            _selectedFolderName.Name = newFolderName;
-                            _selectedFolderName.FullName = FullName + "\\" + newFolderName;
-                            OnPropertyChanged(nameof(FilteredDocsList));
-                        }
-                        else
-                        {
-                            System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
-                        }
+                        Directory.Move(_selectedFolderName.FullName, FullName + "\\" + newFolderName);
+                        _selectedFolderName.Name = newFolderName;
+                        _selectedFolderName.FullName = FullName + "\\" + newFolderName;
+                        ProcessLocalList();
+                        FilterFolders();
                     }
-                
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
+                    }
+                }
             }
         }
         #endregion

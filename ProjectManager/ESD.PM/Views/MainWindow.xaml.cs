@@ -1,10 +1,6 @@
-﻿using ESD.PM.Models;
-using ESD.PM.ViewModels;
-using System.IO;
+﻿using ESD.PM.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace ESD.PM.Views

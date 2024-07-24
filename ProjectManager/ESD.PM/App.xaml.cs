@@ -1,5 +1,4 @@
-﻿using ESD.PM.ViewModels;
-using ESD.PM.Views;
+﻿using ESD.PM.Views;
 using System.Windows;
 
 namespace ESD.PM

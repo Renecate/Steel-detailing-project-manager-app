@@ -56,7 +56,7 @@ namespace ESD.PM.ViewModels
         {
             get { return _selectedItem; }
             set
-            {   
+            {
                 _selectedItem = value;
                 GetFoldersIfItemsExist();
             }
@@ -302,9 +302,9 @@ namespace ESD.PM.ViewModels
             SettingsManager.SaveSettings(appSettings);
             LoadProjectsAsync();
         }
-        private void OnRemoveItemSelection (object obj)
+        private void OnRemoveItemSelection(object obj)
         {
-            if (SelectedItem != null) 
+            if (SelectedItem != null)
                 GetFoldersOrItems();
         }
         #endregion
