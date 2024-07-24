@@ -50,7 +50,17 @@
                         BorderBrush="{x:Null}" Background="{x:Null}" 
                         Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
                 </Border>
-
+                <Border VerticalAlignment="Top"
+                        HorizontalAlignment="Left" Width="125" Height="35" 
+                        Margin="5,25,5,5" CornerRadius="2,2,2,2" 
+                        BorderThickness="2,2,2,2" Background="#FFB9C4CE"
+                        BorderBrush="#FFB9C4CE" >
+                    <Button Content="CREATE FOLDER" 
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                            Command="{Binding CreateFolderCommand}" 
+                            BorderBrush="{x:Null}" Background="{x:Null}" 
+                            Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                </Border>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <ItemsControl ItemsSource="{Binding Tags}" HorizontalAlignment="Left" 

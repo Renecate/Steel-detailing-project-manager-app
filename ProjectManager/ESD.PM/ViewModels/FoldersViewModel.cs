@@ -53,23 +53,15 @@ namespace ESD.PM.Models
         public DelegateCommand FileDropCommand { get; set; }
         public DelegateCommand HideFolderCommand { get; set; }
         public DelegateCommand RenameFolderCommand { get; set; }
+        public DelegateCommand CreateFolderCommand {  get; set; }
         #endregion
 
         #region Private Properties
 
         private ProjectsModel _selectedFolderName { get; set; }
-
         private bool _viewIsToggled;
-
-        private string _location;
-
         private bool hideFolder;
-
-        private ObservableCollection<ProjectsModel> _localList { get; set; }
-
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
-
-        private ObservableCollection<ProjectsModel> _localListClearable { get; set; }
 
         #endregion
 
@@ -80,18 +72,15 @@ namespace ESD.PM.Models
             ToggleViewCommandActive = true;
             hideFolder = false;
             _viewIsToggled = false;
-            _location = FullName;
             FolderList = new ObservableCollection<ProjectsModel>();
             Tags = new ObservableCollection<TagsModel>();
             FilteredDocsList = new ObservableCollection<ProjectsModel>();
             UntaggedDocsList = new ObservableCollection<ProjectsModel>();
             TaggedDocsList = new ObservableCollection<ProjectsModel>();
-            _localList = new ObservableCollection<ProjectsModel>();
-            _localListClearable = new ObservableCollection<ProjectsModel>();
             _tagsToRemove = new ObservableCollection<TagsModel>();
 
             GetFolders();
-            GetTags(_location);
+            ProcessLocalList();
             FilterFolders();
 
             if (Tags.Count > 0)
@@ -105,6 +94,7 @@ namespace ESD.PM.Models
             FileDropCommand = new DelegateCommand(OnFileDrop);
             HideFolderCommand = new DelegateCommand(OnHideFolder);
             RenameFolderCommand = new DelegateCommand(OnRenameFolder);
+            CreateFolderCommand = new DelegateCommand(OnCreateFolder);
         }
 
         #endregion
@@ -144,7 +134,7 @@ namespace ESD.PM.Models
             foreach (var tag in Tags)
             {
                 var count = 0;
-                foreach (var doc in _localList)
+                foreach (var doc in FolderList)
                 {
                     if (tag.State is true)
                     {
@@ -192,35 +182,30 @@ namespace ESD.PM.Models
 
         private void GetFolders()
         {
-            FolderList.Clear();
-            foreach (var item in Directory.GetDirectories(FullName))
-                FolderList.Add(new ProjectsModel(item));
-        }
-
-        private void GetTags(string location)
-        {
-            _localListClearable.Clear();
-            foreach (var item in Directory.GetDirectories(location))
+            if (_viewIsToggled == false)
             {
-                if (!_localList.Any(t => t.FullName == item))
+                FolderList.Clear();
+                foreach (var item in Directory.GetDirectories(FullName))
+                    FolderList.Add(new ProjectsModel(item));
+            }
+            if (_viewIsToggled == true) 
+            {
+                var iterationList = new ObservableCollection<ProjectsModel>(FolderList);
+                FolderList.Clear();
+                foreach (var folder in iterationList)
                 {
-                    AddToLocalLists(item);
+                    foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
+                    {
+                        FolderList.Add(new ProjectsModel(insideFolder));
+                    }
                 }
             }
-            ProcessLocalList();
-        }
-
-        private void AddToLocalLists(string item)
-        {
-            var project = new ProjectsModel(item);
-            _localList.Add(project);
-            _localListClearable.Add(project);
         }
 
         private void ProcessLocalList()
         {
             UntaggedDocsList.Clear();
-            foreach (var folder in _localListClearable)
+            foreach (var folder in FolderList)
             {
                 var parts = folder.Name.Split("-");
                 if (parts.Length > 1)
@@ -232,12 +217,18 @@ namespace ESD.PM.Models
                     }
                     else
                     {
-                        UntaggedDocsList.Add(folder);
+                        if (!UntaggedDocsList.Any(t => t.FullName == folder.FullName))
+                        {
+                            UntaggedDocsList.Add(folder);
+                        }
                     }
                 }
                 else
                 {
-                    UntaggedDocsList.Add(folder);
+                    if (!UntaggedDocsList.Any(t => t.FullName == folder.FullName))
+                    {
+                        UntaggedDocsList.Add(folder);
+                    }
                 }
             }
             UpdateFilteredDocsList();
@@ -275,6 +266,10 @@ namespace ESD.PM.Models
             }
         }
 
+        private int GetOrderNumber()
+        {
+            return 0;
+        }
         #endregion
 
         #region Commands Methods
@@ -293,10 +288,9 @@ namespace ESD.PM.Models
                 Tags.Clear();
                 UntaggedDocsList.Clear();
                 TaggedDocsList.Clear();
-                _localList.Clear();
                 _viewIsToggled = false;
-                _location = FullName;
-                GetTags(_location);
+                GetFolders();
+                ProcessLocalList();
                 FilterFolders();
             }
             else if (_viewIsToggled == false)
@@ -305,14 +299,10 @@ namespace ESD.PM.Models
                 Tags.Clear();
                 UntaggedDocsList.Clear();
                 TaggedDocsList.Clear();
-                _localList.Clear();
                 _viewIsToggled = true;
-                foreach (var folder in FolderList)
-                {
-                    _location = folder.FullName;
-                    GetTags(_location);
-                    FilterFolders();
-                }
+                GetFolders();
+                ProcessLocalList();
+                FilterFolders();
             }
 
         }
@@ -390,6 +380,50 @@ namespace ESD.PM.Models
                     {
                         System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
                     }
+                }
+            }
+        }
+
+        private void OnCreateFolder(object obj)
+        {
+            if (Directory.Exists(FullName) == true) 
+            {
+                int orderNumber = GetOrderNumber();
+                var dialog = new CreateFolderDialog(orderNumber);
+                if (dialog.ShowDialog() == true)
+                {
+                    var collection = new List<string>()
+                    {
+                        dialog.OrderNumber,
+                        dialog.FolderTag,
+                        dialog.Date,
+                        dialog.FolderName
+                    };
+                    var newFolderName = string.Empty;
+                    collection = new List<string>(collection.Where(n => !string.IsNullOrEmpty(n)));
+                    var count = 0;
+                    foreach (var item in collection) 
+                    { 
+                        count++;
+                        if (count != collection.Count)
+                        {
+                            newFolderName += item + " - ";
+                        }
+                        else
+                        {
+                            newFolderName += item;
+                        }
+                    }
+                    var path = FullName + "\\" + newFolderName;
+                    if (Directory.Exists(path) != true)
+                    {
+                        Directory.CreateDirectory(path);
+                        GetFolders();
+                        ProcessLocalList();
+                        FilterFolders();
+                    }
+                    else
+                        System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
                 }
             }
         }
