@@ -6,9 +6,29 @@ namespace ESD.PM.Models
 {
     public class ProjectsModel : INotifyPropertyChanged
     {
-        public string Name { get; }
+        private string _name;
 
-        public string FullName { get; }
+        public string _fullName;
+
+        public string Name 
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        public string FullName 
+        { 
+            get { return _fullName; }
+            set
+            {
+                _fullName = value;
+                OnPropertyChanged(nameof(FullName));
+            }
+        }
 
         public ProjectsModel(string name)
         {

@@ -1,11 +1,12 @@
 ﻿using ESD.PM.Commands;
+using ESD.PM.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Windows.Shapes;
 using Path = System.IO.Path;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace ESD.PM.Models
 {
@@ -52,12 +53,12 @@ namespace ESD.PM.Models
         public DelegateCommand DateSortCommand { get; set; }
         public DelegateCommand FileDropCommand { get; set; }
         public DelegateCommand HideFolderCommand { get; set; }
-
+        public DelegateCommand RenameFolderCommand { get; set; }
         #endregion
 
         #region Private Properties
 
-        private ProjectsModel _selectedFolderName;
+        private ProjectsModel _selectedFolderName { get; set; }
 
         private bool _viewIsToggled;
 
@@ -101,6 +102,7 @@ namespace ESD.PM.Models
             DateSortCommand = new DelegateCommand(OnDateSort);
             FileDropCommand = new DelegateCommand(OnFileDrop);
             HideFolderCommand = new DelegateCommand(OnHideFolder);
+            RenameFolderCommand = new DelegateCommand(OnRenameFolder);
         }
 
         #endregion
@@ -263,9 +265,7 @@ namespace ESD.PM.Models
         private void OnOpen(object obj)
         {
             if (_selectedFolderName != null)
-            {
                 Process.Start(new ProcessStartInfo("explorer.exe", _selectedFolderName.FullName));
-            }
         }
 
         private void OnToggleView(object obj)
@@ -351,6 +351,30 @@ namespace ESD.PM.Models
         private void OnHideFolder(object obj) 
         {
             HideFolder = true;
+        }
+
+        private void OnRenameFolder(object obj)
+        {
+            if (_selectedFolderName != null)
+            {
+                    var dialog = new RenameDialog(_selectedFolderName.Name);
+                    if (dialog.ShowDialog() == true)
+                    {
+                        var newFolderName = dialog.NewFolderName;
+                        if (Directory.Exists(FullName + "\\" + newFolderName) != true)
+                        {
+                            Directory.Move(_selectedFolderName.FullName, FullName + "\\" + newFolderName);
+                            _selectedFolderName.Name = newFolderName;
+                            _selectedFolderName.FullName = FullName + "\\" + newFolderName;
+                            OnPropertyChanged(nameof(FilteredDocsList));
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
+                        }
+                    }
+                
+            }
         }
         #endregion
     }

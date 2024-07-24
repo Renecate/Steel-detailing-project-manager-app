@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
-5625422504
+6-1094719540
 11048287951
-17-176377828
+18708750453
 2096120121
-Views\AddItemDialog.xaml;Views\CreateProjectDialog.xaml;Views\FolderView.xaml;Views\HiddenFolderView.xaml;Views\MainWindow.xaml;
+Views\AddItemDialog.xaml;Views\CreateProjectDialog.xaml;Views\FolderView.xaml;Views\HiddenFolderView.xaml;Views\MainWindow.xaml;Views\RenameDialog.xaml;
 
 False
 

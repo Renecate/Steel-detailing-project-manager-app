@@ -56,42 +56,6 @@ namespace ESD.PM.Views
             }
         }
 
-        //private void ProjectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    FoldersCanvas.Children.Clear();
-
-        //    if (mainWindowViewModel.SelectedProject!= null && ItemsComboBox.IsEnabled == false)
-        //    {
-        //        CreateAndPlaceWindows();
-        //    }
-        //}
-
-        //private void ItemsComboBox_SelectionChanged (object sender, SelectionChangedEventArgs e)
-        //{
-        //    FoldersCanvas.Children.Clear();
-
-        //    if (mainWindowViewModel.SelectedItem != null)
-        //    {
-        //        var folders = Directory.GetDirectories(mainWindowViewModel.SelectedItem.FullName);
-        //        CreateAndPlaceWindows();
-        //    }
-        //}
-
-        //private void CreateAndPlaceWindows()
-        //{
-
-        //    foreach (var folder in mainWindowViewModel.Folders)
-        //    {
-        //        var folderView = new FolderView(folder);
-
-        //        var border = new Border
-        //        {
-        //            Child = folderView,
-        //        };
-
-        //        FoldersCanvas.Children.Add(border);
-        //    }
-        //}
         private async void Window_OnMouseMove(object sender, MouseEventArgs e)
         {
             await Task.Delay(40);

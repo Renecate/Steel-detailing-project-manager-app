@@ -67,3 +67,5 @@ C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\HiddenFolderView.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\HiddenFolderView.baml
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\RenameDialog.baml
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\RenameDialog.g.cs

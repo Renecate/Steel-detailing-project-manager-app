@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ESD.PM.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             Height="40" 
+             Height="30" 
              MinWidth="50"
              Width="Auto"
              Margin="1,2,1,0">
@@ -15,9 +15,9 @@
         <Grid Margin="0,5,0,0">
             <StackPanel Orientation="Horizontal" Background="#FFC3CFD9">
                 <TextBlock Text="{Binding Name}" MinWidth="50" FontFamily="Bahnschrift Light" 
-                           FontSize="20" TextWrapping="Wrap" Margin="5,0,0,0" Foreground="White">
+                           FontSize="18" TextWrapping="Wrap" Margin="5,0,0,0" Foreground="White">
                 </TextBlock>
-                <Button Width="25" Height="25" Margin="5,0,5,0" Background="{x:Null}" 
+                <Button Width="25" Height="25" Margin="5,-2,5,0" Background="{x:Null}" 
                         BorderBrush="{x:Null}" VerticalAlignment="Top" Command="{Binding ShowFolderCommand}">
                     <Image Source="/Views/Resourses/show.png"/>
                 </Button>
