@@ -8,8 +8,16 @@ namespace ESD.PM.Views
         public string FolderTag { get; set; }
         public string Date { get; set; }
         public string FolderName { get; set; }
+        public List<string> CreationPath { get; set; }
+        public string SelectedPath
+        {
+            get { return _selectedPath; }
+            set { _selectedPath = value; }
+        }
 
-        public CreateFolderDialog(int initialOrderNumber)
+        private string _selectedPath; 
+
+        public CreateFolderDialog(int initialOrderNumber, List<string> creationPath)
         {
             InitializeComponent();
 
@@ -19,6 +27,17 @@ namespace ESD.PM.Views
             FolderName = "New Folder";
 
             DataContext = this;
+            CreationPath = creationPath;
+
+            if (creationPath != null ) 
+            {
+                _selectedPath = creationPath[0];
+            }
+
+            if (_selectedPath != null ) 
+            {
+                SelectedPath = _selectedPath;
+            }
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)

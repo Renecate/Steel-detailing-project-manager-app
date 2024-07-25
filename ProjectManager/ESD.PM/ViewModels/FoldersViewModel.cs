@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using Path = System.IO.Path;
 
 namespace ESD.PM.Models
@@ -17,6 +18,7 @@ namespace ESD.PM.Models
         public ObservableCollection<ProjectsModel> FilteredDocsList { get; set; }
         public ObservableCollection<ProjectsModel> TaggedDocsList { get; set; }
         public ObservableCollection<ProjectsModel> UntaggedDocsList { get; set; }
+        public List<string> PathList { get; set; }
         public ObservableCollection<TagsModel> Tags { get; set; }
         public bool ToggleViewCommandActive { get; set; }
         public bool HideFolder
@@ -61,6 +63,7 @@ namespace ESD.PM.Models
         private ProjectsModel _selectedFolderName { get; set; }
         private bool _viewIsToggled;
         private bool hideFolder;
+        private ObservableCollection<ProjectsModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
 
         #endregion
@@ -69,22 +72,21 @@ namespace ESD.PM.Models
 
         public FoldersViewModel(string name) : base(name)
         {
-            ToggleViewCommandActive = true;
             hideFolder = false;
             _viewIsToggled = false;
+            PathList = new List<string>();
             FolderList = new ObservableCollection<ProjectsModel>();
             Tags = new ObservableCollection<TagsModel>();
             FilteredDocsList = new ObservableCollection<ProjectsModel>();
             UntaggedDocsList = new ObservableCollection<ProjectsModel>();
             TaggedDocsList = new ObservableCollection<ProjectsModel>();
             _tagsToRemove = new ObservableCollection<TagsModel>();
+            _iterationList = new ObservableCollection<ProjectsModel>();
 
             GetFolders();
             ProcessLocalList();
             FilterFolders();
-
-            if (Tags.Count > 0)
-                ToggleViewCommandActive = false;
+            ToggleViewCheck();
 
             OpenCommand = new DelegateCommand(OnOpen);
             ToggleViewCommand = new DelegateCommand(OnToggleView);
@@ -180,20 +182,43 @@ namespace ESD.PM.Models
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
+        private void ToggleViewCheck()
+        {
+            if (Tags.Count > 0)
+            {
+                ToggleViewCommandActive = false;
+                OnPropertyChanged(nameof(ToggleViewCommandActive));
+            }
+
+            else if (Tags.Count == 0 && FolderList.Count() == 0)
+            {
+                ToggleViewCommandActive = false;
+                OnPropertyChanged(nameof(ToggleViewCommandActive));
+            }
+            else 
+            { 
+                ToggleViewCommandActive = true; 
+                OnPropertyChanged(nameof(ToggleViewCommandActive));
+            }
+        }
+
         private void GetFolders()
         {
+            PathList.Clear();
             if (_viewIsToggled == false)
             {
                 FolderList.Clear();
+                PathList.Add(FullName);
                 foreach (var item in Directory.GetDirectories(FullName))
                     FolderList.Add(new ProjectsModel(item));
+                _iterationList = new ObservableCollection<ProjectsModel>(FolderList);
             }
             if (_viewIsToggled == true) 
             {
-                var iterationList = new ObservableCollection<ProjectsModel>(FolderList);
                 FolderList.Clear();
-                foreach (var folder in iterationList)
+                foreach (var folder in _iterationList)
                 {
+                    PathList.Add(folder.FullName);
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
                         FolderList.Add(new ProjectsModel(insideFolder));
@@ -268,7 +293,21 @@ namespace ESD.PM.Models
 
         private int GetOrderNumber()
         {
-            return 0;
+            Regex regex = new Regex(@"\((\d+)\)");
+
+            var numbers = FolderList
+            .Select(proj => regex.Match(proj.Name))
+            .Where(match => match.Success)
+            .Select(match => int.Parse(match.Groups[1].Value))
+            .ToList();
+
+            if (numbers.Count == 0)
+            {
+                return 1;
+            }
+
+            int maxNumber = numbers.Max();
+            return maxNumber + 1;
         }
         #endregion
 
@@ -367,12 +406,13 @@ namespace ESD.PM.Models
                 var dialog = new RenameDialog(_selectedFolderName.Name);
                 if (dialog.ShowDialog() == true)
                 {
+                    var rootPath = _selectedFolderName.FullName.Replace(_selectedFolderName.Name, "").TrimEnd('\\');
                     var newFolderName = dialog.NewFolderName;
-                    if (Directory.Exists(FullName + "\\" + newFolderName) != true)
+                    if (Directory.Exists(rootPath + "\\" + newFolderName) != true)
                     {
-                        Directory.Move(_selectedFolderName.FullName, FullName + "\\" + newFolderName);
+                        Directory.Move(_selectedFolderName.FullName, rootPath + "\\" + newFolderName);
                         _selectedFolderName.Name = newFolderName;
-                        _selectedFolderName.FullName = FullName + "\\" + newFolderName;
+                        _selectedFolderName.FullName = rootPath + "\\" + newFolderName;
                         ProcessLocalList();
                         FilterFolders();
                     }
@@ -382,14 +422,19 @@ namespace ESD.PM.Models
                     }
                 }
             }
+            if (_viewIsToggled == false)
+            {
+                ToggleViewCheck();
+            }
         }
 
         private void OnCreateFolder(object obj)
         {
-            if (Directory.Exists(FullName) == true) 
+            if (Directory.Exists(FullName) == true)
             {
                 int orderNumber = GetOrderNumber();
-                var dialog = new CreateFolderDialog(orderNumber);
+                var pathList = PathList;
+                var dialog = new CreateFolderDialog(orderNumber, pathList);
                 if (dialog.ShowDialog() == true)
                 {
                     var collection = new List<string>()
@@ -414,7 +459,7 @@ namespace ESD.PM.Models
                             newFolderName += item;
                         }
                     }
-                    var path = FullName + "\\" + newFolderName;
+                    var path = dialog.SelectedPath + "\\" + newFolderName;
                     if (Directory.Exists(path) != true)
                     {
                         Directory.CreateDirectory(path);
@@ -425,6 +470,10 @@ namespace ESD.PM.Models
                     else
                         System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
                 }
+            }
+            if (_viewIsToggled == false)
+            {
+                ToggleViewCheck();
             }
         }
         #endregion

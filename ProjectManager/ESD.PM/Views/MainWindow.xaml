@@ -184,12 +184,12 @@
         </Border>
 
         <Border Grid.Row="4" Grid.Column="1"
-                BorderBrush="#FF9EADBA" BorderThickness="2,1,0,0">
+                BorderBrush="#FF9EADBA" BorderThickness="0,0,0,0">
             <ItemsControl ItemsSource="{Binding HiddenFolders}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Background="White"
-                                   Orientation="Horizontal"/>
+                        <WrapPanel
+                                   Orientation="Horizontal" Margin="5,0,30,0"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
