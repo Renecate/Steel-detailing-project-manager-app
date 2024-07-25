@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Application = System.Windows.Application;
 
 
 namespace ESD.PM.ViewModels
@@ -73,13 +74,13 @@ namespace ESD.PM.ViewModels
 
         private ProjectsModel _selectedFolder;
 
-        private string _selectedProjectPath;
-
         private AppSettings appSettings;
 
         private ObservableCollection<FoldersViewModel> folders;
 
         private ObservableCollection<HiddenFoldersViewModel> hiddenFolders;
+
+        private ObservableCollection<ProjectsModel> favoriteProjectsList;
 
         #endregion
 
@@ -105,6 +106,7 @@ namespace ESD.PM.ViewModels
         {
             Folders = new ObservableCollection<FoldersViewModel>();
             HiddenFolders = new ObservableCollection<HiddenFoldersViewModel>();
+            favoriteProjectsList = new ObservableCollection<ProjectsModel>();
             Folders.CollectionChanged += OnFoldersCollectionChanged;
             HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
             appSettings = SettingsManager.LoadSettings();
@@ -203,18 +205,32 @@ namespace ESD.PM.ViewModels
                 if (!appSettings.FavoriteProjects.Contains(selectedProject.FullName))
                 {
                     appSettings.FavoriteProjects.Add(selectedProject.FullName);
-                    ProjectsNames.Insert(0, selectedProject);
+                    foreach (var folder in Directory.GetDirectories(selectedProject.FullName))
+                    {
+                        var vm = new FoldersViewModel(folder);
+                        appSettings.SavedFolders.Add(vm);
+                    }
+                    selectedProject.Favorite = true;
+                    var index = ProjectsNames.IndexOf(selectedProject);
+                    if (index != 0)
+                    {
+                        ProjectsNames.Move(index, 0);
+                    }
                     OnPropertyChanged(nameof(ProjectsNames));
                 }
                 else
                 {
+                    selectedProject.Favorite = false;
+                    favoriteProjectsList.Remove(selectedProject);
                     appSettings.FavoriteProjects.Remove(selectedProject.FullName);
-                    ProjectsNames.Remove(selectedProject);
-                    SelectedProject = null;
-                    ProjectIsTrue = false;
-                    OnPropertyChanged(nameof(ProjectIsTrue));
-                    OnPropertyChanged(nameof(SelectedProject));
-                    OnPropertyChanged(nameof(ProjectsNames));
+                    var foldersToRemove = appSettings.SavedFolders
+                                      .Where(f => f.FullName.StartsWith(selectedProject.FullName))
+                                      .ToList();
+                    foreach (var folder in foldersToRemove)
+                    {
+                        appSettings.SavedFolders.Remove(folder);
+                    }
+                    LoadProjectsAsync();
                 }
                 SettingsManager.SaveSettings(appSettings);
             }
@@ -303,6 +319,7 @@ namespace ESD.PM.ViewModels
         {
             appSettings.ProjectPaths.Clear();
             appSettings.FavoriteProjects.Clear();
+            appSettings.SavedFolders.Clear();
             SettingsManager.SaveSettings(appSettings);
             LoadProjectsAsync();
         }
@@ -317,32 +334,17 @@ namespace ESD.PM.ViewModels
 
         private void CheckIfFavorite()
         {
-            if (appSettings.FavoriteProjects.Any())
+            if (_selectedProject != null)
             {
-                foreach (var path in appSettings.FavoriteProjects)
+                if (_selectedProject.Favorite == true)
                 {
-                    if (Directory.Exists(path))
-                    {
-                        if (SelectedProject != null)
-                        {
-                            if (SelectedProject.FullName == path)
-                            {
-                                FavoriteImageSourse = "/Views/Resourses/star_gold.png";
-                                OnPropertyChanged(nameof(FavoriteImageSourse));
-                                break;
-                            }
-                            else
-                            {
-                                FavoriteImageSourse = "/Views/Resourses/star.png";
-                                OnPropertyChanged(nameof(FavoriteImageSourse));
-                            }
-                        }
-                        else
-                        {
-                            FavoriteImageSourse = "/Views/Resourses/star.png";
-                            OnPropertyChanged(nameof(FavoriteImageSourse));
-                        }
-                    }
+                    FavoriteImageSourse = "/Views/Resourses/star_gold.png";
+                    OnPropertyChanged(nameof(FavoriteImageSourse));
+                }
+                else
+                {
+                    FavoriteImageSourse = "/Views/Resourses/star.png";
+                    OnPropertyChanged(nameof(FavoriteImageSourse));
                 }
             }
             else
@@ -367,29 +369,24 @@ namespace ESD.PM.ViewModels
             ItemsIsTrue = false;
             Folders.Clear();
             HiddenFolders.Clear();
-            OnPropertyChanged(nameof(StructIsTrue));
-            OnPropertyChanged(nameof(MasterIsTrue));
-            OnPropertyChanged(nameof(ArchIsTrue));
-            OnPropertyChanged(nameof(ItemsIsTrue));
-            OnPropertyChanged(nameof(SelectedItem));
 
             var count = 0;
             DisplayItemsNames.Clear();
 
             if (SelectedProject == null)
                 return;
-
+            
             foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
             {
                 if (folder.EndsWith("Items"))
                 {
                     count++;
                     ItemsIsTrue = true;
-                    OnPropertyChanged(nameof(ItemsIsTrue));
                 }
                 else
                 {
-                    Folders.Add(new FoldersViewModel(folder));
+                    var vm = new FoldersViewModel(folder);
+                    Folders.Add(vm);
                 }
             }
             if (count != 0)
@@ -410,48 +407,77 @@ namespace ESD.PM.ViewModels
                     if (parts[parts.Length - 1].Contains("Structural"))
                     {
                         StructIsTrue = true;
-                        OnPropertyChanged(nameof(StructIsTrue));
                     }
                     if (parts[parts.Length - 1].Contains("Architectural"))
                     {
                         ArchIsTrue = true;
-                        OnPropertyChanged(nameof(ArchIsTrue));
                     }
                     parts = folder.Split('\\');
                     if (parts[parts.Length - 1].Contains("Master"))
                     {
                         MasterIsTrue = true;
-                        OnPropertyChanged(nameof(MasterIsTrue));
                     }
                 }
             }
+            OnPropertyChanged(nameof(StructIsTrue));
+            OnPropertyChanged(nameof(MasterIsTrue));
+            OnPropertyChanged(nameof(ArchIsTrue));
+            OnPropertyChanged(nameof(ItemsIsTrue));
+            OnPropertyChanged(nameof(SelectedItem));
         }
         private async Task LoadProjectsAsync()
         {
             try
             {
+                favoriteProjectsList.Clear();
                 ProjectsNames.Clear();
+
+                var favoriteProjectsSet = new HashSet<string>(appSettings.FavoriteProjects);
+                var tasks = new List<Task>();
+
                 foreach (var path in appSettings.ProjectPaths)
                 {
                     if (Directory.Exists(path))
                     {
-                        var projects = await Task.Run(() => Directory.GetDirectories(path));
-                        foreach (var project in projects)
+                        tasks.Add(Task.Run(async () =>
                         {
-                            ProjectsNames.Add(new ProjectsModel(project));
-                        }
+                            var projects = Directory.GetDirectories(path);
+                            foreach (var project in projects)
+                            {
+                                var projectToAdd = new ProjectsModel(project);
+                                projectToAdd.Favorite = favoriteProjectsSet.Contains(project);
+
+                                await Application.Current.Dispatcher.InvokeAsync(() =>
+                                {
+                                    if (projectToAdd.Favorite)
+                                    {
+                                        favoriteProjectsList.Add(projectToAdd);
+                                    }
+                                    else
+                                    {
+                                        ProjectsNames.Add(projectToAdd);
+                                    }
+                                });
+                            }
+                        }));
                     }
                 }
-                ProjectsNames = new ObservableCollection<ProjectsModel>(ProjectsNames.OrderBy(x => x.Name));
-                OnPropertyChanged(nameof(ProjectsNames));
-                foreach (var project in appSettings.FavoriteProjects)
+
+                await Task.WhenAll(tasks);
+
+                var sortedProjects = ProjectsNames.OrderBy(x => x.Name).ToList();
+
+                var combinedProjects = favoriteProjectsList.Concat(sortedProjects).ToList();
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    ProjectsNames.Insert(0, new ProjectsModel(project));
-                }
+                    ProjectsNames = new ObservableCollection<ProjectsModel>(combinedProjects);
+                    OnPropertyChanged(nameof(ProjectsNames));
+                });
             }
             catch (Exception ex)
             {
-                // Логирование ошибки или уведомление пользователя
+
             }
         }
         private void CreateItemsFolders(List<string> itemNames)

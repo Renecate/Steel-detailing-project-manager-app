@@ -2,6 +2,7 @@
 
 namespace ESD.PM.Models
 {
+    [Serializable]
     public class TagsModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

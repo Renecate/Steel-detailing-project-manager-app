@@ -15,7 +15,7 @@ namespace ESD.PM.Views
             set { _selectedPath = value; }
         }
 
-        private string _selectedPath; 
+        private string _selectedPath;
 
         public CreateFolderDialog(int initialOrderNumber, List<string> creationPath)
         {
@@ -29,12 +29,12 @@ namespace ESD.PM.Views
             DataContext = this;
             CreationPath = creationPath;
 
-            if (creationPath != null ) 
+            if (creationPath != null)
             {
                 _selectedPath = creationPath[0];
             }
 
-            if (_selectedPath != null ) 
+            if (_selectedPath != null)
             {
                 SelectedPath = _selectedPath;
             }

@@ -15,12 +15,23 @@ namespace ESD.PM.Models
             }
 
             var json = File.ReadAllText(settingsFilePath);
-            return JsonConvert.DeserializeObject<AppSettings>(json);
+
+            var settings = JsonConvert.DeserializeObject<AppSettings>(json, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            });
+
+            return settings ?? new AppSettings();
         }
 
         public static void SaveSettings(AppSettings settings)
         {
-            var json = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(settings, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            });
             File.WriteAllText(settingsFilePath, json);
         }
     }

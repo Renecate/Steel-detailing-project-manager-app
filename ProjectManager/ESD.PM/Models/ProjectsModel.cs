@@ -4,49 +4,28 @@ using System.Runtime.CompilerServices;
 
 namespace ESD.PM.Models
 {
-    public class ProjectsModel : INotifyPropertyChanged
+    public class ProjectsModel : FoldersModel
     {
-        private string _name;
 
-        public string _fullName;
+        private bool _favorite;
 
-        public string Name
+        public bool Favorite
         {
-            get { return _name; }
+            get { return _favorite; }
             set
             {
-                _name = value;
-                OnPropertyChanged(nameof(Name));
+                _favorite = value;
+                OnPropertyChanged(nameof(Favorite));
             }
         }
 
-        public string FullName
-        {
-            get { return _fullName; }
-            set
-            {
-                _fullName = value;
-                OnPropertyChanged(nameof(FullName));
-            }
-        }
-
-        public ProjectsModel(string name)
+        public ProjectsModel(string name) : base(name)
         {
             Name = new DirectoryInfo(name).Name;
 
             FullName = new DirectoryInfo(name).FullName;
-        }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-
-        public override string ToString()
-        {
-            return Name;
+            Favorite = false;
         }
     }
 }
