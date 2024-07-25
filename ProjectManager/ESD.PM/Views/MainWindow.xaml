@@ -87,9 +87,9 @@
                             CornerRadius="2,2,2,2">
                         <ComboBox Name="ProjectComboBox" Width="346" 
                               ItemsSource="{Binding ProjectsNames}" SelectedItem="{Binding SelectedProject}" 
-                              FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
-                              BorderThickness="0,0,0,0" 
-                                  BorderBrush="{x:Null}" FontFamily="Bahnschrift Light"/>
+                              FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False" 
+                              BorderThickness="0,0,0,0">
+                        </ComboBox>
                     </Border>
                     <Border BorderThickness="2,2,1,2" BorderBrush="#FF9EADBA" Margin="10,0,0,0" Height="35" 
                             CornerRadius="2,0,0,2">
@@ -218,7 +218,7 @@
             <Button Command="{Binding AddFavoriteProjectCommand}"
                         BorderBrush="{x:Null}" Background="{x:Null}"
                         Width="45" Margin="0,0,0,0">
-                <Image Source="/Views/Resourses/star.png" Width="40"/>
+                <Image Source="{Binding FavoriteImageSourse}" Width="40"/>
             </Button>
             <Button Command="{Binding UpdateCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}" Width="45" Margin="0,10,0,0">

@@ -33,7 +33,7 @@ namespace ESD.PM.ViewModels
                 OnPropertyChanged(nameof(HiddenFolders));
             }
         }
-
+        public string FavoriteImageSourse { get; set; } = string.Empty;
         public ObservableCollection<ProjectsModel> DisplayItemsNames { get; set; } = [];
         public bool ArchIsTrue { get; set; }
         public bool StructIsTrue { get; set; }
@@ -49,6 +49,7 @@ namespace ESD.PM.ViewModels
                 if (_selectedProject != null)
                     ProjectIsTrue = true;
                 OnPropertyChanged(nameof(ProjectIsTrue));
+                CheckIfFavorite();
                 GetFoldersOrItems();
             }
         }
@@ -104,13 +105,15 @@ namespace ESD.PM.ViewModels
         {
             Folders = new ObservableCollection<FoldersViewModel>();
             HiddenFolders = new ObservableCollection<HiddenFoldersViewModel>();
-
             Folders.CollectionChanged += OnFoldersCollectionChanged;
             HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
-
             appSettings = SettingsManager.LoadSettings();
+
+            FavoriteImageSourse = "/Views/Resourses/star.png";
             ProjectIsTrue = false;
+
             LoadProjectsAsync();
+
             StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
             ArchOpenCommand = new DelegateCommand(OnOpenArch);
             MasterOpenCommand = new DelegateCommand(OnOpenMaster);
@@ -215,6 +218,7 @@ namespace ESD.PM.ViewModels
                 }
                 SettingsManager.SaveSettings(appSettings);
             }
+            CheckIfFavorite();
         }
         private void OnCreateProject(object obj)
         {
@@ -311,6 +315,42 @@ namespace ESD.PM.ViewModels
 
         #region Private Methods
 
+        private void CheckIfFavorite()
+        {
+            if (appSettings.FavoriteProjects.Any())
+            {
+                foreach (var path in appSettings.FavoriteProjects)
+                {
+                    if (Directory.Exists(path))
+                    {
+                        if (SelectedProject != null)
+                        {
+                            if (SelectedProject.FullName == path)
+                            {
+                                FavoriteImageSourse = "/Views/Resourses/star_gold.png";
+                                OnPropertyChanged(nameof(FavoriteImageSourse));
+                                break;
+                            }
+                            else
+                            {
+                                FavoriteImageSourse = "/Views/Resourses/star.png";
+                                OnPropertyChanged(nameof(FavoriteImageSourse));
+                            }
+                        }
+                        else
+                        {
+                            FavoriteImageSourse = "/Views/Resourses/star.png";
+                            OnPropertyChanged(nameof(FavoriteImageSourse));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                FavoriteImageSourse = "/Views/Resourses/star.png";
+                OnPropertyChanged(nameof(FavoriteImageSourse));
+            }
+        }
         private static void CreateSubfolders(string basePath)
         {
             Directory.CreateDirectory(Path.Combine(basePath, "0 - Scope Of Work"));
@@ -501,6 +541,7 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
+
         #endregion
 
         #region Public Methods
