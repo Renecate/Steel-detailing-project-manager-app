@@ -142,7 +142,10 @@ namespace ESD.PM.ViewModels
                 parts = item.Split('\\');
                 if (parts[parts.Length - 1].Contains("Structural"))
                 {
-                    Process.Start(new ProcessStartInfo("explorer.exe", item));
+                    if (File.Exists(item))
+                    {
+                        Process.Start(new ProcessStartInfo("explorer.exe", item));
+                    }
                 }
             }
         }
@@ -154,7 +157,10 @@ namespace ESD.PM.ViewModels
                 parts = item.Split('\\');
                 if (parts[^1].Contains("Architectural"))
                 {
-                    Process.Start(new ProcessStartInfo("explorer.exe", item));
+                    if (File.Exists(item))
+                    {
+                        Process.Start(new ProcessStartInfo("explorer.exe", item));
+                    }
                 }
             }
 
@@ -167,14 +173,20 @@ namespace ESD.PM.ViewModels
                 parts = item.Split('\\');
                 if (parts[^1].Contains("Master"))
                 {
-                    Process.Start(new ProcessStartInfo("explorer.exe", item));
+                    if (File.Exists(item))
+                    {
+                        Process.Start(new ProcessStartInfo("explorer.exe", item));
+                    }
                 }
             }
 
         }
         private void OnOpenProjectFolder(object obj)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
+            if (Directory.Exists(SelectedProject.FullName)) 
+            {
+                Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
+            }
         }
         private void AddProjectPath(object path)
         {
@@ -250,6 +262,8 @@ namespace ESD.PM.ViewModels
                     {
                         appSettings.SavedFolders.Remove(folder);
                     }
+
+                    ProjectIsTrue = false;
                     LoadProjectsAsync();
                 }
                 SettingsManager.SaveSettings(appSettings);

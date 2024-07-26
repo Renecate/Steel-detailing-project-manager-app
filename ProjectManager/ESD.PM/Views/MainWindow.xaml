@@ -105,7 +105,13 @@
                         <Button Content="X" FontFamily="Bahnschrift Light" FontSize="20" Foreground="White" 
                                 BorderBrush="{x:Null}" Background="{x:Null}" 
                                 Command="{Binding RemoveItemSelectionCommand}"
-                                IsEnabled="{Binding ItemsIsTrue}"/>
+                                IsEnabled="{Binding ItemsIsTrue}">
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock Text="Cancel selection"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                     </Border>
                     <Border Height="35" Width="165" Margin="0,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
@@ -125,7 +131,13 @@
                                 Command="{Binding StructuralOpenCommand}" 
                                 IsEnabled="{Binding StructIsTrue}"
                                 Background="{x:Null}" BorderBrush="{x:Null}" 
-                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14">
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock Text="Open structural sets"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                     </Border>
                     <Border Width="165" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
@@ -133,7 +145,13 @@
                                 Command="{Binding ArchOpenCommand}" 
                                 IsEnabled="{Binding ArchIsTrue}"
                                 Background="{x:Null}" BorderBrush="{x:Null}" 
-                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14">
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock Text="Open arhitectural sets"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                     </Border>
                     <Border Width="165" Height="35" Margin="10,0,10,0" BorderThickness="2,2,2,2" 
                             CornerRadius="2,2,2,2" BorderBrush="#FF788896" Background="#FF788896">
@@ -141,7 +159,13 @@
                                 Command="{Binding MasterOpenCommand}" 
                                 IsEnabled="{Binding MasterIsTrue}"
                                 Background="{x:Null}" BorderBrush="{x:Null}" 
-                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
+                                Foreground="White" FontFamily="Bahnschrift Light" FontSize="14">
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock Text="Open master set"/>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                     </Border>
                 </StackPanel>
             </Border>
@@ -169,9 +193,10 @@
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Background="#FFE1E5EC"
-                           Orientation="Horizontal"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"/>
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                            </WrapPanel>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -204,13 +229,22 @@
                 <Button Command="{Binding AddProjectPathCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}">
                     <Image Source="/Views/Resourses/add path.png"/>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Select and add project path"/>
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
             </Border>
             <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
                 <Button Command="{Binding RemoveProjectPathCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}">
                     <Image Source="/Views/Resourses/remove path.png"/>
-
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Clear all project paths"/>
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
             </Border>
         </StackPanel>
@@ -219,12 +253,26 @@
                         BorderBrush="{x:Null}" Background="{x:Null}"
                         Width="45" Margin="0,0,0,0">
                 <Image Source="{Binding FavoriteImageSourse}" Width="40"/>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Add to favorite"/>
+                    </ToolTip>
+                </Button.ToolTip>
             </Button>
             <Button Command="{Binding UpdateCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}" Width="45" Margin="0,10,0,0">
                 <Image Source="/Views/Resourses/update.png"/>
-
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Update folders"/>
+                    </ToolTip>
+                </Button.ToolTip>
             </Button>
         </StackPanel>
+        <Popup Name="InfoPopup" Placement="Mouse" StaysOpen="False" AllowsTransparency="True">
+            <Border Background="LightGray" CornerRadius="5" Padding="10">
+                <TextBlock Name="PopupText" Text="Info about the item"/>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

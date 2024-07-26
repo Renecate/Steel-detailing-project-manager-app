@@ -1,12 +1,15 @@
 ﻿using ESD.PM.ViewModels;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Point = System.Windows.Point;
 
 namespace ESD.PM.Views
 {
     public partial class MainWindow : Window
     {
+
         public MainWindowViewModel mainWindowViewModel { get; set; }
         public MainWindow()
         {

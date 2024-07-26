@@ -95,7 +95,7 @@
                             <TextBlock Text="{Binding Name}"
                                        AllowDrop="True"
                                        Drop="FileDropListBox_Drop">
-                                
+
                             </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
