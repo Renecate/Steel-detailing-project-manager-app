@@ -536,9 +536,12 @@ namespace ESD.PM.Models
         private void OnHideFolder(object obj)
         {
             HideFolder = true;
-            var settingsPoint = _appSettings.SavedFolders.IndexOf(FolderSettings);
-            _appSettings.SavedFolders[settingsPoint].HideFolder = HideFolder;
-            SettingsManager.SaveSettings(_appSettings);
+            if (FolderSettings != null)
+            {
+                var settingsPoint = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                _appSettings.SavedFolders[settingsPoint].HideFolder = HideFolder;
+                SettingsManager.SaveSettings(_appSettings);
+            }
         }
 
         private void OnRenameFolder(object obj)
