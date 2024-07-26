@@ -74,6 +74,8 @@ namespace ESD.PM.ViewModels
 
         private ProjectsModel _selectedFolder;
 
+        private string _itemsPath;
+
         private AppSettings appSettings;
 
         private ObservableCollection<FoldersViewModel> folders;
@@ -207,8 +209,26 @@ namespace ESD.PM.ViewModels
                     appSettings.FavoriteProjects.Add(selectedProject.FullName);
                     foreach (var folder in Directory.GetDirectories(selectedProject.FullName))
                     {
-                        var vm = new FoldersViewModel(folder);
-                        appSettings.SavedFolders.Add(vm);
+                        if (folder.EndsWith("Items"))
+                        {
+
+                        }
+                        else
+                        {
+                            var vm = new FoldersViewModel(folder, appSettings);
+                            appSettings.SavedFolders.Add(vm);
+                        }
+                    }
+                    if (ItemsIsTrue)
+                    {
+                        foreach (var itemFolder in Directory.GetDirectories(_itemsPath))
+                        {
+                            foreach (var folder in Directory.GetDirectories(itemFolder))
+                            {
+                                var vm = new FoldersViewModel(folder, appSettings);
+                                appSettings.SavedFolders.Add(vm);
+                            }
+                        }
                     }
                     selectedProject.Favorite = true;
                     var index = ProjectsNames.IndexOf(selectedProject);
@@ -233,6 +253,7 @@ namespace ESD.PM.ViewModels
                     LoadProjectsAsync();
                 }
                 SettingsManager.SaveSettings(appSettings);
+                OnUpdate(this);
             }
             CheckIfFavorite();
         }
@@ -382,11 +403,16 @@ namespace ESD.PM.ViewModels
                 {
                     count++;
                     ItemsIsTrue = true;
+                    _itemsPath = folder;
                 }
                 else
                 {
-                    var vm = new FoldersViewModel(folder);
+                    var vm = new FoldersViewModel(folder, appSettings);
                     Folders.Add(vm);
+                    if (vm.HideFolder == true)
+                    {
+                        OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolder)));
+                    }
                 }
             }
             if (count != 0)
@@ -506,7 +532,12 @@ namespace ESD.PM.ViewModels
             {
                 foreach (var folder in Directory.GetDirectories(_selectedItem.FullName))
                 {
-                    Folders.Add(new FoldersViewModel(folder));
+                    var vm = new FoldersViewModel(folder, appSettings);
+                    Folders.Add(vm);
+                    if (vm.HideFolder == true)
+                    {
+                        OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolder)));
+                    }
                 }
             }
         }
@@ -563,7 +594,12 @@ namespace ESD.PM.ViewModels
                 if (folder.ShowFolder)
                 {
                     HiddenFolders.Remove(folder);
-                    Folders.Add(new FoldersViewModel(folder.FullName));
+                    var vm = (new FoldersViewModel(folder.FullName, appSettings));
+                    Folders.Add(vm);
+                    vm.HideFolder = false;
+                    var settingsPoint = appSettings.SavedFolders.IndexOf(vm.FolderSettings);
+                    appSettings.SavedFolders[settingsPoint].HideFolder = vm.HideFolder;
+                    SettingsManager.SaveSettings(appSettings);
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using ESD.PM.Commands;
+using ESD.PM.ViewModels;
 using ESD.PM.Views;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -27,7 +28,7 @@ namespace ESD.PM.Models
         [JsonIgnore]
         public ObservableCollection<FoldersModel> FolderList { get; set; }
 
-        [JsonProperty]
+        [JsonIgnore]
         public ObservableCollection<FoldersModel> FilteredDocsList { get; set; }
 
         [JsonIgnore]
@@ -48,13 +49,27 @@ namespace ESD.PM.Models
         [JsonProperty]
         public bool HideFolder
         {
-            get => hideFolder;
+            get { return _hideFolder; }
             set
             {
-                if (hideFolder != value)
+                if (_hideFolder != value)
                 {
-                    hideFolder = value;
+                    _hideFolder = value;
                     OnPropertyChanged(nameof(HideFolder));
+                }
+            }
+        }
+
+        [JsonProperty]
+        public bool ViewIsToggled
+        {
+            get { return _viewIsToggled; }
+            set
+            {
+                if (_viewIsToggled != value)
+                {
+                    _viewIsToggled = value;
+                    OnPropertyChanged(nameof(ViewIsToggled));
                 }
             }
         }
@@ -69,6 +84,9 @@ namespace ESD.PM.Models
                 OnPropertyChanged(nameof(SelectedFolderName));
             }
         }
+
+        [JsonIgnore]
+        public FoldersViewModel FolderSettings { get; set; }
 
         #endregion
 
@@ -105,21 +123,41 @@ namespace ESD.PM.Models
         #region Private Properties
 
         private FoldersModel _selectedFolderName { get; set; }
+
         private bool _viewIsToggled;
-        private bool hideFolder;
+        private bool _hideFolder;
+
         private ObservableCollection<FoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
+        private AppSettings _appSettings { get; set; }
+
 
         #endregion
 
         #region Constructor
 
-        public FoldersViewModel(string fullName)
+        public FoldersViewModel(string fullName, AppSettings appSettings)
         {
+
+            if (appSettings != null)
+            {
+                foreach (var folder in appSettings.SavedFolders)
+                {
+                    if (folder.FullName == fullName)
+                    {
+                        _appSettings = appSettings;
+                        FolderSettings = folder;
+                        break;
+                    }
+                }
+            }
+
             FullName = fullName;
             Name = new DirectoryInfo(fullName).Name;
-            hideFolder = false;
+
+            HideFolder = false;
             _viewIsToggled = false;
+
             PathList = new List<string>();
             FolderList = new ObservableCollection<FoldersModel>();
             Tags = new ObservableCollection<TagsModel>();
@@ -129,9 +167,8 @@ namespace ESD.PM.Models
             _tagsToRemove = new ObservableCollection<TagsModel>();
             _iterationList = new ObservableCollection<FoldersModel>();
 
+            ViewIsHiddenOrToggledCheck();
             GetFolders();
-            ProcessLocalList();
-            FilterFolders();
             ToggleViewCheck();
 
             OpenCommand = new DelegateCommand(OnOpen);
@@ -143,6 +180,7 @@ namespace ESD.PM.Models
             HideFolderCommand = new DelegateCommand(OnHideFolder);
             RenameFolderCommand = new DelegateCommand(OnRenameFolder);
             CreateFolderCommand = new DelegateCommand(OnCreateFolder);
+
         }
 
         #endregion
@@ -167,8 +205,12 @@ namespace ESD.PM.Models
             {
                 FilterFolders();
                 var changedTag = (TagsModel)sender;
-                bool newState = changedTag.State;
-                string tagName = changedTag.Name;
+                if (FolderSettings != null) 
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
             }
         }
 
@@ -230,36 +272,45 @@ namespace ESD.PM.Models
 
         private void ToggleViewCheck()
         {
-            if (Tags.Count > 0)
+            if (ViewIsToggled)
             {
-                ToggleViewCommandActive = false;
-                OnPropertyChanged(nameof(ToggleViewCommandActive));
-            }
-
-            else if (Tags.Count == 0 && FolderList.Count() == 0)
-            {
-                ToggleViewCommandActive = false;
-                OnPropertyChanged(nameof(ToggleViewCommandActive));
+                ToggleViewCommandActive = true;
             }
             else
             {
-                ToggleViewCommandActive = true;
-                OnPropertyChanged(nameof(ToggleViewCommandActive));
+                if (Tags.Count > 0)
+                {
+                    ToggleViewCommandActive = false;
+                    OnPropertyChanged(nameof(ToggleViewCommandActive));
+                }
+
+                else if (Tags.Count == 0 && FolderList.Count() == 0)
+                {
+                    ToggleViewCommandActive = false;
+                    OnPropertyChanged(nameof(ToggleViewCommandActive));
+                }
+                else
+                {
+                    ToggleViewCommandActive = true;
+                    OnPropertyChanged(nameof(ToggleViewCommandActive));
+                }
             }
         }
 
         private void GetFolders()
         {
             PathList.Clear();
+            _iterationList = new ObservableCollection<FoldersModel>();
+            foreach (var item in Directory.GetDirectories(FullName))
+            {
+                _iterationList.Add(new FoldersModel(item));
+            }
             if (_viewIsToggled == false)
             {
                 FolderList.Clear();
                 PathList.Add(FullName);
-                foreach (var item in Directory.GetDirectories(FullName))
-                {
-                    FolderList.Add(new FoldersModel(item));
-                }
-                _iterationList = new ObservableCollection<FoldersModel>(FolderList);
+                FolderList = new ObservableCollection<FoldersModel>(_iterationList);
+
             }
             if (_viewIsToggled == true)
             {
@@ -273,11 +324,17 @@ namespace ESD.PM.Models
                     }
                 }
             }
+            ProcessLocalList();
+            FilterFolders();
         }
 
         private void ProcessLocalList()
         {
             UntaggedDocsList.Clear();
+            if (FolderSettings != null)
+            {
+                Tags = FolderSettings.Tags;
+            }
             foreach (var folder in FolderList)
             {
                 var parts = folder.Name.Split("-");
@@ -312,6 +369,12 @@ namespace ESD.PM.Models
             if (!Tags.Any(t => t.Name == tag))
             {
                 Tags.Add(new TagsModel(tag));
+                if (FolderSettings != null) 
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
             }
         }
 
@@ -357,6 +420,22 @@ namespace ESD.PM.Models
             int maxNumber = numbers.Max();
             return maxNumber + 1;
         }
+
+        private void ViewIsHiddenOrToggledCheck()
+        {
+            if (FolderSettings != null)
+            {
+                if (FolderSettings.HideFolder)
+                {
+                    OnHideFolder(this);
+                }
+                if (FolderSettings.ViewIsToggled)
+                {
+                    _viewIsToggled = FolderSettings.ViewIsToggled;
+                }
+            }
+        }
+
         #endregion
 
         #region Commands Methods
@@ -376,6 +455,12 @@ namespace ESD.PM.Models
                 UntaggedDocsList.Clear();
                 TaggedDocsList.Clear();
                 _viewIsToggled = false;
+                if (FolderSettings != null)
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
                 GetFolders();
                 ProcessLocalList();
                 FilterFolders();
@@ -387,6 +472,12 @@ namespace ESD.PM.Models
                 UntaggedDocsList.Clear();
                 TaggedDocsList.Clear();
                 _viewIsToggled = true;
+                if (FolderSettings != null)
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
                 GetFolders();
                 ProcessLocalList();
                 FilterFolders();
@@ -445,6 +536,9 @@ namespace ESD.PM.Models
         private void OnHideFolder(object obj)
         {
             HideFolder = true;
+            var settingsPoint = _appSettings.SavedFolders.IndexOf(FolderSettings);
+            _appSettings.SavedFolders[settingsPoint].HideFolder = HideFolder;
+            SettingsManager.SaveSettings(_appSettings);
         }
 
         private void OnRenameFolder(object obj)
