@@ -5,8 +5,9 @@ namespace ESD.PM.Views
 {
     public partial class CreateFolderDialog : Window
     {
+        public string SelectedTag { get; set; }
         public string OrderNumber { get; set; }
-        public string FolderTag { get; set; }
+        public List<string> FolderTag { get; set; }
         public string Date { get; set; }
         public string FolderName { get; set; }
         public List<string> CreationPath { get; set; }
@@ -15,21 +16,18 @@ namespace ESD.PM.Views
             get { return _selectedPath; }
             set { _selectedPath = value; }
         }
-
+        
         private string _selectedPath;
 
         public CreateFolderDialog(int initialOrderNumber, List<string> creationPath)
         {
             InitializeComponent();
 
-            var windowPosition = Mouse.GetPosition(this);
-            var screenPosition = this.PointToScreen(windowPosition);
-
-            this.Top = screenPosition.Y;
-            this.Left = screenPosition.X;
-
             OrderNumber = ($"({initialOrderNumber})");
-            FolderTag = string.Empty;
+            FolderTag = new List<string>()
+            {
+                "CD", "DC", "FA", "FC", "FM", "FF", "OD", "OR", "RR" 
+            };
             Date = DateTime.Now.Date.ToString("MM.dd.yyyy");
             FolderName = "New Folder";
 

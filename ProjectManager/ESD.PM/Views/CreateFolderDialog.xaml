@@ -18,7 +18,9 @@
             <TextBox Name="OrderNumberTextBox" Text="{Binding OrderNumber}" Width="75" Margin="0,0,15,0"/>
 
             <TextBlock VerticalAlignment="Center" Text="Tag:" Margin="0,0,5,0"/>
-            <TextBox Name="TagTextBox" Text="{Binding FolderTag}" MaxLength="2" Width="50" Margin="0,0,15,0"/>
+            <ComboBox Name = "comboBox" IsEditable="True" Width="50" 
+                      Margin="0,0,15,0" Text="{Binding SelectedTag, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding FolderTag}"
+                      IsReadOnly="False"/>
 
             <TextBlock VerticalAlignment="Center" Text="Date:" Margin="0,0,5,0"/>
             <TextBox Name="DateTextBox" Text="{Binding Date}" Width ="140" MaxWidth="140"/>

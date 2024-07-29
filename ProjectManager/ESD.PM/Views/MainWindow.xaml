@@ -96,7 +96,7 @@
                         <ComboBox Name="ItemsComboBox" Width="316"  
                                   ItemsSource="{Binding DisplayItemsNames}" SelectedItem="{Binding SelectedItem}" 
                                   FontSize="20" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False"
-                                  IsEnabled="{Binding ItemsIsTrue}"
+                                  IsEnabled="{Binding ItemsIsTrue}" 
                                   BorderBrush="{x:Null}" BorderThickness="0,0,0,0" FontFamily="Bahnschrift Light">
                         </ComboBox>
                     </Border>

@@ -592,12 +592,24 @@ namespace ESD.PM.Models
                 int orderNumber = GetOrderNumber();
                 var pathList = PathList;
                 var dialog = new CreateFolderDialog(orderNumber, pathList);
+                var localTags = string.Empty;
+                if (Tags != null)
+                {
+                    foreach (var tag in Tags)
+                    {
+                        if (!dialog.FolderTag.Any(t => t == tag.Name))
+                        {
+                            dialog.FolderTag.Add(tag.Name);
+                        }
+                    }
+                }
+                dialog.FolderTag.Sort();
                 if (dialog.ShowDialog() == true)
                 {
                     var collection = new List<string>()
                     {
                         dialog.OrderNumber,
-                        dialog.FolderTag,
+                        dialog.SelectedTag.Substring(0,2),
                         dialog.Date,
                         dialog.FolderName
                     };

@@ -12,11 +12,6 @@ namespace ESD.PM.Views
         public RenameDialog(string filename)
         {
             InitializeComponent();
-            var windowPosition = Mouse.GetPosition(this);
-            var screenPosition = this.PointToScreen(windowPosition);
-
-            this.Top = screenPosition.Y;
-            this.Left = screenPosition.X;
             FolderNameTextBox.Text = filename;
             FolderNameTextBox.SelectAll();
             FolderNameTextBox.Focus();

@@ -48,3 +48,7 @@ ProjectManager/.vs/ProjectManager/DesignTimeBuild/.dtbcache.v2
 /ProjectManager/ESD.PM/bin/Debug
 /ProjectManager/.vs/ProjectManager/v17
 /ProjectManager/.vs/ProjectManager/DesignTimeBuild
+/ProjectManager/ESD.PM/obj
+/ProjectManager/ESD.PM/obj/Release
+ProjectManager/ESD.PM/obj/Debug/net8.0-windows
+*.baml

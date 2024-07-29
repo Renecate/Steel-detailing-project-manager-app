@@ -51,8 +51,8 @@ namespace ESD.PM.Views
 
                 var windowPosition = Mouse.GetPosition(this);
                 var screenPosition = this.PointToScreen(windowPosition);
-                popup.HorizontalOffset = screenPosition.X + 6;
-                popup.VerticalOffset = screenPosition.Y + 1;
+                popup.HorizontalOffset = screenPosition.X + 5;
+                popup.VerticalOffset = screenPosition.Y - 10;
 
                 if (currentPopup == popup)
                 {

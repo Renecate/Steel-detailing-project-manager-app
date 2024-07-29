@@ -14,7 +14,6 @@ namespace ESD.PM.Models
 {
     public class FoldersModel : FileModel
     {
-        public DelegateCommand OpenCommand { get; set; }
         public FileModel SelectedFileName
         {
             get { return _selectedFileName; }
@@ -26,7 +25,7 @@ namespace ESD.PM.Models
         }
         public ObservableCollection<FileModel> InsideFiles { get; set; }
 
-        private DelegateCommand OpenFileCommand { get; set; }
+        public DelegateCommand OpenFileCommand { get; set; }
 
         private FileModel _selectedFileName;
 
@@ -40,7 +39,7 @@ namespace ESD.PM.Models
 
             GetInsideFiles();
 
-            OpenCommand = new DelegateCommand(OnOpen);
+            OpenFileCommand = new DelegateCommand(OnOpenFile);
         }
 
         private void GetInsideFiles()
@@ -56,7 +55,7 @@ namespace ESD.PM.Models
             OnPropertyChanged(nameof(InsideFiles));
         }
 
-        private void OnOpen(object obj)
+        private void OnOpenFile(object obj)
         {
             if (_selectedFileName != null)
                 Process.Start(new ProcessStartInfo("explorer.exe", _selectedFileName.FullName));
