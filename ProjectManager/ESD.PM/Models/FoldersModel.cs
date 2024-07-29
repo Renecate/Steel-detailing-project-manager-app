@@ -58,8 +58,12 @@ namespace ESD.PM.Models
         private void OnOpenFile(object obj)
         {
             if (_selectedFileName != null)
-                Process.Start(new ProcessStartInfo("explorer.exe", _selectedFileName.FullName));
-
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = "explorer.exe";
+                startInfo.Arguments = "\"" + _selectedFileName.FullName + "\"";
+                Process.Start(startInfo);
+            }
         }
     }
 }
