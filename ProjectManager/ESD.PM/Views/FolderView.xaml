@@ -94,22 +94,43 @@
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"
                                        AllowDrop="True"
-                                       Drop="FileDropListBox_Drop">
-
+                                       Drop="FileDropListBox_Drop"
+                                       MouseEnter="TextBlock_MouseEnter"
+                                       MouseLeave="TextBlock_MouseLeave">
+                                <Popup Name="popup"
+                                       Placement="Right"
+                                       IsOpen="{Binding IsPopupOpen, Mode=TwoWay}">
+                                    <Border Background="White" BorderBrush="Black" BorderThickness="1"
+                                            MinWidth="250" MinHeight="100" MaxWidth="600" MaxHeight="600">
+                                        <ListBox ItemsSource="{Binding InsideFiles}" 
+                                                 SelectedItem="{Binding SelectedFileName}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}"/>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>  
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                                    <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>                                                
+                                        </ListBox>
+                                    </Border>
+                                </Popup>
                             </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Copy path" Command="{Binding CopyPathCommand}"/>
                             <MenuItem Header="Rename" Command="{Binding RenameFolderCommand}"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </ListBox>
             </Border>
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">

@@ -611,9 +611,12 @@ namespace ESD.PM.ViewModels
                     var vm = (new FoldersViewModel(folder.FullName, appSettings));
                     Folders.Add(vm);
                     vm.HideFolder = false;
-                    var settingsPoint = appSettings.SavedFolders.IndexOf(vm.FolderSettings);
-                    appSettings.SavedFolders[settingsPoint].HideFolder = vm.HideFolder;
-                    SettingsManager.SaveSettings(appSettings);
+                    if (vm.FolderSettings != null) 
+                    {
+                        var settingsPoint = appSettings.SavedFolders.IndexOf(vm.FolderSettings);
+                        appSettings.SavedFolders[settingsPoint].HideFolder = vm.HideFolder;
+                        SettingsManager.SaveSettings(appSettings);
+                    }
                 }
             }
         }

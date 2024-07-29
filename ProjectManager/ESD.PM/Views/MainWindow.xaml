@@ -269,10 +269,5 @@
                 </Button.ToolTip>
             </Button>
         </StackPanel>
-        <Popup Name="InfoPopup" Placement="Mouse" StaysOpen="False" AllowsTransparency="True">
-            <Border Background="LightGray" CornerRadius="5" Padding="10">
-                <TextBlock Name="PopupText" Text="Info about the item"/>
-            </Border>
-        </Popup>
     </Grid>
 </Window>

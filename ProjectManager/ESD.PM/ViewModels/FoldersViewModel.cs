@@ -88,6 +88,17 @@ namespace ESD.PM.Models
         [JsonIgnore]
         public FoldersViewModel FolderSettings { get; set; }
 
+        [JsonIgnore]
+        public bool IsPopupOpen
+        {
+            get { return isPopupOpen; }
+            set
+            {
+                isPopupOpen = value;
+                OnPropertyChanged(nameof(IsPopupOpen));
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -126,11 +137,11 @@ namespace ESD.PM.Models
 
         private bool _viewIsToggled;
         private bool _hideFolder;
+        private bool isPopupOpen;
 
         private ObservableCollection<FoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
         private AppSettings _appSettings { get; set; }
-
 
         #endregion
 
@@ -550,6 +561,7 @@ namespace ESD.PM.Models
             {
                 var dialog = new RenameDialog(_selectedFolderName.Name);
                 if (dialog.ShowDialog() == true)
+
                 {
                     var rootPath = _selectedFolderName.FullName.Replace(_selectedFolderName.Name, "").TrimEnd('\\');
                     var newFolderName = dialog.NewFolderName;

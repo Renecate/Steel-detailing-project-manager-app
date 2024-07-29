@@ -1,6 +1,9 @@
-﻿using System;
+﻿using ESD.PM.Commands;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,50 +12,55 @@ using System.Threading.Tasks;
 
 namespace ESD.PM.Models
 {
-    public class FoldersModel : INotifyPropertyChanged
+    public class FoldersModel : FileModel
     {
-        private string _name;
-
-        private string _fullName;
-
-        public string Name
+        public DelegateCommand OpenCommand { get; set; }
+        public FileModel SelectedFileName
         {
-            get { return _name; }
+            get { return _selectedFileName; }
             set
             {
-                _name = value;
-                OnPropertyChanged(nameof(Name));
+                _selectedFileName = value;
+                OnPropertyChanged(nameof(SelectedFileName));
             }
         }
+        public ObservableCollection<FileModel> InsideFiles { get; set; }
 
-        public string FullName
-        {
-            get { return _fullName; }
-            set
-            {
-                _fullName = value;
-                OnPropertyChanged(nameof(FullName));
-            }
-        }
+        private DelegateCommand OpenFileCommand { get; set; }
 
-        public FoldersModel(string name)
+        private FileModel _selectedFileName;
+
+        public FoldersModel(string name) : base(name)
         {
             Name = new DirectoryInfo(name).Name;
 
             FullName = new DirectoryInfo(name).FullName;
 
+            InsideFiles = new ObservableCollection<FileModel>();
+
+            GetInsideFiles();
+
+            OpenCommand = new DelegateCommand(OnOpen);
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        private void GetInsideFiles()
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            foreach (var file in Directory.GetDirectories(FullName))
+            {
+                InsideFiles.Add(new FileModel(file));
+            }
+            foreach (var file in Directory.GetFiles(FullName))
+            {
+                InsideFiles.Add(new FileModel(file));
+            }
+            OnPropertyChanged(nameof(InsideFiles));
         }
 
-        public override string ToString()
+        private void OnOpen(object obj)
         {
-            return Name;
+            if (_selectedFileName != null)
+                Process.Start(new ProcessStartInfo("explorer.exe", _selectedFileName.FullName));
+
         }
     }
 }

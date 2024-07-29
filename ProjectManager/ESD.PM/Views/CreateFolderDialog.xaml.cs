@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace ESD.PM.Views
 {
@@ -20,6 +21,12 @@ namespace ESD.PM.Views
         public CreateFolderDialog(int initialOrderNumber, List<string> creationPath)
         {
             InitializeComponent();
+
+            var windowPosition = Mouse.GetPosition(this);
+            var screenPosition = this.PointToScreen(windowPosition);
+
+            this.Top = screenPosition.Y;
+            this.Left = screenPosition.X;
 
             OrderNumber = ($"({initialOrderNumber})");
             FolderTag = string.Empty;
