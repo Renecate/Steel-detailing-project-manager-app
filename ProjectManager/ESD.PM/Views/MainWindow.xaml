@@ -177,7 +177,7 @@
             </ScrollViewer>
         </Border>
 
-        <Border Grid.Row="4" Grid.Column="1" BorderThickness="0,2,0,0">
+        <Border Grid.Row="4" Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="{x:Null}">
             <ItemsControl ItemsSource="{Binding HiddenFolders}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

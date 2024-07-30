@@ -318,31 +318,34 @@ namespace ESD.PM.Models
         {
             PathList.Clear();
             _iterationList = new ObservableCollection<FoldersModel>();
-            foreach (var item in Directory.GetDirectories(FullName))
+            if (Directory.Exists(FullName))
             {
-                _iterationList.Add(new FoldersModel(item));
-            }
-            if (_viewIsToggled == false)
-            {
-                FolderList.Clear();
-                PathList.Add(FullName);
-                FolderList = new ObservableCollection<FoldersModel>(_iterationList);
-
-            }
-            if (_viewIsToggled == true)
-            {
-                FolderList.Clear();
-                foreach (var folder in _iterationList)
+                foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    PathList.Add(folder.FullName);
-                    foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
+                    _iterationList.Add(new FoldersModel(item));
+                }
+                if (_viewIsToggled == false)
+                {
+                    FolderList.Clear();
+                    PathList.Add(FullName);
+                    FolderList = new ObservableCollection<FoldersModel>(_iterationList);
+
+                }
+                if (_viewIsToggled == true)
+                {
+                    FolderList.Clear();
+                    foreach (var folder in _iterationList)
                     {
-                        FolderList.Add(new FoldersModel(insideFolder));
+                        PathList.Add(folder.FullName);
+                        foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
+                        {
+                            FolderList.Add(new FoldersModel(insideFolder));
+                        }
                     }
                 }
+                ProcessLocalList();
+                FilterFolders();
             }
-            ProcessLocalList();
-            FilterFolders();
         }
 
         private void ProcessLocalList()

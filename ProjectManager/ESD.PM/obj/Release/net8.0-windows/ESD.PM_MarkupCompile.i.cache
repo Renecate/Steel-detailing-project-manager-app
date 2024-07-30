@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\
 ESD.PM
 none
 false
 TRACE;RELEASE;NET;NET8_0;NETCOREAPP
-C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\App.xaml
 7-1597671037
 11048287951
 231029114727
-210637711232
+210-2076586940
 Views\AddItemDialog.xaml;Views\CreateFolderDialog.xaml;Views\CreateProjectDialog.xaml;Views\FolderView.xaml;Views\HiddenFolderView.xaml;Views\MainWindow.xaml;Views\RenameDialog.xaml;
 
-False
+True
 

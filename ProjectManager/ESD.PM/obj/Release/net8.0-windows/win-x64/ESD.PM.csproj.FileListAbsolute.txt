@@ -26,21 +26,13 @@ C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\ESD.PM.runtimeconfig.json
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\ESD.PM.dll
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\ESD.PM.pdb
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Caliburn.Micro.Platform.Core.dll
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Caliburn.Micro.Platform.dll
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Caliburn.Micro.Core.dll
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Microsoft.Xaml.Behaviors.dll
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\bin\Release\net8.0-windows\win-x64\Newtonsoft.Json.dll
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.csproj.AssemblyReference.cache
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\UserControl1.g.cs
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\ShellView.g.cs
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\App.g.cs
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\GeneratedInternalTypeHelper.g.cs
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM_MarkupCompile.cache
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM_MarkupCompile.lref
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\App.baml
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\UserControl1.baml
-C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\ShellView.baml
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.g.resources
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.GeneratedMSBuildEditorConfig.editorconfig
 C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.AssemblyInfoInputs.cache
@@ -73,3 +65,18 @@ C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\ne
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\RenameDialog.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Interop.Shell32.dll
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.csproj.ResolveComReference.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Interop.Shell32.dll
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM.csproj.ResolveComReference.cache
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\CreateFolderDialog.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\FolderView.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\RenameDialog.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\AddItemDialog.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\CreateFolderDialog.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\FolderView.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\HiddenFolderView.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\MainWindow.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\RenameDialog.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\ESD.PM_Content.g.cs
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\AddItemDialog.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\HiddenFolderView.baml
+C:\Dev\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Release\net8.0-windows\win-x64\Views\MainWindow.baml
