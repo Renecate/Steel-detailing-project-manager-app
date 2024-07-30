@@ -25,14 +25,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="Border">
-            <Setter Property="BorderBrush" Value="#FFB9C4CE"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="DarkBlue"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </Window.Resources>
     <Grid Background="#FFC3CFD9">
         <Grid.ColumnDefinitions>

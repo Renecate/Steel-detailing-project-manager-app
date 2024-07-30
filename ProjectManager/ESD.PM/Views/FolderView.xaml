@@ -12,6 +12,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="#FFB9C4CE"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="DarkBlue"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Border BorderThickness="2,2,2,2" CornerRadius="5"
     Background="#FFE1E5EC" Style="{StaticResource HighlightOnMouseOver}">
