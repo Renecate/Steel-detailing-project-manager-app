@@ -5,7 +5,8 @@ namespace ESD.PM.Models
 {
     public static class SettingsManager
     {
-        private static readonly string settingsFilePath = "appsettings.json";
+        private static readonly string settingsDirectoryPath = @"C:\ESD.PM";
+        private static readonly string settingsFilePath = Path.Combine(settingsDirectoryPath, "appsettings.json");
 
         public static AppSettings LoadSettings()
         {
@@ -27,6 +28,11 @@ namespace ESD.PM.Models
 
         public static void SaveSettings(AppSettings settings)
         {
+            if (!Directory.Exists(settingsDirectoryPath))
+            {
+                Directory.CreateDirectory(settingsDirectoryPath);
+            }
+
             var json = JsonConvert.SerializeObject(settings, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,

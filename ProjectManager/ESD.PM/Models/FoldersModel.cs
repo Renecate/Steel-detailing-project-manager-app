@@ -1,14 +1,8 @@
 ﻿using ESD.PM.Commands;
-using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ESD.PM.Models
 {
@@ -42,16 +36,24 @@ namespace ESD.PM.Models
             OpenFileCommand = new DelegateCommand(OnOpenFile);
         }
 
-        private void GetInsideFiles()
+        private async Task GetInsideFiles()
         {
-            foreach (var file in Directory.GetDirectories(FullName))
+            var insideFiles = new ConcurrentBag<FileModel>();
+
+            await Task.Run(() =>
             {
-                InsideFiles.Add(new FileModel(file));
-            }
-            foreach (var file in Directory.GetFiles(FullName))
-            {
-                InsideFiles.Add(new FileModel(file));
-            }
+                Parallel.ForEach(Directory.GetDirectories(FullName), (directory) =>
+                {
+                    insideFiles.Add(new FileModel(directory));
+                });
+
+                Parallel.ForEach(Directory.GetFiles(FullName), (file) =>
+                {
+                    insideFiles.Add(new FileModel(file));
+                });
+            });
+
+            InsideFiles = new ObservableCollection<FileModel>(insideFiles);
             OnPropertyChanged(nameof(InsideFiles));
         }
 

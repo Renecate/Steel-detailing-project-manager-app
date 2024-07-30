@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 
 namespace ESD.PM.Views
 {
@@ -16,7 +15,7 @@ namespace ESD.PM.Views
             get { return _selectedPath; }
             set { _selectedPath = value; }
         }
-        
+
         private string _selectedPath;
 
         public CreateFolderDialog(int initialOrderNumber, List<string> creationPath)
@@ -26,7 +25,7 @@ namespace ESD.PM.Views
             OrderNumber = ($"({initialOrderNumber})");
             FolderTag = new List<string>()
             {
-                "CD", "DC", "FA", "FC", "FM", "FF", "OD", "OR", "RR" 
+                "CD", "DC", "FA", "FC", "FM", "FF", "OD", "OR", "RR"
             };
             Date = DateTime.Now.Date.ToString("MM.dd.yyyy");
             FolderName = "New Folder";

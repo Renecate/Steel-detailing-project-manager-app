@@ -71,3 +71,5 @@ C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\RenameDialog.g.cs
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\CreateFolderDialog.baml
 C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Views\CreateFolderDialog.g.cs
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\Interop.Shell32.dll
+C:\Work stuff\Repos\Calibrum_ProjectManager\ProjectManager\ESD.PM\obj\Debug\net8.0-windows\ESD.PM.csproj.ResolveComReference.cache

@@ -9,19 +9,21 @@
              Height="30" 
              MinWidth="50"
              Width="Auto"
-             Margin="1,2,1,0">
-    <Border BorderThickness="1,1,1,0" BorderBrush="#FF788896" Background="#FFC3CFD9" 
+             Margin="1,0,1,0">
+    <Border BorderThickness="2,2,2,0" BorderBrush="#FF788896" Background="#FFC3CFD9" 
             CornerRadius="5,5,0,0">
         <Grid Margin="0,5,0,0">
             <StackPanel Orientation="Horizontal" Background="#FFC3CFD9">
-                <TextBlock Text="{Binding Name}" MinWidth="50" FontFamily="Bahnschrift Light" 
-                           FontSize="18" TextWrapping="Wrap" Margin="5,0,0,0" Foreground="White">
-                </TextBlock>
-                <Button Width="25" Height="25" Margin="5,-2,5,0" Background="{x:Null}" 
+                <Button Margin="5,-2,5,0" Background="{x:Null}" 
                         BorderBrush="{x:Null}" VerticalAlignment="Top" Command="{Binding ShowFolderCommand}">
-                    <Image Source="/Views/Resourses/show.png"/>
+                    <TextBlock Text="{Binding Name}" MinWidth="50" FontFamily="Bahnschrift" 
+                           FontSize="16" Margin="5,0,0,0" Foreground="Black" MaxWidth="100" FlowDirection="LeftToRight" >
+                    </TextBlock>
                 </Button>
             </StackPanel>
         </Grid>
+        <Border.LayoutTransform>
+            <RotateTransform Angle="180"/>
+        </Border.LayoutTransform>
     </Border>
 </UserControl>

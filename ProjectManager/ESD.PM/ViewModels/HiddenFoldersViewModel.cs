@@ -23,6 +23,10 @@ namespace ESD.PM.ViewModels
 
         public HiddenFoldersViewModel(string name) : base(name)
         {
+            if (Name.Count() > 12)
+            {
+                Name = Name.Substring(0, 10) + "...";
+            }
             showFolder = false;
             ShowFolderCommand = new DelegateCommand(OnShowFolder);
         }

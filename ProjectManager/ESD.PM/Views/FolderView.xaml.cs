@@ -4,10 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
-using ListBox = System.Windows.Controls.ListBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace ESD.PM.Views
@@ -47,18 +45,21 @@ namespace ESD.PM.Views
             if (popup != null)
             {
                 currentPopup = popup;
-                await Task.Delay(400);
+                await Task.Delay(100);
 
-                var windowPosition = Mouse.GetPosition(this);
-                var screenPosition = this.PointToScreen(windowPosition);
-                popup.HorizontalOffset = screenPosition.X + 5;
-                popup.VerticalOffset = screenPosition.Y - 10;
+                if (PresentationSource.FromVisual(this) != null)
+                {
+                    var windowPosition = Mouse.GetPosition(this);
+                    var screenPosition = this.PointToScreen(windowPosition);
+                    popup.HorizontalOffset = screenPosition.X + 5;
+                    popup.VerticalOffset = screenPosition.Y;
+                }
 
                 if (currentPopup == popup)
                 {
                     popup.IsOpen = true;
                 }
-            }                                                           
+            }
         }
 
         private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
@@ -95,6 +96,31 @@ namespace ESD.PM.Views
                     }
                     e.Handled = true;
                     viewModel.FileDropCommand.Execute(files);
+                }
+            }
+        }
+
+        private async void DynamicSearch_TextChanged(object sender, EventArgs e)
+        {
+            if (DataContext is FoldersViewModel viewModel)
+            {
+                string text = DynamicSearchTextBox.Text;
+                await Task.Delay(250);
+                if (text == DynamicSearchTextBox.Text)
+                {
+                    viewModel.DynamicSearch(text);
+                }
+            }
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2) 
+            {
+                var viewModel = this.DataContext as FoldersViewModel;
+                if (viewModel != null && viewModel.OpenFolderCommand.CanExecute(null))
+                {
+                    viewModel.OpenFolderCommand.Execute(null);
                 }
             }
         }

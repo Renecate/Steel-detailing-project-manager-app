@@ -51,7 +51,7 @@ namespace ESD.PM.ViewModels
                     ProjectIsTrue = true;
                 OnPropertyChanged(nameof(ProjectIsTrue));
                 CheckIfFavorite();
-                GetFoldersOrItems();
+                GetFoldersOrItemsAsync();
             }
         }
         public ProjectsModel SelectedItem
@@ -84,6 +84,7 @@ namespace ESD.PM.ViewModels
 
         private ObservableCollection<ProjectsModel> favoriteProjectsList;
 
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         #endregion
 
         #region Commands
@@ -183,7 +184,7 @@ namespace ESD.PM.ViewModels
         }
         private void OnOpenProjectFolder(object obj)
         {
-            if (Directory.Exists(SelectedProject.FullName)) 
+            if (Directory.Exists(SelectedProject.FullName))
             {
                 Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
             }
@@ -362,7 +363,7 @@ namespace ESD.PM.ViewModels
         private void OnRemoveItemSelection(object obj)
         {
             if (SelectedItem != null)
-                GetFoldersOrItems();
+                GetFoldersOrItemsAsync();
         }
         #endregion
 
@@ -397,86 +398,88 @@ namespace ESD.PM.ViewModels
             Directory.CreateDirectory(Path.Combine(basePath, "3 - Checking"));
             Directory.CreateDirectory(Path.Combine(basePath, "4 - MiscFiles"));
         }
-        private void GetFoldersOrItems()
+        private async Task GetFoldersOrItemsAsync()
         {
-            MasterIsTrue = false;
-            StructIsTrue = false;
-            ArchIsTrue = false;
-            ItemsIsTrue = false;
-            Folders.Clear();
-            HiddenFolders.Clear();
+            var _instantlySelected = _selectedProject;
 
-            var count = 0;
-            DisplayItemsNames.Clear();
+            await Task.Delay(50);
 
-            if (SelectedProject != null)
+            if (_instantlySelected == _selectedProject)
             {
-                if (Directory.Exists(SelectedProject.FullName))
+                MasterIsTrue = false;
+                StructIsTrue = false;
+                ArchIsTrue = false;
+                ItemsIsTrue = false;
+                Folders.Clear();
+                HiddenFolders.Clear();
+
+                var count = 0;
+                DisplayItemsNames.Clear();
+
+                if (SelectedProject != null)
                 {
-                    foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
-                    {
-                        if (folder.EndsWith("Items"))
-                        {
-                            count++;
-                            ItemsIsTrue = true;
-                            _itemsPath = folder;
-                        }
-                        else
-                        {
-                            var vm = new FoldersViewModel(folder, appSettings);
-                            Folders.Add(vm);
-                            if (vm.HideFolder == true)
-                            {
-                                OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolder)));
-                            }
-                        }
-                    }
-                    if (count != 0)
+                    if (Directory.Exists(SelectedProject.FullName))
                     {
                         foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
-                            if (folder.EndsWith("Items"))
-                                foreach (var _item in Directory.GetDirectories(folder))
-                                {
-                                    DisplayItemsNames.Add(new ProjectsModel(_item));
-                                }
-                    }
-
-                    {
-                        string[] parts = null;
-                        foreach (var folder in Directory.GetFiles(_selectedProject.FullName))
                         {
-                            parts = folder.Split('\\');
-                            if (parts[parts.Length - 1].Contains("Structural"))
+                            if (folder.EndsWith("Items"))
                             {
-                                StructIsTrue = true;
+                                count++;
+                                ItemsIsTrue = true;
+                                _itemsPath = folder;
                             }
-                            if (parts[parts.Length - 1].Contains("Architectural"))
+                            else
                             {
-                                ArchIsTrue = true;
+                                var vm = new FoldersViewModel(folder, appSettings);
+                                Folders.Add(vm);
+                                if (vm.HideFolder == true)
+                                {
+                                    OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolder)));
+                                }
                             }
-                            parts = folder.Split('\\');
-                            if (parts[parts.Length - 1].Contains("Master"))
+                        }
+                        if (count != 0)
+                        {
+                            foreach (var folder in Directory.GetDirectories(_selectedProject.FullName))
+                                if (folder.EndsWith("Items"))
+                                    foreach (var _item in Directory.GetDirectories(folder))
+                                    {
+                                        DisplayItemsNames.Add(new ProjectsModel(_item));
+                                    }
+                        }
+
+                        {
+                            string[] parts = null;
+                            foreach (var folder in Directory.GetFiles(_selectedProject.FullName))
                             {
-                                MasterIsTrue = true;
+                                parts = folder.Split('\\');
+                                if (parts[parts.Length - 1].Contains("Structural"))
+                                {
+                                    StructIsTrue = true;
+                                }
+                                if (parts[parts.Length - 1].Contains("Architectural"))
+                                {
+                                    ArchIsTrue = true;
+                                }
+                                parts = folder.Split('\\');
+                                if (parts[parts.Length - 1].Contains("Master"))
+                                {
+                                    MasterIsTrue = true;
+                                }
                             }
                         }
                     }
-                    OnPropertyChanged(nameof(StructIsTrue));
-                    OnPropertyChanged(nameof(MasterIsTrue));
-                    OnPropertyChanged(nameof(ArchIsTrue));
-                    OnPropertyChanged(nameof(ItemsIsTrue));
-                    OnPropertyChanged(nameof(SelectedItem));
+                    else
+                    {
+                        LoadProjectsAsync();
+                    }
                 }
-                else
-                {
-                    LoadProjectsAsync();
-                }
+                OnPropertyChanged(nameof(StructIsTrue));
+                OnPropertyChanged(nameof(MasterIsTrue));
+                OnPropertyChanged(nameof(ArchIsTrue));
+                OnPropertyChanged(nameof(ItemsIsTrue));
+                OnPropertyChanged(nameof(SelectedItem));
             }
-            OnPropertyChanged(nameof(StructIsTrue));
-            OnPropertyChanged(nameof(MasterIsTrue));
-            OnPropertyChanged(nameof(ArchIsTrue));
-            OnPropertyChanged(nameof(ItemsIsTrue));
-            OnPropertyChanged(nameof(SelectedItem));
         }
         private async Task LoadProjectsAsync()
         {
@@ -488,45 +491,55 @@ namespace ESD.PM.ViewModels
                 var favoriteProjectsSet = new HashSet<string>(appSettings.FavoriteProjects);
                 var tasks = new List<Task>();
 
-                foreach (var path in appSettings.ProjectPaths)
+                if (!appSettings.ProjectPaths.Any())
+                { AddProjectPath(this); }
+                else
                 {
-                    if (Directory.Exists(path))
+                    foreach (var path in appSettings.ProjectPaths)
                     {
-                        tasks.Add(Task.Run(async () =>
+                        if (Directory.Exists(path))
                         {
-                            var projects = Directory.GetDirectories(path);
-                            foreach (var project in projects)
+                            tasks.Add(Task.Run(async () =>
                             {
-                                var projectToAdd = new ProjectsModel(project);
-                                projectToAdd.Favorite = favoriteProjectsSet.Contains(project);
-
-                                await Application.Current.Dispatcher.InvokeAsync(() =>
+                                var projects = Directory.GetDirectories(path);
+                                foreach (var project in projects)
                                 {
-                                    if (projectToAdd.Favorite)
+                                    var projectToAdd = new ProjectsModel(project);
+                                    projectToAdd.Favorite = favoriteProjectsSet.Contains(project);
+
+                                    await Application.Current.Dispatcher.InvokeAsync(() =>
                                     {
-                                        favoriteProjectsList.Add(projectToAdd);
-                                    }
-                                    else
-                                    {
-                                        ProjectsNames.Add(projectToAdd);
-                                    }
-                                });
-                            }
-                        }));
+                                        if (projectToAdd.Favorite)
+                                        {
+                                            favoriteProjectsList.Add(projectToAdd);
+                                        }
+                                        else
+                                        {
+                                            ProjectsNames.Add(projectToAdd);
+                                        }
+                                    });
+                                }
+                            }));
+                        }
                     }
+                    await Task.WhenAll(tasks);
+
+                    var sortedProjects = ProjectsNames.OrderBy(x => x.Name).ToList();
+
+                    var combinedProjects = favoriteProjectsList.Concat(sortedProjects).ToList();
+
+
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        SelectedProject = combinedProjects[0];
+                        ProjectsNames = new ObservableCollection<ProjectsModel>(combinedProjects);
+                        OnPropertyChanged(nameof(ProjectsNames));
+                        OnPropertyChanged(nameof(SelectedProject));
+                        var mainWindow = Application.Current.MainWindow;
+                        mainWindow.Activate();
+                        mainWindow.Focus();
+                    });
                 }
-
-                await Task.WhenAll(tasks);
-
-                var sortedProjects = ProjectsNames.OrderBy(x => x.Name).ToList();
-
-                var combinedProjects = favoriteProjectsList.Concat(sortedProjects).ToList();
-
-                await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    ProjectsNames = new ObservableCollection<ProjectsModel>(combinedProjects);
-                    OnPropertyChanged(nameof(ProjectsNames));
-                });
             }
             catch (Exception ex)
             {
@@ -632,7 +645,7 @@ namespace ESD.PM.ViewModels
                     var vm = (new FoldersViewModel(folder.FullName, appSettings));
                     Folders.Add(vm);
                     vm.HideFolder = false;
-                    if (vm.FolderSettings != null) 
+                    if (vm.FolderSettings != null)
                     {
                         var settingsPoint = appSettings.SavedFolders.IndexOf(vm.FolderSettings);
                         appSettings.SavedFolders[settingsPoint].HideFolder = vm.HideFolder;

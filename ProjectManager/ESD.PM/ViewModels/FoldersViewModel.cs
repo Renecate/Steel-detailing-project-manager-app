@@ -1,5 +1,4 @@
 ﻿using ESD.PM.Commands;
-using ESD.PM.ViewModels;
 using ESD.PM.Views;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -9,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Windows;
 using Clipboard = System.Windows.Clipboard;
 using Path = System.IO.Path;
 
@@ -99,6 +97,12 @@ namespace ESD.PM.Models
             }
         }
 
+        [JsonProperty]
+        public bool DateSortIsTrue { get; set; }
+
+        [JsonIgnore]
+        public string DateSortButtonSourse { get; set; } = "/Views/Resourses/sort_date.png";
+
         #endregion
 
         #region Commands
@@ -129,6 +133,7 @@ namespace ESD.PM.Models
 
         [JsonIgnore]
         public DelegateCommand CreateFolderCommand { get; set; }
+
         #endregion
 
         #region Private Properties
@@ -138,6 +143,8 @@ namespace ESD.PM.Models
         private bool _viewIsToggled;
         private bool _hideFolder;
         private bool isPopupOpen;
+
+        private string _dynamicSearchText;
 
         private ObservableCollection<FoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
@@ -166,6 +173,7 @@ namespace ESD.PM.Models
             FullName = fullName;
             Name = new DirectoryInfo(fullName).Name;
 
+            DateSortIsTrue = false;
             HideFolder = false;
             _viewIsToggled = false;
 
@@ -216,7 +224,7 @@ namespace ESD.PM.Models
             {
                 FilterFolders();
                 var changedTag = (TagsModel)sender;
-                if (FolderSettings != null) 
+                if (FolderSettings != null)
                 {
                     var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
                     _appSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
@@ -267,16 +275,14 @@ namespace ESD.PM.Models
             FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList));
             if (_filterdDocsList.Count == 0)
                 _filterdDocsList = FilteredDocsList;
-            if (_filterdDocsList.Count > 0)
+
+            if (!DateSortIsTrue)
             {
-                if (ExtrateDate(_filterdDocsList.First().Name) < ExtrateDate(_filterdDocsList.Last().Name))
-                {
-                    FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
-                }
-                else
-                {
-                    FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
-                }
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+            }
+            else
+            {
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
             }
             OnPropertyChanged(nameof(FilteredDocsList));
         }
@@ -380,7 +386,7 @@ namespace ESD.PM.Models
             if (!Tags.Any(t => t.Name == tag))
             {
                 Tags.Add(new TagsModel(tag));
-                if (FolderSettings != null) 
+                if (FolderSettings != null)
                 {
                     var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
                     _appSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
@@ -391,20 +397,18 @@ namespace ESD.PM.Models
 
         private void UpdateFilteredDocsList()
         {
-            if (FilteredDocsList.Count > 1)
-            {
-                if (ExtrateDate(FilteredDocsList.First().Name) < ExtrateDate(FilteredDocsList.Last().Name))
-                {
 
-                    FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
-                    OnPropertyChanged(nameof(FilteredDocsList));
-                }
-                else
-                {
-                    FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
-                    OnPropertyChanged(nameof(FilteredDocsList));
-                }
+            if (!DateSortIsTrue)
+            {
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                OnPropertyChanged(nameof(FilteredDocsList));
             }
+            else
+            {
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+                OnPropertyChanged(nameof(FilteredDocsList));
+            }
+
             OnPropertyChanged(nameof(FilteredDocsList));
             OnPropertyChanged(nameof(Tags));
             foreach (var item in Tags)
@@ -444,8 +448,22 @@ namespace ESD.PM.Models
                 {
                     _viewIsToggled = FolderSettings.ViewIsToggled;
                 }
+                if (FolderSettings.DateSortIsTrue)
+                {
+                    DateSortIsTrue = FolderSettings.DateSortIsTrue;
+                    if (DateSortIsTrue)
+                    {
+                        DateSortButtonSourse = "/Views/Resourses/sort_date_dark.png";
+                    }
+                    else
+                    {
+                        DateSortButtonSourse = "/Views/Resourses/sort_date.png";
+                    }
+                }
             }
+            OnPropertyChanged(nameof(DateSortButtonSourse));
         }
+
 
         #endregion
 
@@ -460,7 +478,6 @@ namespace ESD.PM.Models
                 startInfo.Arguments = "\"" + _selectedFolderName.FullName + "\"";
                 Process.Start(startInfo);
             }
-
         }
 
         private void OnToggleView(object obj)
@@ -515,19 +532,32 @@ namespace ESD.PM.Models
 
         private void OnDateSort(object obj)
         {
-            if (FilteredDocsList.Count > 1)
+            if (DateSortIsTrue)
             {
-                if (ExtrateDate(FilteredDocsList.First().Name) < ExtrateDate(FilteredDocsList.Last().Name))
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                DateSortIsTrue = false;
+                DateSortButtonSourse = "/Views/Resourses/sort_date.png";
+                if (FolderSettings != null)
                 {
-                    FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
-                    OnPropertyChanged(nameof(FilteredDocsList));
-                }
-                else
-                {
-                    FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
-                    OnPropertyChanged(nameof(FilteredDocsList));
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
+                    SettingsManager.SaveSettings(_appSettings);
                 }
             }
+            else
+            {
+                DateSortIsTrue = true;
+                DateSortButtonSourse = "/Views/Resourses/sort_date_dark.png";
+                if (FolderSettings != null)
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+            }
+            OnPropertyChanged(nameof(FilteredDocsList));
+            OnPropertyChanged(nameof(DateSortButtonSourse));
         }
 
         private void OnFileDrop(object obj)
@@ -659,6 +689,20 @@ namespace ESD.PM.Models
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public void DynamicSearch(string text)
+        {
+
+            GetFolders();
+            _dynamicSearchText = text;
+            foreach (var folder in FolderList)
+            {
+                if (!(folder.Name.Contains(_dynamicSearchText, StringComparison.OrdinalIgnoreCase)))
+                {
+                    FilteredDocsList.Remove(folder);
+                }
+            }
         }
         #endregion
     }
