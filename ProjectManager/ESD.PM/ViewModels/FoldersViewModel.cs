@@ -46,15 +46,15 @@ namespace ESD.PM.Models
         public bool ToggleViewCommandActive { get; set; }
 
         [JsonProperty]
-        public bool HideFolder
+        public bool HideFolderIsTrue
         {
-            get { return _hideFolder; }
+            get { return _hideFolderIsTrue; }
             set
             {
-                if (_hideFolder != value)
+                if (_hideFolderIsTrue != value)
                 {
-                    _hideFolder = value;
-                    OnPropertyChanged(nameof(HideFolder));
+                    _hideFolderIsTrue = value;
+                    OnPropertyChanged(nameof(HideFolderIsTrue));
                 }
             }
         }
@@ -90,8 +90,26 @@ namespace ESD.PM.Models
         [JsonProperty]
         public bool DateSortIsTrue { get; set; }
 
+        [JsonProperty]
+        public bool HideNumbersIsTrue
+        {
+            get { return _hideNumbersIsTrue; }
+            set
+            {
+                if (_hideNumbersIsTrue != value)
+                {
+                    _hideNumbersIsTrue = value;
+                    OnPropertyChanged(nameof(HideNumbersIsTrue));
+                }
+            }
+        }
+
+
         [JsonIgnore]
         public string DateSortButtonSourse { get; set; } = "/Views/Resourses/sort_date.png";
+
+        [JsonIgnore]
+        public string HideNumbersButtonSourse { get; set; } = "/Views/Resourses/numbers_on.png";
 
         #endregion
 
@@ -124,6 +142,9 @@ namespace ESD.PM.Models
         [JsonIgnore]
         public DelegateCommand CreateFolderCommand { get; set; }
 
+        [JsonIgnore]
+        public DelegateCommand HideNumbersCommand { get; set; }
+
         #endregion
 
         #region Private Properties
@@ -131,7 +152,8 @@ namespace ESD.PM.Models
         private FoldersModel _selectedFolderName { get; set; }
 
         private bool _viewIsToggled;
-        private bool _hideFolder;
+        private bool _hideFolderIsTrue;
+        private bool _hideNumbersIsTrue;
 
         private string _dynamicSearchText;
 
@@ -163,7 +185,8 @@ namespace ESD.PM.Models
             Name = new DirectoryInfo(fullName).Name;
 
             DateSortIsTrue = false;
-            HideFolder = false;
+            HideFolderIsTrue = false;
+            HideNumbersIsTrue = false;
             _viewIsToggled = false;
 
             PathList = new List<string>();
@@ -188,6 +211,7 @@ namespace ESD.PM.Models
             HideFolderCommand = new DelegateCommand(OnHideFolder);
             RenameFolderCommand = new DelegateCommand(OnRenameFolder);
             CreateFolderCommand = new DelegateCommand(OnCreateFolder);
+            HideNumbersCommand = new DelegateCommand(OnHideNumbers);
 
         }
 
@@ -262,8 +286,10 @@ namespace ESD.PM.Models
             }
 
             FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList));
+
             if (_filterdDocsList.Count == 0)
                 _filterdDocsList = FilteredDocsList;
+
             if (!DateSortIsTrue)
             {
                 FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
@@ -272,6 +298,7 @@ namespace ESD.PM.Models
             {
                 FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
             }
+
             if (_dynamicSearchText != null)
             {
                 if (_dynamicSearchText != null)
@@ -285,6 +312,27 @@ namespace ESD.PM.Models
                     }
                 }
             }
+
+            if (_hideNumbersIsTrue == true)
+            {
+                foreach (var folder in FilteredDocsList)
+                {
+                    var nameParts = folder.Name.Split('-');
+                    if (nameParts.Length > 1)
+                    {
+                        var numberPart = nameParts[0]
+                            .Replace("(", "")
+                            .Replace(")", "")
+                            .Trim();
+
+                        if (int.TryParse(numberPart, out _))
+                        {
+                            folder.Name = folder.Name.Substring(nameParts[0].Length + 1).TrimStart('-');
+                        }
+                    }
+                }
+            }
+
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
@@ -444,7 +492,7 @@ namespace ESD.PM.Models
         {
             if (FolderSettings != null)
             {
-                if (FolderSettings.HideFolder)
+                if (FolderSettings.HideFolderIsTrue)
                 {
                     OnHideFolder(this);
                 }
@@ -464,8 +512,21 @@ namespace ESD.PM.Models
                         DateSortButtonSourse = "/Views/Resourses/sort_date.png";
                     }
                 }
+                if (FolderSettings.HideNumbersIsTrue)
+                {
+                    _hideNumbersIsTrue = FolderSettings.HideNumbersIsTrue;
+                    if (_hideNumbersIsTrue)
+                    {
+                        HideNumbersButtonSourse = "/Views/Resourses/numbers_off.png";
+                    }
+                    else
+                    {
+                        HideNumbersButtonSourse = "/Views/Resourses/numbers_on.png";
+                    }
+                }
             }
             OnPropertyChanged(nameof(DateSortButtonSourse));
+            OnPropertyChanged(nameof(HideNumbersButtonSourse));
         }
 
 
@@ -538,7 +599,6 @@ namespace ESD.PM.Models
         {
             if (DateSortIsTrue)
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
                 DateSortIsTrue = false;
                 DateSortButtonSourse = "/Views/Resourses/sort_date.png";
                 if (FolderSettings != null)
@@ -558,14 +618,9 @@ namespace ESD.PM.Models
                     _appSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
                     SettingsManager.SaveSettings(_appSettings);
                 }
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
             }
-            if (_dynamicSearchText != null)
-            {
-                DynamicSearch(_dynamicSearchText);
-            }
-            OnPropertyChanged(nameof(FilteredDocsList));
             OnPropertyChanged(nameof(DateSortButtonSourse));
+            GetFolders();
         }
 
         private void OnFileDrop(object obj)
@@ -591,11 +646,11 @@ namespace ESD.PM.Models
 
         private void OnHideFolder(object obj)
         {
-            HideFolder = true;
+            HideFolderIsTrue = true;
             if (FolderSettings != null)
             {
                 var settingsPoint = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                _appSettings.SavedFolders[settingsPoint].HideFolder = HideFolder;
+                _appSettings.SavedFolders[settingsPoint].HideFolderIsTrue = HideFolderIsTrue;
                 SettingsManager.SaveSettings(_appSettings);
             }
         }
@@ -703,6 +758,34 @@ namespace ESD.PM.Models
             {
                 ToggleViewCheck();
             }
+        }
+
+        private void OnHideNumbers(object obj)
+        {
+            if (HideNumbersIsTrue)
+            {
+                HideNumbersIsTrue = false;
+                HideNumbersButtonSourse = "/Views/Resourses/numbers_on.png";
+                if (FolderSettings != null)
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
+            }
+            else
+            {
+                HideNumbersIsTrue = true;
+                HideNumbersButtonSourse = "/Views/Resourses/numbers_off.png";
+                if (FolderSettings != null)
+                {
+                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
+                    _appSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
+                    SettingsManager.SaveSettings(_appSettings);
+                }
+            }
+            OnPropertyChanged(nameof(HideNumbersButtonSourse));
+            GetFolders();
         }
         #endregion
 

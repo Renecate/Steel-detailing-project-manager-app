@@ -432,9 +432,9 @@ namespace ESD.PM.ViewModels
                             {
                                 var vm = new FoldersViewModel(folder, appSettings);
                                 Folders.Add(vm);
-                                if (vm.HideFolder == true)
+                                if (vm.HideFolderIsTrue == true)
                                 {
-                                    OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolder)));
+                                    OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolderIsTrue)));
                                 }
                             }
                         }
@@ -576,9 +576,9 @@ namespace ESD.PM.ViewModels
                     {
                         var vm = new FoldersViewModel(folder, appSettings);
                         Folders.Add(vm);
-                        if (vm.HideFolder == true)
+                        if (vm.HideFolderIsTrue == true)
                         {
-                            OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolder)));
+                            OnFolderPropertyChanged(vm, new PropertyChangedEventArgs(nameof(vm.HideFolderIsTrue)));
                         }
                     }
                 }
@@ -627,10 +627,10 @@ namespace ESD.PM.ViewModels
         }
         private void OnFolderPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(FoldersViewModel.HideFolder))
+            if (e.PropertyName == nameof(FoldersViewModel.HideFolderIsTrue))
             {
                 var folder = sender as FoldersViewModel;
-                if (folder.HideFolder)
+                if (folder.HideFolderIsTrue)
                 {
                     HiddenFolders.Add(new HiddenFoldersViewModel(folder.FullName));
                     Folders.Remove(folder);
@@ -644,11 +644,11 @@ namespace ESD.PM.ViewModels
                     HiddenFolders.Remove(folder);
                     var vm = (new FoldersViewModel(folder.FullName, appSettings));
                     Folders.Add(vm);
-                    vm.HideFolder = false;
+                    vm.HideFolderIsTrue = false;
                     if (vm.FolderSettings != null)
                     {
                         var settingsPoint = appSettings.SavedFolders.IndexOf(vm.FolderSettings);
-                        appSettings.SavedFolders[settingsPoint].HideFolder = vm.HideFolder;
+                        appSettings.SavedFolders[settingsPoint].HideFolderIsTrue = vm.HideFolderIsTrue;
                         SettingsManager.SaveSettings(appSettings);
                     }
                 }

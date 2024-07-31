@@ -146,6 +146,10 @@
                         Command="{Binding DateSortCommand}">
                     <Image Source = "{Binding DateSortButtonSourse}"/>
                 </Button>
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" Margin="10,0,0,0" 
+                        Command="{Binding HideNumbersCommand}">
+                    <Image Source = "{Binding HideNumbersButtonSourse}"/>
+                </Button>
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" FlowDirection="RightToLeft" 

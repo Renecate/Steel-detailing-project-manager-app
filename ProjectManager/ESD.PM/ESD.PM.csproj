@@ -17,6 +17,8 @@
     <None Remove="Views\Resourses\fullscreen.png" />
     <None Remove="Views\Resourses\hide.png" />
     <None Remove="Views\Resourses\line.png" />
+    <None Remove="Views\Resourses\numbers_off.png" />
+    <None Remove="Views\Resourses\numbers_on.png" />
     <None Remove="Views\Resourses\remove path.png" />
     <None Remove="Views\Resourses\show.png" />
     <None Remove="Views\Resourses\sort_date.png" />
@@ -39,6 +41,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Views\Resourses\numbers_off.png" />
+    <Resource Include="Views\Resourses\numbers_on.png" />
     <Resource Include="Views\Resourses\sort_date_dark.png" />
     <Resource Include="Views\Resourses\show.png" />
   </ItemGroup>
