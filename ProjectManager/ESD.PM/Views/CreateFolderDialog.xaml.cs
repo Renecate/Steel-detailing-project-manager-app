@@ -9,6 +9,7 @@ namespace ESD.PM.Views
         public List<string> FolderTag { get; set; }
         public string Date { get; set; }
         public string FolderName { get; set; }
+        public bool RfiState { get; set; }
         public List<string> CreationPath { get; set; }
         public string SelectedPath
         {
@@ -20,6 +21,8 @@ namespace ESD.PM.Views
 
         public CreateFolderDialog(Window owner, int initialOrderNumber, List<string> creationPath)
         {
+            RfiState = false;
+
             InitializeComponent();
 
             Owner = owner;

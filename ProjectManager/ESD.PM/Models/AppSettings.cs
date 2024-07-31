@@ -9,5 +9,9 @@ namespace ESD.PM.Models
         public ObservableCollection<string> FavoriteProjects { get; set; } = new ObservableCollection<string>();
 
         public ObservableCollection<FoldersViewModel> SavedFolders { get; set; } = new ObservableCollection<FoldersViewModel> { };
+
+        public ObservableCollection<string> PdfTemplates { get; set; } = new ObservableCollection<string> { };
+
+        public ObservableCollection<string> StructureTemplates { get; set; } = new ObservableCollection<string> { };
     }
 }

@@ -92,14 +92,13 @@ namespace ESD.PM.ViewModels
         public DelegateCommand StructuralOpenCommand { get; set; }
         public DelegateCommand ArchOpenCommand { get; set; }
         public DelegateCommand MasterOpenCommand { get; set; }
-        public DelegateCommand AddProjectPathCommand { get; set; }
-        public DelegateCommand RemoveProjectPathCommand { get; set; }
         public DelegateCommand AddFavoriteProjectCommand { get; set; }
         public DelegateCommand CreateProjectCommand { get; set; }
         public DelegateCommand AddItemCommand { get; set; }
         public DelegateCommand UpdateCommand { get; set; }
         public DelegateCommand OpenProjectFolderCommand { get; set; }
         public DelegateCommand RemoveItemSelectionCommand { get; set; }
+        public DelegateCommand OpenSettingsCommand { get; set; }
 
         #endregion
 
@@ -122,14 +121,13 @@ namespace ESD.PM.ViewModels
             StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
             ArchOpenCommand = new DelegateCommand(OnOpenArch);
             MasterOpenCommand = new DelegateCommand(OnOpenMaster);
-            AddProjectPathCommand = new DelegateCommand(AddProjectPath);
-            RemoveProjectPathCommand = new DelegateCommand(RemoveProjectPath);
             AddFavoriteProjectCommand = new DelegateCommand(AddFavoriteProject);
             CreateProjectCommand = new DelegateCommand(OnCreateProject);
             AddItemCommand = new DelegateCommand(OnAddItem);
             OpenProjectFolderCommand = new DelegateCommand(OnOpenProjectFolder);
             UpdateCommand = new DelegateCommand(OnUpdate);
             RemoveItemSelectionCommand = new DelegateCommand(OnRemoveItemSelection);
+            OpenSettingsCommand = new DelegateCommand(OnOpenSettings);
         }
 
         #endregion
@@ -187,29 +185,6 @@ namespace ESD.PM.ViewModels
             if (Directory.Exists(SelectedProject.FullName))
             {
                 Process.Start(new ProcessStartInfo("explorer.exe", SelectedProject.FullName));
-            }
-        }
-        private void AddProjectPath(object path)
-        {
-            using (var dialog = new FolderBrowserDialog())
-            {
-                dialog.Description = "Выберите папку с проектами";
-                dialog.ShowNewFolderButton = false;
-
-                DialogResult result = dialog.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-                {
-                    string selectedPath = dialog.SelectedPath;
-
-                    if (!appSettings.ProjectPaths.Contains(selectedPath) && selectedPath.EndsWith("Projects"))
-                    {
-                        appSettings.ProjectPaths.Add(selectedPath);
-                        SettingsManager.SaveSettings(appSettings);
-                        LoadProjectsAsync();
-                    }
-                    else System.Windows.MessageBox.Show($"Folder '{selectedPath}' is not Projects folder");
-                }
             }
         }
         private void AddFavoriteProject(object obj)
@@ -352,18 +327,21 @@ namespace ESD.PM.ViewModels
                 OnPropertyChanged(nameof(SelectedProject));
             }
         }
-        private void RemoveProjectPath(object path)
-        {
-            appSettings.ProjectPaths.Clear();
-            appSettings.FavoriteProjects.Clear();
-            appSettings.SavedFolders.Clear();
-            SettingsManager.SaveSettings(appSettings);
-            LoadProjectsAsync();
-        }
+
         private void OnRemoveItemSelection(object obj)
         {
             if (SelectedItem != null)
                 GetFoldersOrItemsAsync();
+        }
+        private void OnOpenSettings(object obj)
+        {
+            var owner = Application.Current.MainWindow;
+            var settingsDialog = new SettingsWindow(owner);
+            if (settingsDialog.ShowDialog() == true)
+            {
+                appSettings = SettingsManager.LoadSettings();
+                LoadProjectsAsync();
+            }
         }
         #endregion
 
@@ -492,7 +470,7 @@ namespace ESD.PM.ViewModels
                 var tasks = new List<Task>();
 
                 if (!appSettings.ProjectPaths.Any())
-                { AddProjectPath(this); }
+                { AddProjectPath(); }
                 else
                 {
                     foreach (var path in appSettings.ProjectPaths)
@@ -651,6 +629,29 @@ namespace ESD.PM.ViewModels
                         appSettings.SavedFolders[settingsPoint].HideFolderIsTrue = vm.HideFolderIsTrue;
                         SettingsManager.SaveSettings(appSettings);
                     }
+                }
+            }
+        }
+        private void AddProjectPath()
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Выберите папку с проектами";
+                dialog.ShowNewFolderButton = false;
+
+                DialogResult result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    string selectedPath = dialog.SelectedPath;
+
+                    if (!appSettings.ProjectPaths.Contains(selectedPath) && selectedPath.EndsWith("Projects"))
+                    {
+                        appSettings.ProjectPaths.Add(selectedPath);
+                        SettingsManager.SaveSettings(appSettings);
+                        LoadProjectsAsync();
+                    }
+                    else System.Windows.MessageBox.Show($"Folder '{selectedPath}' is not Projects folder");
                 }
             }
         }

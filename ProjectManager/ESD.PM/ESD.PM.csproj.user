@@ -30,6 +30,9 @@
     <Compile Update="Views\RenameDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\SettingsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\CreateFolderDialog.xaml">
@@ -51,6 +54,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\RenameDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SettingsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

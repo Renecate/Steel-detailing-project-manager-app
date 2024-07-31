@@ -191,23 +191,12 @@
         </Border>
         <StackPanel Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
             <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
-                <Button Command="{Binding AddProjectPathCommand}" Background="{x:Null}" 
+                <Button Command="{Binding OpenSettingsCommand}" Background="{x:Null}" 
                         BorderBrush="{x:Null}">
                     <Image Source="/Views/Resourses/add path.png"/>
                     <Button.ToolTip>
                         <ToolTip>
                             <TextBlock Text="Select and add project path"/>
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-            </Border>
-            <Border Width="45" Height="45" Margin="5" CornerRadius="2,2,2,2" Background="#FF788896">
-                <Button Command="{Binding RemoveProjectPathCommand}" Background="{x:Null}" 
-                        BorderBrush="{x:Null}">
-                    <Image Source="/Views/Resourses/remove path.png"/>
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Clear all project paths"/>
                         </ToolTip>
                     </Button.ToolTip>
                 </Button>

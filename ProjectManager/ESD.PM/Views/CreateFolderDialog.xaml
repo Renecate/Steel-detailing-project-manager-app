@@ -50,5 +50,7 @@
             <Button Width="75" Margin="5" IsDefault="True" Click="OkButton_Click">OK</Button>
             <Button Width="75" Margin="5" IsCancel="True">Cancel</Button>
         </StackPanel>
+
+        <CheckBox Grid.Row="3" Name="CreatePDF" Content =" Create RFI " IsChecked="{Binding RfiState, Mode=TwoWay}" Width="100" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

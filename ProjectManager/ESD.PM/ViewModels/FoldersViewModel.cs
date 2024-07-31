@@ -11,7 +11,9 @@ using System.Text.RegularExpressions;
 using Clipboard = System.Windows.Clipboard;
 using Path = System.IO.Path;
 using Application = System.Windows.Application;
-using Shell32;
+using iText.Forms;
+using iText.Forms.Fields;
+using iText.Kernel.Pdf;
 
 namespace ESD.PM.Models
 {
@@ -665,8 +667,8 @@ namespace ESD.PM.Models
                     {
                         File.Move(path, destination);
                     }
-                    GetFolders();
                 }
+                GetFolders();
             }
         }
 
@@ -774,6 +776,11 @@ namespace ESD.PM.Models
                     {
                         Directory.CreateDirectory(path);
                         GetFolders();
+                        if (dialog.RfiState)
+                        {
+                            var pdfGenerator = new PdfGenerator();
+                            pdfGenerator.CreatePdfFromTemplate("C:\\Dropbox\\technology\\Standarts\\BlueBeam Templates\\ESD RC Form.pdf", path + "\\" + newFolderName + ".pdf");
+                        }
                     }
                     else
                         System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
@@ -816,6 +823,7 @@ namespace ESD.PM.Models
 
         #region Public Methods
         public event PropertyChangedEventHandler? PropertyChanged;
+
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
