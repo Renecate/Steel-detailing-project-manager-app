@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Clipboard = System.Windows.Clipboard;
 using Path = System.IO.Path;
 using Application = System.Windows.Application;
+using Shell32;
 
 namespace ESD.PM.Models
 {
@@ -332,7 +333,6 @@ namespace ESD.PM.Models
                     }
                 }
             }
-
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
@@ -473,7 +473,33 @@ namespace ESD.PM.Models
         {
             Regex regex = new Regex(@"\((\d+)\)");
 
-            var numbers = FolderList
+
+            var localIterationList = new ObservableCollection<FoldersModel>();
+            var localList = new ObservableCollection<FoldersModel>();
+            if (Directory.Exists(FullName))
+            {
+                foreach (var item in Directory.GetDirectories(FullName))
+                {
+                    localIterationList.Add(new FoldersModel(item));
+                }
+            }
+            if (_viewIsToggled == false)
+            {
+                localList = new ObservableCollection<FoldersModel>(localIterationList);
+            }
+            if (_viewIsToggled == true)
+            {
+
+                foreach (var folder in localIterationList)
+                {
+                    foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
+                    {
+                        localList.Add(new FoldersModel(insideFolder));
+                    }
+                }
+            }
+
+            var numbers = localList
             .Select(proj => regex.Match(proj.Name))
             .Where(match => match.Success)
             .Select(match => int.Parse(match.Groups[1].Value))
@@ -659,7 +685,8 @@ namespace ESD.PM.Models
         {
             if (_selectedFolderName != null)
             {
-                var dialog = new RenameDialog(Application.Current.MainWindow, _selectedFolderName.Name);
+                var name = new DirectoryInfo(_selectedFolderName.FullName).Name;
+                var dialog = new RenameDialog(Application.Current.MainWindow, name);
                 if (dialog.ShowDialog() == true)
 
                 {
@@ -747,8 +774,6 @@ namespace ESD.PM.Models
                     {
                         Directory.CreateDirectory(path);
                         GetFolders();
-                        ProcessLocalList();
-                        FilterFolders();
                     }
                     else
                         System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
