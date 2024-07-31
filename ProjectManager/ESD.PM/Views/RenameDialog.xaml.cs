@@ -8,12 +8,14 @@ namespace ESD.PM.Views
     {
         public string NewFolderName { get; private set; }
 
-        public RenameDialog(string filename)
+        public RenameDialog(Window owner, string filename)
         {
+            Owner = owner;
             InitializeComponent();
             FolderNameTextBox.Text = filename;
             FolderNameTextBox.SelectAll();
             FolderNameTextBox.Focus();
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
         }
         private void OkButton_Click(object sender, RoutedEventArgs e)

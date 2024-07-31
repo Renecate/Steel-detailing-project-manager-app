@@ -107,7 +107,7 @@
                                        MouseLeave="TextBlock_MouseLeave">
                                 <Popup Name="popup"
                                        Placement="Right"
-                                       IsOpen="{Binding IsPopupOpen, Mode=TwoWay}">
+                                       >
                                     <Border Background="White" BorderBrush="Black" BorderThickness="1"
                                             MinWidth="100" MinHeight="30" MaxWidth="600" MaxHeight="600">
                                         <ListBox ItemsSource="{Binding InsideFiles}" 
@@ -151,7 +151,7 @@
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" FlowDirection="RightToLeft" 
                         Width="382" HorizontalAlignment="Right" Margin="0,0,5,0">
                 <Border CornerRadius="2,2,2,2" BorderThickness="2,2,2,2">
-                    <TextBox Name ="DynamicSearchTextBox" Background="White" Width="250" Text="{Binding DynamicSearchText, Mode=TwoWay}"
+                    <TextBox Name ="DynamicSearchTextBox" Background="White" Width="250"
                              VerticalContentAlignment="Center"
                              FontFamily="Bahnschrift" 
                              FontSize="16" TextChanged="DynamicSearch_TextChanged" FlowDirection="LeftToRight"/>

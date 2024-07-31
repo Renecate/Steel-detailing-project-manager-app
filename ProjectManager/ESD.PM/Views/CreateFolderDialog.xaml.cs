@@ -18,10 +18,12 @@ namespace ESD.PM.Views
 
         private string _selectedPath;
 
-        public CreateFolderDialog(int initialOrderNumber, List<string> creationPath)
+        public CreateFolderDialog(Window owner, int initialOrderNumber, List<string> creationPath)
         {
             InitializeComponent();
 
+            Owner = owner;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
             OrderNumber = ($"({initialOrderNumber})");
             FolderTag = new List<string>()
             {

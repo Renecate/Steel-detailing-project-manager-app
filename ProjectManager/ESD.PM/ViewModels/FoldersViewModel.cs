@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Clipboard = System.Windows.Clipboard;
 using Path = System.IO.Path;
+using Application = System.Windows.Application;
 
 namespace ESD.PM.Models
 {
@@ -131,7 +132,6 @@ namespace ESD.PM.Models
 
         private bool _viewIsToggled;
         private bool _hideFolder;
-        private bool isPopupOpen;
 
         private string _dynamicSearchText;
 
@@ -603,7 +603,7 @@ namespace ESD.PM.Models
         {
             if (_selectedFolderName != null)
             {
-                var dialog = new RenameDialog(_selectedFolderName.Name);
+                var dialog = new RenameDialog(Application.Current.MainWindow, _selectedFolderName.Name);
                 if (dialog.ShowDialog() == true)
 
                 {
@@ -635,7 +635,7 @@ namespace ESD.PM.Models
             {
                 int orderNumber = GetOrderNumber();
                 var pathList = PathList;
-                var dialog = new CreateFolderDialog(orderNumber, pathList);
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, pathList);
                 var localTags = string.Empty;
                 if (Tags != null)
                 {

@@ -11,11 +11,13 @@ namespace ESD.PM.Views
         public bool ItemsIncluded => ItemsIncludedCheckBox.IsChecked ?? false;
         public string[] Items => ItemsTextBox.Text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-        public CreateProjectDialog(ObservableCollection<string> projectPaths)
+        public CreateProjectDialog(Window owner, ObservableCollection<string> projectPaths)
         {
             InitializeComponent();
+            Owner = owner;
             ProjectPaths = projectPaths;
             DataContext = this;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)

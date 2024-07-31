@@ -274,7 +274,7 @@ namespace ESD.PM.ViewModels
         }
         private void OnCreateProject(object obj)
         {
-            var dialog = new CreateProjectDialog(appSettings.ProjectPaths);
+            var dialog = new CreateProjectDialog(Application.Current.MainWindow, appSettings.ProjectPaths);
             if (dialog.ShowDialog() == true)
             {
                 string selectedPath = dialog.SelectedProjectPath;
