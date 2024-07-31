@@ -690,7 +690,7 @@ namespace ESD.PM.Models
                 if (dialog.ShowDialog() == true)
 
                 {
-                    var rootPath = _selectedFolderName.FullName.Replace(_selectedFolderName.Name, "").TrimEnd('\\');
+                    var rootPath = _selectedFolderName.FullName.Replace(name, "").TrimEnd('\\');
                     var newFolderName = dialog.NewFolderName;
                     if (Directory.Exists(rootPath + "\\" + newFolderName) != true)
                     {
