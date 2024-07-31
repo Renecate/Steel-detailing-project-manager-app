@@ -584,6 +584,7 @@ namespace ESD.PM.Models
                     {
                         File.Move(path, destination);
                     }
+                    GetFolders();
                 }
             }
         }
@@ -616,14 +617,13 @@ namespace ESD.PM.Models
                             Directory.Move(_selectedFolderName.FullName, rootPath + "\\" + newFolderName);
                             _selectedFolderName.Name = newFolderName;
                             _selectedFolderName.FullName = rootPath + "\\" + newFolderName;
-                            ProcessLocalList();
-                            FilterFolders();
+                            GetFolders();
                         }
                         catch (Exception ex) 
                         {
                             if (ex is System.IO.IOException)
                             {
-                                System.Windows.MessageBox.Show("Access denied. Folder is locked by another programm");
+                                System.Windows.MessageBox.Show("Access denied. Folder is locked by another program");
                             }
                         }
                     }
