@@ -86,17 +86,6 @@ namespace ESD.PM.Models
         [JsonIgnore]
         public FoldersViewModel FolderSettings { get; set; }
 
-        [JsonIgnore]
-        public bool IsPopupOpen
-        {
-            get { return isPopupOpen; }
-            set
-            {
-                isPopupOpen = value;
-                OnPropertyChanged(nameof(IsPopupOpen));
-            }
-        }
-
         [JsonProperty]
         public bool DateSortIsTrue { get; set; }
 
@@ -275,7 +264,6 @@ namespace ESD.PM.Models
             FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList));
             if (_filterdDocsList.Count == 0)
                 _filterdDocsList = FilteredDocsList;
-
             if (!DateSortIsTrue)
             {
                 FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
@@ -283,6 +271,19 @@ namespace ESD.PM.Models
             else
             {
                 FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+            }
+            if (_dynamicSearchText != null)
+            {
+                if (_dynamicSearchText != null)
+                {
+                    foreach (var folder in FolderList)
+                    {
+                        if (!(folder.Name.Contains(_dynamicSearchText, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            FilteredDocsList.Remove(folder);
+                        }
+                    }
+                }
             }
             OnPropertyChanged(nameof(FilteredDocsList));
         }
@@ -318,9 +319,12 @@ namespace ESD.PM.Models
         {
             PathList.Clear();
             _iterationList = new ObservableCollection<FoldersModel>();
-            foreach (var item in Directory.GetDirectories(FullName))
+            if (Directory.Exists(FullName))
             {
-                _iterationList.Add(new FoldersModel(item));
+                foreach (var item in Directory.GetDirectories(FullName))
+                {
+                    _iterationList.Add(new FoldersModel(item));
+                }
             }
             if (_viewIsToggled == false)
             {
@@ -556,6 +560,10 @@ namespace ESD.PM.Models
                 }
                 FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
             }
+            if (_dynamicSearchText != null)
+            {
+                DynamicSearch(_dynamicSearchText);
+            }
             OnPropertyChanged(nameof(FilteredDocsList));
             OnPropertyChanged(nameof(DateSortButtonSourse));
         }
@@ -642,10 +650,15 @@ namespace ESD.PM.Models
                 dialog.FolderTag.Sort();
                 if (dialog.ShowDialog() == true)
                 {
+                    if (dialog.SelectedTag != null && dialog.SelectedTag.Length > 1) 
+                    {
+                        dialog.SelectedTag = dialog.SelectedTag.Substring(0, 2);
+                    }
+
                     var collection = new List<string>()
                     {
                         dialog.OrderNumber,
-                        dialog.SelectedTag.Substring(0,2),
+                        dialog.SelectedTag,
                         dialog.Date,
                         dialog.FolderName
                     };
@@ -693,16 +706,8 @@ namespace ESD.PM.Models
 
         public void DynamicSearch(string text)
         {
-
-            GetFolders();
             _dynamicSearchText = text;
-            foreach (var folder in FolderList)
-            {
-                if (!(folder.Name.Contains(_dynamicSearchText, StringComparison.OrdinalIgnoreCase)))
-                {
-                    FilteredDocsList.Remove(folder);
-                }
-            }
+            GetFolders();
         }
         #endregion
     }

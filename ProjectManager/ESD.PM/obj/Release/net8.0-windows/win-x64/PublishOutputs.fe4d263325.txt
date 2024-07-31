@@ -1,2 +1,0 @@
-C:\Release\ESD.PM.pdb
-C:\Release\ESD.PM.exe
