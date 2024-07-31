@@ -611,11 +611,21 @@ namespace ESD.PM.Models
                     var newFolderName = dialog.NewFolderName;
                     if (Directory.Exists(rootPath + "\\" + newFolderName) != true)
                     {
-                        Directory.Move(_selectedFolderName.FullName, rootPath + "\\" + newFolderName);
-                        _selectedFolderName.Name = newFolderName;
-                        _selectedFolderName.FullName = rootPath + "\\" + newFolderName;
-                        ProcessLocalList();
-                        FilterFolders();
+                        try
+                        {
+                            Directory.Move(_selectedFolderName.FullName, rootPath + "\\" + newFolderName);
+                            _selectedFolderName.Name = newFolderName;
+                            _selectedFolderName.FullName = rootPath + "\\" + newFolderName;
+                            ProcessLocalList();
+                            FilterFolders();
+                        }
+                        catch (Exception ex) 
+                        {
+                            if (ex is System.IO.IOException)
+                            {
+                                System.Windows.MessageBox.Show("Access denied. Folder is locked by another programm");
+                            }
+                        }
                     }
                     else
                     {
