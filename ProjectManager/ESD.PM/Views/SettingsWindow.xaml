@@ -5,53 +5,169 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESD.PM.Views"
         mc:Ignorable="d"
-        Title="Settings" Height="450" Width="800">
+        Title="Settings" Height="460" Width="490"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Style x:Key="BorderLight" TargetType="Border">
+            <Setter Property="Background"  Value="#FFE1E5EC"/>
+            <Setter Property="BorderThickness" Value="0,1,0,1"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+        </Style>
+        <Style x:Key="BorderListBox" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="2,2,2,2"/>
+            <Setter Property="CornerRadius" Value="2,2,2,2"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+            <Setter Property="Width" Value="275"/>
+            <Setter Property="Height" Value="75"/>
+            <Setter Property="Margin" Value="10,0,20,0"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="Button" x:Key="AddButton">
+            <Setter Property="Background" Value="LightGreen"/>
+            <Setter Property="Foreground" Value="DarkGreen"/>
+            <Setter Property="BorderBrush" Value="DarkGreen"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Content" Value="+"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
-            <TextBox Text="Project path"/>
-            <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding ProjectPath}" 
+        <Border Grid.Row="0" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBox Text="Project paths:"/>
+                <Border Style="{StaticResource BorderListBox}">
+                    <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding ProjectPath}" 
                      SelectedItem="{Binding SelectedPath}">
-                <ListBox.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Remove path" 
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove path" 
                                   Command="{Binding RemoveProjectPathCommand}"/>
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>
-            <Button Content="Add project path" Command="{Binding AddProjectPathCommand}"/>
-        </StackPanel>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </Border>
+                <Button Style="{StaticResource AddButton}" Command="{Binding AddProjectPathCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBox Text="PDF Templates:"/>
+                <Border Style="{StaticResource BorderListBox}">
+                    <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding PdfTemplates}"
+             SelectedItem="{Binding SelectedPdfTemplate}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove PDF Template"
+                          Command="{Binding RemovePdfTemplateCommand}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </Border>
+
+                <Button Style="{StaticResource AddButton}" 
+            Command="{Binding AddPdfTemplateCommand}"/>
+            </StackPanel>
+        </Border>
+        
+
+        <Border Grid.Row="2" Style="{StaticResource BorderLight}">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBox Text="Folder Structure Templates"/>
+                <Border Style="{StaticResource BorderListBox}">
+                    <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding FolderStructureTemplates}"
+                             SelectedItem="{Binding SelectedFolderStructureTemplate}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove Folder Structure Template"
+                                          Command="{Binding RemoveFolderStructureTemplateCommand}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </Border>
+                <Button Style="{StaticResource AddButton}"
+                        Command="{Binding AddFolderStructureTemplateCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBox Text="Project Templates:"/>
+                <Border Style="{StaticResource BorderListBox}"> 
+                    <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding ProjectTemplates}"
+                        SelectedItem="{Binding SelectedProjectTemplate}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove Folder Structure Template"
+                                          Command="{Binding RemoveProjectTemplateCommand}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </Border>
+                <Button Style="{StaticResource AddButton}"
+                        Command="{Binding AddProjectTemplateCommand}"/>
+            </StackPanel>
+        </Border>
 
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
-            <TextBox Text="PDF Templates"/>
-            <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding PdfTemplates}"
-                     SelectedItem="{Binding SelectedPdfTemplate}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Button Content="Add PDF creation template" 
-                    Command="{Binding AddPdfTemplateCommand}"/>
-        </StackPanel>
+        <Border Grid.Row="4" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                        Background="#FF788896" Margin="0,0,10,0">
+                    <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                            FontSize="14" BorderBrush="{x:Null}"
+                            Click="OkButton_Click">Save Settings</Button>
+                </Border>
 
-
-
-        <TextBox Grid.Row="2" Text="Folder Structure templates"/>
-
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button Width="75" Margin="5" IsDefault="True" 
-                    Click="OkButton_Click">OK</Button>
-            <Button Width="75" Margin="5" IsCancel="True">
-                Cancel</Button>
-        </StackPanel>
-
+                <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                        Background="DarkRed">
+                    <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                            FontSize="14" BorderBrush="{x:Null}" IsCancel="True">
+                    Cancel</Button>
+                </Border>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

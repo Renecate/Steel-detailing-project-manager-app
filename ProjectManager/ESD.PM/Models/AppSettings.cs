@@ -13,5 +13,7 @@ namespace ESD.PM.Models
         public ObservableCollection<string> PdfTemplates { get; set; } = new ObservableCollection<string> { };
 
         public ObservableCollection<string> StructureTemplates { get; set; } = new ObservableCollection<string> { };
+
+        public ObservableCollection<string> ProjectTemplates { get; set; } = new ObservableCollection<string> { };
     }
 }
