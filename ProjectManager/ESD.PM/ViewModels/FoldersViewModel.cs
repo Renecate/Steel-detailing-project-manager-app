@@ -8,12 +8,9 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Application = System.Windows.Application;
 using Clipboard = System.Windows.Clipboard;
 using Path = System.IO.Path;
-using Application = System.Windows.Application;
-using iText.Forms;
-using iText.Forms.Fields;
-using iText.Kernel.Pdf;
 
 namespace ESD.PM.Models
 {
@@ -177,11 +174,11 @@ namespace ESD.PM.Models
                 {
                     if (folder.FullName == fullName)
                     {
-                        _appSettings = appSettings;
                         FolderSettings = folder;
                         break;
                     }
                 }
+                _appSettings = appSettings;
             }
 
             FullName = fullName;
@@ -703,7 +700,7 @@ namespace ESD.PM.Models
                             _selectedFolderName.FullName = rootPath + "\\" + newFolderName;
                             GetFolders();
                         }
-                        catch (Exception ex) 
+                        catch (Exception ex)
                         {
                             if (ex is System.IO.IOException)
                             {
@@ -729,62 +726,71 @@ namespace ESD.PM.Models
             {
                 int orderNumber = GetOrderNumber();
                 var pathList = PathList;
-                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, pathList);
-                var localTags = string.Empty;
+                var tags = new List<string>();
                 if (Tags != null)
                 {
                     foreach (var tag in Tags)
                     {
-                        if (!dialog.FolderTag.Any(t => t == tag.Name))
-                        {
-                            dialog.FolderTag.Add(tag.Name);
-                        }
+                        tags.Add(tag.Name);
                     }
                 }
-                dialog.FolderTag.Sort();
-                if (dialog.ShowDialog() == true)
-                {
-                    if (dialog.SelectedTag != null && dialog.SelectedTag.Length > 1) 
-                    {
-                        dialog.SelectedTag = dialog.SelectedTag.Substring(0, 2);
-                    }
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, pathList, tags, _appSettings);
+                dialog.ShowDialog();
+                //var localTags = string.Empty;
+                //if (Tags != null)
+                //{
+                //    foreach (var tag in Tags)
+                //    {
+                //        if (!dialog.FolderTag.Any(t => t == tag.Name))
+                //        {
+                //            dialog.FolderTag.Add(tag.Name);
+                //        }
+                //    }
+                //}
+                //dialog.FolderTag.Sort();
+                //if (dialog.ShowDialog() == true)
+                //{
+                //    if (dialog.SelectedTag != null && dialog.SelectedTag.Length > 1) 
+                //    {
+                //        dialog.SelectedTag = dialog.SelectedTag.Substring(0, 2);
+                //    }
 
-                    var collection = new List<string>()
-                    {
-                        dialog.OrderNumber,
-                        dialog.SelectedTag,
-                        dialog.Date,
-                        dialog.FolderName
-                    };
-                    var newFolderName = string.Empty;
-                    collection = new List<string>(collection.Where(n => !string.IsNullOrEmpty(n)));
-                    var count = 0;
-                    foreach (var item in collection)
-                    {
-                        count++;
-                        if (count != collection.Count)
-                        {
-                            newFolderName += item + " - ";
-                        }
-                        else
-                        {
-                            newFolderName += item;
-                        }
-                    }
-                    var path = dialog.SelectedPath + "\\" + newFolderName;
-                    if (Directory.Exists(path) != true)
-                    {
-                        Directory.CreateDirectory(path);
-                        GetFolders();
-                        if (dialog.RfiState)
-                        {
-                            var pdfGenerator = new PdfGenerator();
-                            pdfGenerator.CreatePdfFromTemplate("C:\\Dropbox\\technology\\Standarts\\BlueBeam Templates\\ESD RC Form.pdf", path + "\\" + newFolderName + ".pdf");
-                        }
-                    }
-                    else
-                        System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
-                }
+                //    var collection = new List<string>()
+                //    {
+                //        dialog.OrderNumber,
+                //        dialog.SelectedTag,
+                //        dialog.Date,
+                //        dialog.FolderName
+                //    };
+                //    var newFolderName = string.Empty;
+                //    collection = new List<string>(collection.Where(n => !string.IsNullOrEmpty(n)));
+                //    var count = 0;
+                //    foreach (var item in collection)
+                //    {
+                //        count++;
+                //        if (count != collection.Count)
+                //        {
+                //            newFolderName += item + " - ";
+                //        }
+                //        else
+                //        {
+                //            newFolderName += item;
+                //        }
+                //    }
+                //    var path = dialog.SelectedPath + "\\" + newFolderName;
+                //    if (Directory.Exists(path) != true)
+                //    {
+                //        Directory.CreateDirectory(path);
+                //        GetFolders();
+                //        if (dialog.RfiState)
+                //        {
+                //            var pdfGenerator = new PdfGenerator();
+                //            pdfGenerator.CreatePdfFromTemplate("C:\\Dropbox\\technology\\Standarts\\BlueBeam Templates\\ESD RC Form.pdf", path + "\\" + newFolderName + ".pdf");
+                //        }
+                //    }
+                //    else
+                //        System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
+                //}
             }
             if (_viewIsToggled == false)
             {

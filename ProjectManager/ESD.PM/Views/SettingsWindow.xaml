@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESD.PM.Views"
         mc:Ignorable="d"
-        Title="Settings" Height="460" Width="490"
+        Title="Settings" Height="550" Width="490"
         ResizeMode="NoResize"
         WindowStyle="ToolWindow">
     <Window.Resources>
@@ -23,16 +23,16 @@
             <Setter Property="Height" Value="75"/>
             <Setter Property="Margin" Value="10,0,20,0"/>
         </Style>
-        <Style TargetType="TextBox">
+        <Style TargetType="TextBlock">
             <Setter Property="Width" Value="100"/>
             <Setter Property="FontFamily" Value="Bahnschrift"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="BorderBrush" Value="{x:Null}"/>
             <Setter Property="Margin" Value="10,0,0,0"/>
-            <Setter Property="IsReadOnly" Value="True"/>
             <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="TextAlignment" Value="Right"/>
         </Style>
         <Style TargetType="ListBox">
             <Setter Property="BorderBrush" Value="{x:Null}"/>
@@ -57,11 +57,12 @@
             <RowDefinition Height="90"/>
             <RowDefinition Height="90"/>
             <RowDefinition Height="90"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Style="{StaticResource BorderLight}">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBox Text="Project paths:"/>
+                <TextBlock Text="Project paths:"/>
                 <Border Style="{StaticResource BorderListBox}">
                     <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding ProjectPath}" 
                      SelectedItem="{Binding SelectedPath}">
@@ -79,7 +80,7 @@
 
         <Border Grid.Row="1" Style="{StaticResource BorderLight}">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBox Text="PDF Templates:"/>
+                <TextBlock Text="PDF Templates:"/>
                 <Border Style="{StaticResource BorderListBox}">
                     <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding PdfTemplates}"
              SelectedItem="{Binding SelectedPdfTemplate}">
@@ -105,7 +106,7 @@
 
         <Border Grid.Row="2" Style="{StaticResource BorderLight}">
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBox Text="Folder Structure Templates"/>
+                <TextBlock Text="Folder Structure Templates:"/>
                 <Border Style="{StaticResource BorderListBox}">
                     <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding FolderStructureTemplates}"
                              SelectedItem="{Binding SelectedFolderStructureTemplate}">
@@ -129,7 +130,7 @@
 
         <Border Grid.Row="3" Style="{StaticResource BorderLight}">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBox Text="Project Templates:"/>
+                <TextBlock Text="Project Templates:"/>
                 <Border Style="{StaticResource BorderListBox}"> 
                     <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding ProjectTemplates}"
                         SelectedItem="{Binding SelectedProjectTemplate}">
@@ -151,8 +152,31 @@
             </StackPanel>
         </Border>
 
-
         <Border Grid.Row="4" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBlock Text="RFI Templates:"/>
+                <Border Style="{StaticResource BorderListBox}">
+                    <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding RfiTemplates}"
+                        SelectedItem="{Binding SelectedRfiTemplate}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove Folder Structure Template"
+                                          Command="{Binding RemoveRfiTemplateCommand}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </Border>
+                <Button Style="{StaticResource AddButton}"
+                        Command="{Binding AddRfiTemplateCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="5" Style="{StaticResource BorderLight}">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
                 <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
                         Background="#FF788896" Margin="0,0,10,0">
@@ -169,7 +193,7 @@
                 </Border>
             </StackPanel>
         </Border>
-        <StackPanel Grid.Row="4"  Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
+        <StackPanel Grid.Row="5"  Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
             <Border Width="120" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
                         Background="DarkRed">
                 <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"

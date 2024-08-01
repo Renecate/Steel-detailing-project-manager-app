@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using ESD.PM.Commands;
 using ESD.PM.Models;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using ESD.PM.Commands;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 
@@ -21,6 +21,8 @@ namespace ESD.PM.ViewModels
 
         public ObservableCollection<FileModel> ProjectTemplates { get; set; }
 
+        public ObservableCollection<FileModel> RfiTemplates { get; set; }
+
         public FileModel SelectedProjectTemplate
         {
             get { return _selectedProjectTemplate; }
@@ -36,10 +38,10 @@ namespace ESD.PM.ViewModels
 
         public FileModel SelectedFolderStructureTemplate
         {
-            get { return _selectedFolderStructureTemplate;  }
+            get { return _selectedFolderStructureTemplate; }
             set
             {
-                if (_selectedFolderStructureTemplate != value) 
+                if (_selectedFolderStructureTemplate != value)
                 {
                     _selectedFolderStructureTemplate = value;
                     OnPropertyChanged(nameof(SelectedFolderStructureTemplate));
@@ -56,6 +58,19 @@ namespace ESD.PM.ViewModels
                 {
                     _selectedPdfTemplate = value;
                     OnPropertyChanged(nameof(SelectedPath));
+                }
+            }
+        }
+
+        public FileModel SelectedRfiTemplate
+        {
+            get { return _selectedRfiTemplate; }
+            set
+            {
+                if (_selectedRfiTemplate != value)
+                {
+                    _selectedRfiTemplate = value;
+                    OnPropertyChanged(nameof(SelectedRfiTemplate));
                 }
             }
         }
@@ -88,6 +103,8 @@ namespace ESD.PM.ViewModels
 
         private FileModel _selectedFolderStructureTemplate;
 
+        private FileModel _selectedRfiTemplate;
+
         #endregion
 
         #region Commands
@@ -110,6 +127,10 @@ namespace ESD.PM.ViewModels
 
         public DelegateCommand ClearSettingsCommand { get; set; }
 
+        public DelegateCommand AddRfiTemplateCommand { get; set; }
+
+        public DelegateCommand RemoveRfiTemplateCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -122,6 +143,7 @@ namespace ESD.PM.ViewModels
             GetPdfTemplates();
             GetFolderStructureTemplates();
             GetProjectTemplates();
+            GetRfiTemplates();
 
             AddProjectPathCommand = new DelegateCommand(OnAddProjectPath);
             RemoveProjectPathCommand = new DelegateCommand(OnRemoveProjectPath);
@@ -132,6 +154,8 @@ namespace ESD.PM.ViewModels
             AddProjectTemplateCommand = new DelegateCommand(OnAddProjectTemplate);
             RemoveProjectTemplateCommand = new DelegateCommand(OnRemoveProjectTemplate);
             ClearSettingsCommand = new DelegateCommand(OnClearSettings);
+            AddRfiTemplateCommand = new DelegateCommand(OnAddRfiTemplate);
+            RemoveRfiTemplateCommand = new DelegateCommand(OnRemoveRfiTemplate);
         }
 
         #endregion
@@ -167,9 +191,9 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        private void OnRemoveProjectPath(object obj) 
+        private void OnRemoveProjectPath(object obj)
         {
-            if (SelectedPath != null) 
+            if (SelectedPath != null)
             {
                 appSettings.ProjectPaths.Remove(SelectedPath);
                 GetProjectPath();
@@ -182,7 +206,7 @@ namespace ESD.PM.ViewModels
             {
                 dialog.Title = "PLEASE CHOOSE PDF TEMPLATES";
                 dialog.Filter = "PDF Files (*.pdf)|*.pdf";
-                dialog.Multiselect = true; 
+                dialog.Multiselect = true;
 
                 DialogResult result = dialog.ShowDialog();
 
@@ -213,14 +237,14 @@ namespace ESD.PM.ViewModels
 
         private void OnRemovePdfTemplate(object obj)
         {
-            if (SelectedPdfTemplate != null) 
+            if (SelectedPdfTemplate != null)
             {
                 appSettings.PdfTemplates.Remove(SelectedPdfTemplate.FullName);
                 GetPdfTemplates();
             }
         }
 
-        private void OnnAddFolderStructureTemplate(object obj) 
+        private void OnnAddFolderStructureTemplate(object obj)
         {
             using (var dialog = new FolderBrowserDialog())
             {
@@ -233,7 +257,7 @@ namespace ESD.PM.ViewModels
                 {
                     string selectedPath = dialog.SelectedPath;
 
-                    foreach (var template in Directory.GetDirectories(selectedPath)) 
+                    foreach (var template in Directory.GetDirectories(selectedPath))
                     {
                         if (!appSettings.StructureTemplates.Contains(template) && template.EndsWith("Template", StringComparison.OrdinalIgnoreCase))
                         {
@@ -251,7 +275,7 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        private void OnRemoveFolderStructureTemplate(object obj) 
+        private void OnRemoveFolderStructureTemplate(object obj)
         {
             if (SelectedFolderStructureTemplate != null)
             {
@@ -300,6 +324,50 @@ namespace ESD.PM.ViewModels
             }
         }
 
+        private void OnAddRfiTemplate(object obj)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Title = "PLEASE CHOOSE RFI TEMPLATES";
+                dialog.Filter = "PDF Files (*.pdf)|*.pdf";
+                dialog.Multiselect = true;
+
+                DialogResult result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    foreach (var selectedPath in dialog.FileNames)
+                    {
+                        if (!appSettings.RfiTemplates.Contains(selectedPath))
+                        {
+                            appSettings.RfiTemplates.Add(selectedPath);
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show($"File '{selectedPath}' is already in the list of PDF templates");
+                        }
+                    }
+
+                    SettingsManager.SaveSettings(appSettings);
+                    GetRfiTemplates();
+
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    System.Windows.MessageBox.Show("No file selected");
+                }
+            }
+        }
+
+        private void OnRemoveRfiTemplate(object obj)
+        {
+            if (SelectedRfiTemplate != null)
+            {
+                appSettings.RfiTemplates.Remove(SelectedRfiTemplate.FullName);
+                GetProjectTemplates();
+            }
+        }
+
         private void OnClearSettings(object obj)
         {
             MessageBoxResult result = System.Windows.MessageBox.Show(
@@ -326,13 +394,13 @@ namespace ESD.PM.ViewModels
         private void GetProjectPath()
         {
             ProjectPath = new ObservableCollection<string>(appSettings.ProjectPaths);
-            OnPropertyChanged (nameof(ProjectPath));
+            OnPropertyChanged(nameof(ProjectPath));
         }
 
         private void GetPdfTemplates()
         {
             PdfTemplates = new ObservableCollection<FileModel>();
-            foreach (var pdfTemplatePath in appSettings.PdfTemplates) 
+            foreach (var pdfTemplatePath in appSettings.PdfTemplates)
             {
                 PdfTemplates.Add(new FileModel(pdfTemplatePath));
             }
@@ -357,6 +425,16 @@ namespace ESD.PM.ViewModels
                 ProjectTemplates.Add(new FileModel(folderStructureTemplate));
             }
             OnPropertyChanged(nameof(ProjectTemplates));
+        }
+
+        private void GetRfiTemplates()
+        {
+            RfiTemplates = new ObservableCollection<FileModel>();
+            foreach (var rfiTemplatePath in appSettings.RfiTemplates)
+            {
+                RfiTemplates.Add(new FileModel(rfiTemplatePath));
+            }
+            OnPropertyChanged(nameof(RfiTemplates));
         }
 
         #endregion

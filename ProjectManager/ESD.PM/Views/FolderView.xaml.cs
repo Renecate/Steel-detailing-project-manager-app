@@ -115,7 +115,7 @@ namespace ESD.PM.Views
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2) 
+            if (e.ClickCount == 2)
             {
                 var viewModel = this.DataContext as FoldersViewModel;
                 if (viewModel != null && viewModel.OpenFolderCommand.CanExecute(null))

@@ -3,10 +3,10 @@ using System.Windows;
 
 namespace ESD.PM.Views
 {
-    
+
     public partial class SettingsWindow : Window
     {
-        public SettingsViewModel settingsViewModel { get; set; }
+        private SettingsViewModel settingsViewModel { get; set; }
         public SettingsWindow(Window owner)
         {
             Owner = owner;

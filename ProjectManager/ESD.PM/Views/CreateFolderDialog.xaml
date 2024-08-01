@@ -1,56 +1,129 @@
 ﻿<Window x:Class="ESD.PM.Views.CreateFolderDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Create New Folder" Height="200" Width="430"
-        MaxWidth="430"
-        MaxHeight="200"
-        ResizeMode="NoResize">
+        Title="Create New Folder" Height="300" Width="500"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Style x:Key="BorderLight" TargetType="Border">
+            <Setter Property="Background"  Value="#FFE1E5EC"/>
+            <Setter Property="BorderThickness" Value="0,1,0,1"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+        </Style>
+        <Style x:Key="BorderListBox" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="2,2,2,2"/>
+            <Setter Property="CornerRadius" Value="2,2,2,2"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+            <Setter Property="Width" Value="275"/>
+            <Setter Property="Height" Value="75"/>
+            <Setter Property="Margin" Value="10,0,20,0"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Width = "420" MaxWidth = "420" Grid.Row="0" Orientation="Horizontal" Margin="5">
-            <TextBlock VerticalAlignment="Center" Text="Number:" Margin="0,0,5,0"/>
-            <TextBox Name="OrderNumberTextBox" Text="{Binding OrderNumber}" Width="75" Margin="0,0,15,0"/>
+        <Border Grid.Row="0" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Folder type:"/>
+                <ComboBox ItemsSource="{Binding FolderTypes}"
+                          SelectedItem="{Binding SelectedFolderType, Mode=TwoWay}"
+                          Width="171"/>
+            </StackPanel>
+        </Border>
 
-            <TextBlock VerticalAlignment="Center" Text="Tag:" Margin="0,0,5,0"/>
-            <ComboBox Name = "comboBox" IsEditable="True" Width="50" 
-                      Margin="0,0,15,0" Text="{Binding SelectedTag, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding FolderTag}"
-                      IsReadOnly="False"/>
+        <Border Grid.Row="1" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Number :"/>
+                <TextBox Width="50" Text="{Binding OrderNumber, Mode=TwoWay}"/>
+                <TextBlock Text="Tag:" Width="Auto" Margin="20,0,0,0"/>
+                <ComboBox Width="60" ItemsSource="{Binding FolderTags}" 
+                          SelectedItem="{Binding SelectedFolderTag, UpdateSourceTrigger=PropertyChanged}"
+                          IsReadOnly="False" IsEditable="True" IsEnabled="{Binding FolderTagEnabled}"/>
+                <TextBlock Text="Date:" Width="Auto" Margin="20,0,0,0"/>
+                <TextBox Width="118" Text="{Binding Date, Mode=TwoWay}" MinLines="3"/>
+            </StackPanel>
+        </Border>
 
-            <TextBlock VerticalAlignment="Center" Text="Date:" Margin="0,0,5,0"/>
-            <TextBox Name="DateTextBox" Text="{Binding Date}" Width ="140" MaxWidth="140"/>
-        </StackPanel>
+        <Border Grid.Row="2" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Name:"/>
+                <TextBox TextAlignment="Left" Width="360" Text="{Binding FolderName, Mode=TwoWay}"/>
 
-        <Grid Grid.Row="1" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            </StackPanel>
+        </Border>
 
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Name:" Margin="0,0,17,0"/>
-            <TextBox Grid.Column="1" Name="NameTextBox" Text="{Binding FolderName}"/>
-        </Grid>
+        <Border Grid.Row="3" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Template:" Width="100"/>
+                <ComboBox Width="360" ItemsSource="{Binding AvailableTemplates}"
+                          SelectedItem="{Binding SelectedTemplate}" 
+                          IsEnabled="{Binding TemplatesIsActive}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </Border>
 
-        <Grid Grid.Row="2" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="4" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Path:" Width="100"/>
+                <ComboBox Width="360" ItemsSource="{Binding CreationPath}"
+                SelectedItem="{Binding SelectedPath}" IsEnabled="{Binding CreationPathEnabled}">
+                </ComboBox>
+            </StackPanel>
+        </Border>
 
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Path:" Margin="0,0,26,0"/>
-            <ComboBox Grid.Column="1" Name="Path" ItemsSource="{Binding CreationPath}" SelectedItem="{Binding SelectedPath}"/>
-        </Grid>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
             <Button Width="75" Margin="5" IsDefault="True" Click="OkButton_Click">OK</Button>
             <Button Width="75" Margin="5" IsCancel="True">Cancel</Button>
         </StackPanel>
 
-        <CheckBox Grid.Row="3" Name="CreatePDF" Content =" Create RFI " IsChecked="{Binding RfiState, Mode=TwoWay}" Width="100" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

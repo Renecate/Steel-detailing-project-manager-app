@@ -1,11 +1,4 @@
-﻿using iText.Forms.Fields;
-using iText.Forms;
-using iText.Kernel.Pdf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using iText.Kernel.Pdf;
 
 namespace ESD.PM.Models
 {
