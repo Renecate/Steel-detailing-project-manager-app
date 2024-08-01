@@ -20,6 +20,7 @@
     <None Remove="Views\Resourses\numbers_off.png" />
     <None Remove="Views\Resourses\numbers_on.png" />
     <None Remove="Views\Resourses\remove path.png" />
+    <None Remove="Views\Resourses\settings.png" />
     <None Remove="Views\Resourses\show.png" />
     <None Remove="Views\Resourses\sort_date.png" />
     <None Remove="Views\Resourses\sort_date_dark.png" />
@@ -43,6 +44,7 @@
   <ItemGroup>
     <Resource Include="Views\Resourses\numbers_off.png" />
     <Resource Include="Views\Resourses\numbers_on.png" />
+    <Resource Include="Views\Resourses\settings.png" />
     <Resource Include="Views\Resourses\sort_date_dark.png" />
     <Resource Include="Views\Resourses\show.png" />
   </ItemGroup>
@@ -63,12 +65,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Views\Resourses\add path.png" />
     <Resource Include="Views\Resourses\close.png" />
     <Resource Include="Views\Resourses\fullscreen.png" />
     <Resource Include="Views\Resourses\hide.png" />
     <Resource Include="Views\Resourses\line.png" />
-    <Resource Include="Views\Resourses\remove path.png" />
     <Resource Include="Views\Resourses\sort_date.png" />
     <Resource Include="Views\Resourses\star.png" />
     <Resource Include="Views\Resourses\star_gold.png" />

@@ -327,7 +327,6 @@ namespace ESD.PM.ViewModels
                 OnPropertyChanged(nameof(SelectedProject));
             }
         }
-
         private void OnRemoveItemSelection(object obj)
         {
             if (SelectedItem != null)

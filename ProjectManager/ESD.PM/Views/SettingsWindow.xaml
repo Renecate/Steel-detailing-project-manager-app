@@ -165,9 +165,18 @@
                         Background="DarkRed">
                     <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
                             FontSize="14" BorderBrush="{x:Null}" IsCancel="True">
-                    Cancel</Button>
+                        Cancel</Button>
                 </Border>
             </StackPanel>
         </Border>
+        <StackPanel Grid.Row="4"  Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
+            <Border Width="120" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                        Background="DarkRed">
+                <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                            FontSize="14" BorderBrush="{x:Null}" Command="{Binding ClearSettingsCommand}">
+                    Clear all settings</Button>
+            </Border>
+        </StackPanel>
+
     </Grid>
 </Window>

@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using ESD.PM.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ESD.PM.Commands;
 using System.IO;
-using System.Net.Http.Headers;
+using System.Windows;
 
 
 namespace ESD.PM.ViewModels
@@ -108,6 +107,9 @@ namespace ESD.PM.ViewModels
         public DelegateCommand AddProjectTemplateCommand { get; set; }
 
         public DelegateCommand RemoveProjectTemplateCommand { get; set; }
+
+        public DelegateCommand ClearSettingsCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -129,7 +131,7 @@ namespace ESD.PM.ViewModels
             RemoveFolderStructureTemplateCommand = new DelegateCommand(OnRemoveFolderStructureTemplate);
             AddProjectTemplateCommand = new DelegateCommand(OnAddProjectTemplate);
             RemoveProjectTemplateCommand = new DelegateCommand(OnRemoveProjectTemplate);
-
+            ClearSettingsCommand = new DelegateCommand(OnClearSettings);
         }
 
         #endregion
@@ -170,7 +172,6 @@ namespace ESD.PM.ViewModels
             if (SelectedPath != null) 
             {
                 appSettings.ProjectPaths.Remove(SelectedPath);
-                SettingsManager.SaveSettings(appSettings);
                 GetProjectPath();
             }
         }
@@ -215,7 +216,6 @@ namespace ESD.PM.ViewModels
             if (SelectedPdfTemplate != null) 
             {
                 appSettings.PdfTemplates.Remove(SelectedPdfTemplate.FullName);
-                SettingsManager.SaveSettings(appSettings);
                 GetPdfTemplates();
             }
         }
@@ -256,7 +256,6 @@ namespace ESD.PM.ViewModels
             if (SelectedFolderStructureTemplate != null)
             {
                 appSettings.StructureTemplates.Remove(SelectedFolderStructureTemplate.FullName);
-                SettingsManager.SaveSettings(appSettings);
                 GetFolderStructureTemplates();
             }
         }
@@ -294,13 +293,32 @@ namespace ESD.PM.ViewModels
 
         private void OnRemoveProjectTemplate(object obj)
         {
-            if (SelectedProjectTemplate != null) 
+            if (SelectedProjectTemplate != null)
             {
                 appSettings.ProjectTemplates.Remove(SelectedProjectTemplate.FullName);
-                SettingsManager.SaveSettings(appSettings);
                 GetProjectTemplates();
             }
         }
+
+        private void OnClearSettings(object obj)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show(
+                "Are you sure you want to clear all settings?",
+                "Confirmation",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                appSettings = new AppSettings();
+                GetProjectPath();
+                GetPdfTemplates();
+                GetFolderStructureTemplates();
+                GetProjectTemplates();
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -345,10 +363,16 @@ namespace ESD.PM.ViewModels
 
         #region Public Methods
         public event PropertyChangedEventHandler? PropertyChanged;
+
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public void SaveSettings()
+        {
+            SettingsManager.SaveSettings(appSettings);
         }
         #endregion
     }
