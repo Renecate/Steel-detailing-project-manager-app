@@ -1,62 +1,37 @@
-﻿using ESD.PM.Commands;
+﻿using ESD.PM.Models;
+using ESD.PM.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ESD.PM.Views
 {
     public partial class AddItemDialog : Window
     {
-        public ObservableCollection<ItemModel> ItemNames { get; set; } = new ObservableCollection<ItemModel>();
-        public ObservableCollection<string> ExistingItemNames { get; set; }
+        private AddItemViewModel _addItemViewModel;
 
-        public ICommand AddItemCommand { get; }
-        public ICommand OKCommand { get; }
-
-        public AddItemDialog(ObservableCollection<string> existingItemNames)
+        public AddItemDialog(Window owner, string pathToItemsFolder)
         {
             InitializeComponent();
-            DataContext = this;
-            ExistingItemNames = existingItemNames;
-            AddItemCommand = new DelegateCommand(AddItem);
-            OKCommand = new DelegateCommand(OK);
-            ItemNames.Add(new ItemModel());
+            _addItemViewModel = new AddItemViewModel();
+            DataContext = _addItemViewModel;
+            Owner = owner;
+            _addItemViewModel.Path = pathToItemsFolder;
+            _addItemViewModel.AddEmptyLine();
         }
 
-        private void AddItem(object obj)
+        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            ItemNames.Add(new ItemModel());
+            if (sender is System.Windows.Controls.TextBox textBox)
+            {
+                var currentText = textBox.Text;
+                _addItemViewModel.AddEmptyLine();
+            }
         }
 
-        private void OK(object obj)
+        private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            var duplicateItem = ItemNames.GroupBy(i => i.Name)
-                                         .Where(g => g.Count() > 1)
-                                         .Select(g => g.Key)
-                                         .FirstOrDefault();
-
-            if (duplicateItem != null)
-            {
-                System.Windows.MessageBox.Show($"Item name '{duplicateItem}' is duplicated. Please enter unique names.");
-                return;
-            }
-
-            foreach (var item in ItemNames)
-            {
-                if (ExistingItemNames.Contains(item.Name))
-                {
-                    System.Windows.MessageBox.Show($"Item name '{item.Name}' already exists. Please enter a different name.");
-                    return;
-                }
-            }
-
             DialogResult = true;
-            Close();
+            _addItemViewModel.CreateItems();
         }
-    }
-
-    public class ItemModel
-    {
-        public string Name { get; set; }
     }
 }

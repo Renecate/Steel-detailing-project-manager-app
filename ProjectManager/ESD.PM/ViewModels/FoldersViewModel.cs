@@ -228,7 +228,17 @@ namespace ESD.PM.Models
                     return date;
                 }
             }
-            return File.GetCreationTime(doc);
+            return Directory.GetCreationTime(doc);
+        }
+
+        private static int ExtractNumber(string doc)
+        {
+            var match = Regex.Match(doc, @"\((\d+)\)");
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+            return int.MinValue;
         }
 
         private void TagStateChanged(object sender, PropertyChangedEventArgs e)
@@ -292,11 +302,15 @@ namespace ESD.PM.Models
 
             if (!DateSortIsTrue)
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                    .OrderBy(a => ExtrateDate(a.Name))
+                    .ThenBy(a => ExtractNumber(a.Name)));
             }
             else
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                    .OrderByDescending(a => ExtrateDate(a.Name))
+                    .ThenByDescending(a => ExtractNumber(a.Name)));
             }
 
             if (_dynamicSearchText != null)
@@ -451,13 +465,15 @@ namespace ESD.PM.Models
 
             if (!DateSortIsTrue)
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderBy(a => ExtrateDate(a.Name)));
-                OnPropertyChanged(nameof(FilteredDocsList));
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                    .OrderBy(a => ExtrateDate(a.Name))
+                    .ThenBy(a => ExtractNumber(a.Name)));
             }
             else
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList).OrderByDescending(a => ExtrateDate(a.Name)));
-                OnPropertyChanged(nameof(FilteredDocsList));
+                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                    .OrderByDescending(a => ExtrateDate(a.Name))
+                    .ThenByDescending(a => ExtractNumber(a.Name)));
             }
 
             OnPropertyChanged(nameof(FilteredDocsList));
@@ -816,61 +832,6 @@ namespace ESD.PM.Models
                 {
                     GetFolders();
                 }
-                //var localTags = string.Empty;
-                //if (Tags != null)
-                //{
-                //    foreach (var tag in Tags)
-                //    {
-                //        if (!dialog.FolderTag.Any(t => t == tag.Name))
-                //        {
-                //            dialog.FolderTag.Add(tag.Name);
-                //        }
-                //    }
-                //}
-                //dialog.FolderTag.Sort();
-                //if (dialog.ShowDialog() == true)
-                //{
-                //    if (dialog.SelectedTag != null && dialog.SelectedTag.Length > 1) 
-                //    {
-                //        dialog.SelectedTag = dialog.SelectedTag.Substring(0, 2);
-                //    }
-
-                //    var collection = new List<string>()
-                //    {
-                //        dialog.OrderNumber,
-                //        dialog.SelectedTag,
-                //        dialog.Date,
-                //        dialog.FolderName
-                //    };
-                //    var newFolderName = string.Empty;
-                //    collection = new List<string>(collection.Where(n => !string.IsNullOrEmpty(n)));
-                //    var count = 0;
-                //    foreach (var item in collection)
-                //    {
-                //        count++;
-                //        if (count != collection.Count)
-                //        {
-                //            newFolderName += item + " - ";
-                //        }
-                //        else
-                //        {
-                //            newFolderName += item;
-                //        }
-                //    }
-                //    var path = dialog.SelectedPath + "\\" + newFolderName;
-                //    if (Directory.Exists(path) != true)
-                //    {
-                //        Directory.CreateDirectory(path);
-                //        GetFolders();
-                //        if (dialog.RfiState)
-                //        {
-                //            var pdfGenerator = new PdfGenerator();
-                //            pdfGenerator.CreatePdfFromTemplate("C:\\Dropbox\\technology\\Standarts\\BlueBeam Templates\\ESD RC Form.pdf", path + "\\" + newFolderName + ".pdf");
-                //        }
-                //    }
-                //    else
-                //        System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
-                //}
             }
             if (_viewIsToggled == false)
             {

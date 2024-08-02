@@ -124,7 +124,7 @@
                 <TextBlock Text="Additional creation: "/>
                 <Border Style="{StaticResource BorderListBox}" Height="90">
                     <ListBox Width="357" ItemsSource="{Binding InsideFiles}" Margin="0,5,0,5"
-                             FontSize="12">
+                             FontSize="14">
 
                     </ListBox>
                 </Border>

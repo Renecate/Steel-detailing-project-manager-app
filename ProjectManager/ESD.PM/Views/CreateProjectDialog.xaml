@@ -5,29 +5,112 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESD.PM.Views"
         mc:Ignorable="d"
-        Title="CreateProjectDialog" Height="450" Width="800">
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
+        Title="Create Project" Height="250" Width="500">
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="BorderLight" TargetType="Border">
+            <Setter Property="Background"  Value="#FFE1E5EC"/>
+            <Setter Property="BorderThickness" Value="0,1,0,1"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+        </Style>
+        <Style x:Key="BorderListBox" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="2,2,2,2"/>
+            <Setter Property="CornerRadius" Value="2,2,2,2"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+            <Setter Property="Margin" Value="10,0,20,0"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Margin" Value="10,5,0,5"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
     </Window.Resources>
-    <Grid Margin="10">
-        <StackPanel>
-            <TextBlock Text="Project Name:" Margin="0,0,0,10" />
-            <TextBox Name="ProjectNameTextBox" Margin="0,0,0,10" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Select Parent Folder:" Margin="0,0,0,10" />
-            <ComboBox Name="ParentFolderComboBox" ItemsSource="{Binding ProjectPaths}" Margin="0,0,0,10" />
-            
-            <CheckBox Name="ItemsIncludedCheckBox" Content="Items Included?" Margin="0,0,0,10" />
-
-            <TextBlock Text="Items (comma separated):" Margin="0,0,0,10" Visibility="{Binding ElementName=ItemsIncludedCheckBox, 
-                Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <TextBox Name="ItemsTextBox" Margin="0,0,0,10" Visibility="{Binding ElementName=ItemsIncludedCheckBox, 
-                Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="OK" Width="75" Margin="5" Click="OkButton_Click" />
-                <Button Content="Cancel" Width="75" Margin="5" Click="CancelButton_Click" />
+        <Border Grid.Row="0" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Project name:" Width="120"/>
+                <TextBox Width="340" Text="{Binding ProjectName}" TextAlignment="Left"/>
             </StackPanel>
-        </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Template:" Width="120"/>
+                <ComboBox Width="340" ItemsSource="{Binding ProjectsTemplates}"
+                          SelectedItem="{Binding SelectedTemplate}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Creation path:" Width="120"/>
+                <ComboBox Width="340" ItemsSource="{Binding Paths}"
+                          SelectedItem="{Binding SelectedPath}">
+                </ComboBox>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                Background="#FF788896" Margin="0,0,10,0">
+                    <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                FontSize="14" BorderBrush="{x:Null}"
+                Click="OkButton_Click">Create</Button>
+                </Border>
+                <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                Background="DarkRed" Margin="5">
+                    <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                    FontSize="14" BorderBrush="{x:Null}" IsCancel="True">
+                        Cancel</Button>
+                </Border>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

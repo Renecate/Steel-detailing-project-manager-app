@@ -95,7 +95,6 @@ namespace ESD.PM.ViewModels
             }
         }
 
-
         public bool FolderTagEnabled
         {
             get { return _folderTagEnabled; }
@@ -170,9 +169,6 @@ namespace ESD.PM.ViewModels
 
         public ObservableCollection<string> InsideFiles { get; set; }
 
-
-
-
         #endregion
 
         #region PrivateProps
@@ -198,7 +194,6 @@ namespace ESD.PM.ViewModels
         private bool _creationPathEnabled;
 
         private string _pdfName;
-
 
         private List<string> _folderTags;
 
@@ -269,7 +264,6 @@ namespace ESD.PM.ViewModels
                 foreach (var structureTemplate in AppSettings.StructureTemplates)
                 {
                     FolderTagEnabled = true;
-                    SelectedFolderTag = "RA";
                     AvailableTemplates.Add(new FileModel(structureTemplate));
                     TemplatesIsActive = true;
                     SelectedTemplate = AvailableTemplates[0];
@@ -293,7 +287,7 @@ namespace ESD.PM.ViewModels
             InsideFiles = new ObservableCollection<string>();
             if (SelectedFolderType == FolderTypes[0])
             {
-                InsideFiles.Add(_pdfName);
+                InsideFiles.Add(_pdfName + ".pdf");
             }
             if (SelectedFolderType == FolderTypes[1])
             {
@@ -318,7 +312,7 @@ namespace ESD.PM.ViewModels
                 }
                 else
                 {
-                    _pdfName = Date + " - " + FolderName;
+                    _pdfName = Date + " - " + FolderName + ".pdf";
                     InsideFiles.Add(_pdfName);
                 }
             }
@@ -371,13 +365,22 @@ namespace ESD.PM.ViewModels
         public void Create()
         {
             var newFolderName = string.Empty;
+            if (SelectedFolderTag.Length > 2)
+            {
+                SelectedFolderTag = SelectedFolderTag.Substring(0, 2);
+            }
+            else if (SelectedFolderTag.Length == 1)
+            {
+                SelectedFolderTag = SelectedFolderTag + SelectedFolderTag;
+            }  
             var collection = new List<string>()
             {
-            $"({OrderNumber})",
+                    $"({OrderNumber})",
                 SelectedFolderTag,
                 Date,
                 FolderName
             };
+
 
             collection = new List<string>(collection.Where(n => !string.IsNullOrEmpty(n)));
 
@@ -409,10 +412,10 @@ namespace ESD.PM.ViewModels
                     var pdfGenerator = new PdfGenerator();
                     if (File.Exists(SelectedTemplate.FullName))
                     {
-                        pdfGenerator.CreatePdfFromTemplate(SelectedTemplate.FullName, path + "\\" + file + ".pdf");
+                        pdfGenerator.CreatePdfFromTemplate(SelectedTemplate.FullName, path + "\\" + file);
                         ProcessStartInfo startInfo = new ProcessStartInfo();
                         startInfo.FileName = "explorer.exe";
-                        startInfo.Arguments = path + "\\" + file + ".pdf";
+                        startInfo.Arguments = path + "\\" + file;
                         Process.Start(startInfo);
                     }
                     else

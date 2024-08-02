@@ -5,20 +5,94 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESD.PM.Views"
         mc:Ignorable="d"
-        Title="Add Item" Height="450" Width="800">
+        ResizeMode="NoResize"
+        Title="Add Item" Height="400" Width="500">
+    <Window.Resources>
+        <Style x:Key="BorderLight" TargetType="Border">
+            <Setter Property="Background"  Value="#FFE1E5EC"/>
+            <Setter Property="BorderThickness" Value="0,1,0,1"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+        </Style>
+        <Style x:Key="BorderListBox" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="2,2,2,2"/>
+            <Setter Property="CornerRadius" Value="2,2,2,2"/>
+            <Setter Property="BorderBrush" Value="#FF788896"/>
+            <Setter Property="Margin" Value="10,0,20,0"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Margin" Value="5,5,0,5"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        <StackPanel>
-            <ItemsControl ItemsSource="{Binding ItemNames}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Width="200" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Button Content="Add Item" Command="{Binding AddItemCommand}" Margin="5"/>
-            <Button Content="OK" Command="{Binding OKCommand}" Margin="5"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource BorderLight}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Item name: " VerticalAlignment="Top" Margin="0,10,0,0"/>
+                <ListBox ItemsSource="{Binding Items}" Width="370" Background="{x:Null}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Width ="320" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left"
+                                     Margin="0" TextChanged="TextBox_TextChanged"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+        <Border Grid.Row="1" Style="{StaticResource BorderLight}">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                        Background="#FF788896" Margin="0,0,10,0">
+                    <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                            FontSize="14" BorderBrush="{x:Null}"
+                            Click="OkButton_Click">Create</Button>
+                </Border>
+                <Border Width="95" Height="40" CornerRadius="2" BorderThickness="2" BorderBrush="#FF788896"
+                        Background="DarkRed" Margin="5">
+                    <Button Background="{x:Null}" Foreground="White" FontFamily="Bahnschrift" IsDefault="True"
+                            FontSize="14" BorderBrush="{x:Null}" IsCancel="True">
+                            Cancel</Button>
+                </Border>
+            </StackPanel>
+        </Border>
+        
     </Grid>
 </Window>
