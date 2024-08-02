@@ -1,6 +1,8 @@
 ﻿using ESD.PM.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace ESD.PM.ViewModels
@@ -48,6 +50,7 @@ namespace ESD.PM.ViewModels
                 if (_selectedTemplate != value)
                 {
                     _selectedTemplate = value;
+                    GetInsideFiles();
                     OnPropertyChanged(nameof(SelectedTemplate));
                 }
             }
@@ -92,6 +95,7 @@ namespace ESD.PM.ViewModels
             }
         }
 
+
         public bool FolderTagEnabled
         {
             get { return _folderTagEnabled; }
@@ -113,6 +117,7 @@ namespace ESD.PM.ViewModels
                 if (_folderName != value)
                 {
                     _folderName = value;
+                    GetInsideFiles();
                     OnPropertyChanged(nameof(FolderName));
                 }
             }
@@ -161,7 +166,9 @@ namespace ESD.PM.ViewModels
 
         public AppSettings AppSettings { get; set; }
 
+        public string RfiNumber { get; set; }
 
+        public ObservableCollection<string> InsideFiles { get; set; }
 
 
 
@@ -190,6 +197,7 @@ namespace ESD.PM.ViewModels
 
         private bool _creationPathEnabled;
 
+        private string _pdfName;
 
 
         private List<string> _folderTags;
@@ -251,31 +259,70 @@ namespace ESD.PM.ViewModels
                 {
                     TemplatesIsActive = false;
                 }
+
+                _pdfName = "RFI " + RfiNumber;
                 SelectedTemplate = AvailableTemplates[0];
-                GetRfiFolderName();
+                FolderName = _pdfName;
             }
             else if (SelectedFolderType == FolderTypes[1])
             {
                 foreach (var structureTemplate in AppSettings.StructureTemplates)
                 {
+                    FolderTagEnabled = true;
+                    SelectedFolderTag = "RA";
                     AvailableTemplates.Add(new FileModel(structureTemplate));
                     TemplatesIsActive = true;
+                    SelectedTemplate = AvailableTemplates[0];
+                    FolderName = "New Folder";
                 }
             }
             else if (SelectedFolderType == FolderTypes[2])
             {
                 foreach (var pdfTemplate in AppSettings.PdfTemplates)
                 {
+                    FolderTagEnabled = true;
                     AvailableTemplates.Add(new FileModel(pdfTemplate));
                     TemplatesIsActive = true;
+                    FolderName = "New Folder";
                 }
             }
             OnPropertyChanged(nameof(AvailableTemplates));
         }
-
-        private void GetRfiFolderName()
+        private void GetInsideFiles()
         {
-
+            InsideFiles = new ObservableCollection<string>();
+            if (SelectedFolderType == FolderTypes[0])
+            {
+                InsideFiles.Add(_pdfName);
+            }
+            if (SelectedFolderType == FolderTypes[1])
+            {
+                if (Directory.Exists(SelectedTemplate.FullName))
+                {
+                    foreach (var path in Directory.GetDirectories(SelectedTemplate.FullName))
+                    {
+                        var directory = new DirectoryInfo(path).Name;
+                        InsideFiles.Add(directory);
+                    }
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show($"Template '{SelectedTemplate.Name}' no longer exists");
+                }
+            }
+            if (SelectedFolderType == FolderTypes[2])
+            {
+                if (SelectedTemplate == null)
+                {
+                    InsideFiles.Clear();
+                }
+                else
+                {
+                    _pdfName = Date + " - " + FolderName;
+                    InsideFiles.Add(_pdfName);
+                }
+            }
+            OnPropertyChanged(nameof(InsideFiles));
         }
 
         #endregion
@@ -319,6 +366,66 @@ namespace ESD.PM.ViewModels
             SelectedFolderType = FolderTypes[2];
             OnPropertyChanged(nameof(FolderTags));
             OnPropertyChanged(nameof(CreationPath));
+        }
+
+        public void Create()
+        {
+            var newFolderName = string.Empty;
+            var collection = new List<string>()
+            {
+            $"({OrderNumber})",
+                SelectedFolderTag,
+                Date,
+                FolderName
+            };
+
+            collection = new List<string>(collection.Where(n => !string.IsNullOrEmpty(n)));
+
+            foreach (var part in collection)
+            {
+                if (!(collection.IndexOf(part) == collection.Count - 1))
+                {
+                    newFolderName += part + " - ";
+                }
+                else
+                {
+                    newFolderName += part;
+                }
+            }
+
+            var path = SelectedPath + "\\" + newFolderName;
+
+            if (Directory.Exists(path) != true)
+            {
+                Directory.CreateDirectory(path);
+            }
+            else
+                System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");
+
+            foreach (var file in InsideFiles)
+            {
+                if (SelectedTemplate.FullName.EndsWith("pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    var pdfGenerator = new PdfGenerator();
+                    if (File.Exists(SelectedTemplate.FullName))
+                    {
+                        pdfGenerator.CreatePdfFromTemplate(SelectedTemplate.FullName, path + "\\" + file + ".pdf");
+                        ProcessStartInfo startInfo = new ProcessStartInfo();
+                        startInfo.FileName = "explorer.exe";
+                        startInfo.Arguments = path + "\\" + file + ".pdf";
+                        Process.Start(startInfo);
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"Template '{SelectedTemplate.Name}' no longer exists");
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(path + "\\" + file);
+                }
+            }
+
         }
         #endregion
 

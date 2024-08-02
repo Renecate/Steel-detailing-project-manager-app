@@ -42,15 +42,18 @@ namespace ESD.PM.Models
 
             await Task.Run(() =>
             {
-                Parallel.ForEach(Directory.GetDirectories(FullName), (directory) =>
+                if (Directory.Exists(FullName))
                 {
-                    insideFiles.Add(new FileModel(directory));
-                });
+                    Parallel.ForEach(Directory.GetDirectories(FullName), (directory) =>
+                    {
+                        insideFiles.Add(new FileModel(directory));
+                    });
 
-                Parallel.ForEach(Directory.GetFiles(FullName), (file) =>
-                {
-                    insideFiles.Add(new FileModel(file));
-                });
+                    Parallel.ForEach(Directory.GetFiles(FullName), (file) =>
+                    {
+                        insideFiles.Add(new FileModel(file));
+                    });
+                }
             });
 
             InsideFiles = new ObservableCollection<FileModel>(insideFiles);

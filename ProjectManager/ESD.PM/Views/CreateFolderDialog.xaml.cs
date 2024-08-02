@@ -6,13 +6,25 @@ namespace ESD.PM.Views
 {
     public partial class CreateFolderDialog : Window
     {
+        public string SelectedTag
+        {
+            get { return _selectedTag; }
+            set
+            {
+                if (_selectedTag != value)
+                {
+                    SelectedTagChanged();
+                    _selectedTag = value;
+                }
+            }
+        }
 
 
-        private string _selectedPath;
+        private string _selectedTag;
 
         private CreateFolderViewModel _createFolderViewModel;
 
-        public CreateFolderDialog(Window owner, int initialOrderNumber, List<string> creationPath, List<string> tags, AppSettings appSettings)
+        public CreateFolderDialog(Window owner, int initialOrderNumber, string rfiNumber, List<string> creationPath, List<string> tags, AppSettings appSettings)
         {
 
             InitializeComponent();
@@ -24,12 +36,19 @@ namespace ESD.PM.Views
             _createFolderViewModel.CreationPath = creationPath;
             _createFolderViewModel.FolderTags = tags;
             _createFolderViewModel.AppSettings = appSettings;
+            _createFolderViewModel.RfiNumber = rfiNumber;
             _createFolderViewModel.GetTags();
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+            _createFolderViewModel.Create();
+        }
+
+        private void SelectedTagChanged()
+        {
+            _createFolderViewModel.SelectedFolderTag = SelectedTag;
         }
     }
 }

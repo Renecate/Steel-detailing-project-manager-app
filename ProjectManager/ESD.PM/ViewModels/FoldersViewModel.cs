@@ -472,7 +472,95 @@ namespace ESD.PM.Models
         {
             Regex regex = new Regex(@"\((\d+)\)");
 
+            var numbers = GetOriginalList()
+            .Select(proj => regex.Match(proj.Name))
+            .Where(match => match.Success)
+            .Select(match => int.Parse(match.Groups[1].Value))
+            .ToList();
 
+            if (numbers.Count == 0)
+            {
+                return 1;
+            }
+
+            int maxNumber = numbers.Max();
+            return maxNumber + 1;
+        }
+
+        private string GetNextRfiNumber()
+        {
+            Regex regex = new Regex(@"RFI\s(\d+(\.\d+)?)");
+
+            var numbers = GetOriginalList()
+                .Select(proj => regex.Match(proj.Name))
+                .Where(match => match.Success)
+                .Select(match => match.Groups[1].Value)
+                .ToList();
+
+            if (numbers.Count == 0)
+            {
+                return "1";
+            }
+
+            numbers.Sort(CompareRfiNumbers);
+
+            string maxNumber = numbers.Last();
+            string nextNumber = IncrementRfiNumber(maxNumber);
+            return $"{nextNumber}";
+        }
+
+        private int CompareRfiNumbers(string rfi1, string rfi2)
+        {
+            string[] parts1 = rfi1.Split('.');
+            string[] parts2 = rfi2.Split('.');
+
+            int integerPart1 = int.Parse(parts1[0]);
+            int integerPart2 = int.Parse(parts2[0]);
+
+            int result = integerPart1.CompareTo(integerPart2);
+            if (result != 0)
+            {
+                return result;
+            }
+
+            if (parts1.Length == 1 && parts2.Length == 1)
+            {
+                return 0;
+            }
+            if (parts1.Length == 1)
+            {
+                return -1;
+            }
+            if (parts2.Length == 1)
+            {
+                return 1;
+            }
+
+            int decimalPart1 = int.Parse(parts1[1]);
+            int decimalPart2 = int.Parse(parts2[1]);
+
+            return decimalPart1.CompareTo(decimalPart2);
+        }
+
+        private string IncrementRfiNumber(string currentNumber)
+        {
+            if (!currentNumber.Contains('.'))
+            {
+                int integerPart = int.Parse(currentNumber);
+                return (integerPart + 1).ToString();
+            }
+            else
+            {
+                string[] parts = currentNumber.Split('.');
+                int integerPart = int.Parse(parts[0]);
+                int decimalPart = int.Parse(parts[1]);
+                decimalPart++;
+                return $"{integerPart}.{decimalPart}";
+            }
+        }
+
+        private ObservableCollection<FoldersModel> GetOriginalList()
+        {
             var localIterationList = new ObservableCollection<FoldersModel>();
             var localList = new ObservableCollection<FoldersModel>();
             if (Directory.Exists(FullName))
@@ -498,19 +586,7 @@ namespace ESD.PM.Models
                 }
             }
 
-            var numbers = localList
-            .Select(proj => regex.Match(proj.Name))
-            .Where(match => match.Success)
-            .Select(match => int.Parse(match.Groups[1].Value))
-            .ToList();
-
-            if (numbers.Count == 0)
-            {
-                return 1;
-            }
-
-            int maxNumber = numbers.Max();
-            return maxNumber + 1;
+            return localList;
         }
 
         private void ViewIsHiddenOrToggledCheck()
@@ -725,6 +801,7 @@ namespace ESD.PM.Models
             if (Directory.Exists(FullName) == true)
             {
                 int orderNumber = GetOrderNumber();
+                string rfiNumber = GetNextRfiNumber();
                 var pathList = PathList;
                 var tags = new List<string>();
                 if (Tags != null)
@@ -734,8 +811,11 @@ namespace ESD.PM.Models
                         tags.Add(tag.Name);
                     }
                 }
-                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, pathList, tags, _appSettings);
-                dialog.ShowDialog();
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags, _appSettings);
+                if (dialog.ShowDialog() == true)
+                {
+                    GetFolders();
+                }
                 //var localTags = string.Empty;
                 //if (Tags != null)
                 //{

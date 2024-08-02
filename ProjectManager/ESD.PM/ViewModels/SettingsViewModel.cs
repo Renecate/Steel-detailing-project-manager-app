@@ -259,7 +259,7 @@ namespace ESD.PM.ViewModels
 
                     foreach (var template in Directory.GetDirectories(selectedPath))
                     {
-                        if (!appSettings.StructureTemplates.Contains(template) && template.EndsWith("Template", StringComparison.OrdinalIgnoreCase))
+                        if (!appSettings.StructureTemplates.Contains(template))
                         {
                             appSettings.StructureTemplates.Add(template);
                             SettingsManager.SaveSettings(appSettings);
@@ -269,7 +269,6 @@ namespace ESD.PM.ViewModels
                         {
                             System.Windows.MessageBox.Show($"Folder '{template}' already exists");
                         }
-                        else System.Windows.MessageBox.Show($"Folder '{template}' is not template");
                     }
                 }
             }
@@ -299,7 +298,7 @@ namespace ESD.PM.ViewModels
 
                     foreach (var template in Directory.GetDirectories(selectedPath))
                     {
-                        if (!appSettings.ProjectTemplates.Contains(template) && template.EndsWith("Template", StringComparison.OrdinalIgnoreCase))
+                        if (!appSettings.ProjectTemplates.Contains(template))
                         {
                             appSettings.ProjectTemplates.Add(template);
                             SettingsManager.SaveSettings(appSettings);
@@ -309,7 +308,6 @@ namespace ESD.PM.ViewModels
                         {
                             System.Windows.MessageBox.Show($"Folder '{template}' already exists");
                         }
-                        else System.Windows.MessageBox.Show($"Folder '{template}' is not template");
                     }
                 }
             }
