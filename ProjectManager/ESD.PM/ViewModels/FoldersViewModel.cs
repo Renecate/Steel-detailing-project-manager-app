@@ -1,4 +1,5 @@
 ﻿using ESD.PM.Commands;
+using ESD.PM.ViewModels;
 using ESD.PM.Views;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -145,6 +146,10 @@ namespace ESD.PM.Models
         [JsonIgnore]
         public DelegateCommand HideNumbersCommand { get; set; }
 
+        [JsonIgnore]
+        public DelegateCommand FileEmptyDropCommand { get; set; }
+
+
         #endregion
 
         #region Private Properties
@@ -212,6 +217,7 @@ namespace ESD.PM.Models
             RenameFolderCommand = new DelegateCommand(OnRenameFolder);
             CreateFolderCommand = new DelegateCommand(OnCreateFolder);
             HideNumbersCommand = new DelegateCommand(OnHideNumbers);
+            FileEmptyDropCommand = new DelegateCommand(OnFileEmptyDrop);
 
         }
 
@@ -758,6 +764,54 @@ namespace ESD.PM.Models
                     }
                 }
                 GetFolders();
+            }
+        }
+
+        private void OnFileEmptyDrop(object obj)
+        {
+            var pathCollection = obj as string[];
+            if (pathCollection != null)
+            {
+                int orderNumber = GetOrderNumber();
+                string rfiNumber = GetNextRfiNumber();
+                var pathList = PathList;
+                var tags = new List<string>();
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags, _appSettings);
+                var existingDirectories = new List<string>();
+
+                foreach (var existingDirectory in FolderList)
+                {
+                    existingDirectories.Add(existingDirectory.FullName);
+                }
+
+                var directoryPath = string.Empty;
+
+                if (dialog.ShowDialog() == true)
+                {
+                    GetFolders();
+                    foreach (var newDirectory in FolderList)
+                    {
+                        if (!existingDirectories.Contains(newDirectory.FullName))
+                        {
+                            directoryPath = newDirectory.FullName;
+                            break;
+                        }
+                    }
+                    foreach (string path in pathCollection)
+                    {
+                        var destination = directoryPath + "\\" + Path.GetFileName(path);
+                        if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+                        {
+                            Directory.Move(path, destination);
+                        }
+                        else if (Path.GetFileName(path) != null)
+                        {
+                            File.Move(path, destination);
+                        }
+                    }
+                }
+                GetFolders();
+                Application.Current.MainWindow.Focus();
             }
         }
 

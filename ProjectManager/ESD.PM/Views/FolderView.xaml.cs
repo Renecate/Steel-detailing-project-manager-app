@@ -100,6 +100,20 @@ namespace ESD.PM.Views
             }
         }
 
+        private void EmptyListBox_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                var viewModel = DataContext as FoldersViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.FileEmptyDropCommand.Execute(files);
+                }
+            }
+        }
+
         private async void DynamicSearch_TextChanged(object sender, EventArgs e)
         {
             if (DataContext is FoldersViewModel viewModel)

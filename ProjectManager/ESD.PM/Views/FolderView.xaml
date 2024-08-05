@@ -97,7 +97,8 @@
                 <ListBox Name="FilesListBox" ItemsSource="{Binding FilteredDocsList}" 
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                         SelectedItem="{Binding SelectedFolderName}"
-                        FontFamily="Bahnschrift" FontSize="16">
+                        FontFamily="Bahnschrift" FontSize="16" AllowDrop="True"
+                         Drop="EmptyListBox_Drop">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"

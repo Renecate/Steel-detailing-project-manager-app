@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 
+
 namespace ESD.PM.ViewModels
 {
     public class CreateFolderViewModel : INotifyPropertyChanged
@@ -209,6 +210,7 @@ namespace ESD.PM.ViewModels
 
         public CreateFolderViewModel()
         {
+
             FolderTypes = new List<string>()
             {
                 "RFI",
@@ -365,13 +367,16 @@ namespace ESD.PM.ViewModels
         public void Create()
         {
             var newFolderName = string.Empty;
-            if (SelectedFolderTag.Length > 2)
+            if (SelectedFolderTag != null)
             {
-                SelectedFolderTag = SelectedFolderTag.Substring(0, 2);
-            }
-            else if (SelectedFolderTag.Length == 1)
-            {
-                SelectedFolderTag = SelectedFolderTag + SelectedFolderTag;
+                if (SelectedFolderTag.Length > 2)
+                {
+                    SelectedFolderTag = SelectedFolderTag.Substring(0, 2);
+                }
+                else if (SelectedFolderTag.Length == 1)
+                {
+                    SelectedFolderTag = SelectedFolderTag + SelectedFolderTag;
+                }
             }
             var collection = new List<string>()
             {
@@ -428,7 +433,6 @@ namespace ESD.PM.ViewModels
                     Directory.CreateDirectory(path + "\\" + file);
                 }
             }
-
         }
         #endregion
 
