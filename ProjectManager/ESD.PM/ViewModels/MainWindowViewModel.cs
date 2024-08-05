@@ -262,9 +262,38 @@ namespace ESD.PM.ViewModels
             var dialog = new AddItemDialog(Application.Current.MainWindow, _itemsPath);
             if (dialog.ShowDialog() == true)
             {
-                GetFoldersOrItemsAsync();
+                var selectedProject = _selectedProject;
+                if (selectedProject != null)
+                {
+                    if (SelectedProject.Favorite)
+                    {
+                        if (ItemsIsTrue)
+                        {
+                            foreach (var itemFolder in Directory.GetDirectories(_itemsPath))
+                            {
+                                foreach (var folder in Directory.GetDirectories(itemFolder))
+                                {
+                                    var vm = new FoldersViewModel(folder, appSettings);
+                                    var isSaved = false;
+                                    foreach (var saved in appSettings.SavedFolders)
+                                    {
+                                        if (saved.FullName == vm.FullName)
+                                        {
+                                            isSaved = true;
+                                        }
+                                    }
+                                    if (!isSaved)
+                                    {
+                                        appSettings.SavedFolders.Add(vm);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    SettingsManager.SaveSettings(appSettings);
+                    LoadProjectsAsync();
+                }
             }
-
         }
         private void OnUpdate(object obj)
         {

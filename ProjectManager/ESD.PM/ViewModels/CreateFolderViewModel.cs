@@ -372,7 +372,7 @@ namespace ESD.PM.ViewModels
             else if (SelectedFolderTag.Length == 1)
             {
                 SelectedFolderTag = SelectedFolderTag + SelectedFolderTag;
-            }  
+            }
             var collection = new List<string>()
             {
                     $"({OrderNumber})",

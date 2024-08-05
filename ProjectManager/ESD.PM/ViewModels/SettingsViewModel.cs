@@ -362,7 +362,7 @@ namespace ESD.PM.ViewModels
             if (SelectedRfiTemplate != null)
             {
                 appSettings.RfiTemplates.Remove(SelectedRfiTemplate.FullName);
-                GetProjectTemplates();
+                GetRfiTemplates();
             }
         }
 
@@ -382,6 +382,7 @@ namespace ESD.PM.ViewModels
                 GetPdfTemplates();
                 GetFolderStructureTemplates();
                 GetProjectTemplates();
+                GetRfiTemplates();
             }
         }
 

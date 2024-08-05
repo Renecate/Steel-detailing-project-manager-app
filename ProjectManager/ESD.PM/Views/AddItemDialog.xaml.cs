@@ -1,6 +1,4 @@
 ﻿using ESD.PM.Models;
-using ESD.PM.ViewModels;
-using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace ESD.PM.Views
