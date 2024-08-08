@@ -15,6 +15,7 @@ namespace ESD.PM.Views
             _createProjectViewModel = new CreateProjectViewModel();
             DataContext = _createProjectViewModel;
             Owner = owner;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
             _createProjectViewModel.appSettings = appSettings;
             _createProjectViewModel.GetPathAndTemplates();
         }
