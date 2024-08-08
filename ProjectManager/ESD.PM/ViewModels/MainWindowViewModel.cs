@@ -289,11 +289,11 @@ namespace ESD.PM.ViewModels
                     }
                 }
                 SettingsManager.SaveSettings(appSettings);
-                var dialog = new CreateProjectDialog(Application.Current.MainWindow, appSettings);
-                if (dialog.ShowDialog() == true)
-                {
-                    LoadProjectsAsync();
-                }
+            }
+            var dialog = new CreateProjectDialog(Application.Current.MainWindow, appSettings);
+            if (dialog.ShowDialog() == true)
+            {
+                LoadProjectsAsync();
             }
         }
 
