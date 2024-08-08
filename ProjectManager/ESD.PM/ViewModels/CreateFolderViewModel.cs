@@ -164,11 +164,29 @@ namespace ESD.PM.ViewModels
             }
         }
 
+        public string ProjectName { get; set; }
+
         public AppSettings AppSettings { get; set; }
 
         public string RfiNumber { get; set; }
 
         public ObservableCollection<string> InsideFiles { get; set; }
+
+        public bool EiwRfiIsTrue
+        {
+            get { return _eiwRfiIsTrue; }
+            set
+            {
+                if (_eiwRfiIsTrue != value)
+                {
+                    _eiwRfiIsTrue = value;
+                    SetRfiName();
+                    OnPropertyChanged(nameof(EiwRfiIsTrue));
+                }
+            }
+        }
+
+        public bool IsRfiSelected {  get; set; }
 
         #endregion
 
@@ -200,6 +218,8 @@ namespace ESD.PM.ViewModels
 
         private List<string> _tags;
 
+        private bool _eiwRfiIsTrue;
+
         #endregion
 
         #region Commands
@@ -229,6 +249,7 @@ namespace ESD.PM.ViewModels
             _creationPathEnabled = false;
 
             Date = DateTime.Now.Date.ToString("MM.dd.yyyy");
+            IsRfiSelected = false;
         }
 
         #endregion
@@ -237,6 +258,21 @@ namespace ESD.PM.ViewModels
 
         private void GetTemplates()
         {
+            ProjectName = string.Empty;
+            var parts = CreationPath[0].Split("\\");
+            var nextIndex = 0;
+            foreach (var part in parts)
+            {
+                nextIndex++;
+                if (part.Contains("project", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (nextIndex < parts.Length - 1)
+                    {
+                        ProjectName = parts[nextIndex];
+                        break;
+                    }
+                }
+            }
             AvailableTemplates = new ObservableCollection<FileModel>();
             if (SelectedFolderType == FolderTypes[0])
             {
@@ -247,18 +283,19 @@ namespace ESD.PM.ViewModels
                 {
                     AvailableTemplates.Add(new FileModel(rfiTemplate));
                 }
-                if (AvailableTemplates.Count() > 1)
+                if (AvailableTemplates.Any())
                 {
-                    TemplatesIsActive = true;
+                    if (AvailableTemplates.Count() > 1)
+                    {
+                        TemplatesIsActive = true;
+                    }
+                    else
+                    {
+                        TemplatesIsActive = false;
+                    }
                     SelectedTemplate = AvailableTemplates[0];
                 }
-                else
-                {
-                    TemplatesIsActive = false;
-                }
-
                 _pdfName = "RFI " + RfiNumber;
-                SelectedTemplate = AvailableTemplates[0];
                 FolderName = _pdfName;
             }
             else if (SelectedFolderType == FolderTypes[1])
@@ -267,8 +304,11 @@ namespace ESD.PM.ViewModels
                 {
                     FolderTagEnabled = true;
                     AvailableTemplates.Add(new FileModel(structureTemplate));
-                    TemplatesIsActive = true;
-                    SelectedTemplate = AvailableTemplates[0];
+                    if (AvailableTemplates.Any())
+                    {
+                        TemplatesIsActive = true;
+                        SelectedTemplate = AvailableTemplates[0];
+                    }
                     FolderName = "New Folder";
                 }
             }
@@ -278,6 +318,10 @@ namespace ESD.PM.ViewModels
                 {
                     FolderTagEnabled = true;
                     AvailableTemplates.Add(new FileModel(pdfTemplate));
+                    if (AvailableTemplates.Any())
+                    {
+                        TemplatesIsActive = true;
+                    }
                     TemplatesIsActive = true;
                     FolderName = "New Folder";
                 }
@@ -289,25 +333,46 @@ namespace ESD.PM.ViewModels
             InsideFiles = new ObservableCollection<string>();
             if (SelectedFolderType == FolderTypes[0])
             {
-                InsideFiles.Add(_pdfName + ".pdf");
+                if (SelectedTemplate != null)
+                {
+                    InsideFiles.Add(_pdfName + ".pdf");
+                    IsRfiSelected = true;
+                }
+                if (SelectedTemplate == null)
+                {
+                    InsideFiles.Clear();
+                    System.Windows.MessageBox.Show($"Templates are not available");
+                }
             }
             if (SelectedFolderType == FolderTypes[1])
             {
-                if (Directory.Exists(SelectedTemplate.FullName))
+                IsRfiSelected = false;
+                EiwRfiIsTrue = false;
+                if (SelectedTemplate != null)
                 {
-                    foreach (var path in Directory.GetDirectories(SelectedTemplate.FullName))
+                    if (Directory.Exists(SelectedTemplate.FullName))
                     {
-                        var directory = new DirectoryInfo(path).Name;
-                        InsideFiles.Add(directory);
+                        foreach (var path in Directory.GetDirectories(SelectedTemplate.FullName))
+                        {
+                            var directory = new DirectoryInfo(path).Name;
+                            InsideFiles.Add(directory);
+                        }
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"Template '{SelectedTemplate.Name}' no longer exists");
                     }
                 }
-                else
+                if (SelectedTemplate == null)
                 {
-                    System.Windows.MessageBox.Show($"Template '{SelectedTemplate.Name}' no longer exists");
+                    InsideFiles.Clear();
+                    System.Windows.MessageBox.Show($"Templates are not available");
                 }
             }
             if (SelectedFolderType == FolderTypes[2])
             {
+                IsRfiSelected = false;
+                EiwRfiIsTrue = false;
                 if (SelectedTemplate == null)
                 {
                     InsideFiles.Clear();
@@ -319,6 +384,22 @@ namespace ESD.PM.ViewModels
                 }
             }
             OnPropertyChanged(nameof(InsideFiles));
+            OnPropertyChanged(nameof(IsRfiSelected));
+        }
+
+        private void SetRfiName()
+        {
+            if (EiwRfiIsTrue)
+            {
+                InsideFiles.Clear();
+                InsideFiles.Add(ProjectName + " " + _pdfName + ".pdf");
+            }
+            else
+            {
+                InsideFiles.Clear();
+                InsideFiles.Add(_pdfName + ".pdf");
+            }
+
         }
 
         #endregion

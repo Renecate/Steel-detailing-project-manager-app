@@ -251,13 +251,53 @@ namespace ESD.PM.ViewModels
         }
         private void OnCreateProject(object obj)
         {
-            var dialog = new CreateProjectDialog(Application.Current.MainWindow, appSettings);
-            if (dialog.ShowDialog() == true)
+            var templatesPath = "C:\\Dropbox\\technology\\Utilits\\ESD.PM";
+            if (!(appSettings.ProjectTemplates.Any()))
             {
-                LoadProjectsAsync();
+                if (Directory.Exists(templatesPath))
+                {
+                    foreach (var templatesFolder in Directory.GetDirectories(templatesPath))
+                    {
+                        if (templatesFolder.Contains("folder", StringComparison.OrdinalIgnoreCase) && (!(appSettings.StructureTemplates.Any())))
+                        {
+                            foreach (var template in Directory.GetDirectories(templatesFolder))
+                            {
+                                appSettings.StructureTemplates.Add(template);
+                            }
+                        }
+                        else if (templatesFolder.Contains("project", StringComparison.OrdinalIgnoreCase) && (!(appSettings.ProjectTemplates.Any())))
+                        {
+                            foreach (var template in Directory.GetDirectories(templatesFolder))
+                            {
+                                appSettings.ProjectTemplates.Add(template);
+                            }
+                        }
+                        else if (templatesFolder.Contains("rfi", StringComparison.OrdinalIgnoreCase) && (!(appSettings.RfiTemplates.Any())))
+                        {
+                            foreach (var template in Directory.GetFiles(templatesFolder))
+                            {
+                                appSettings.RfiTemplates.Add(template);
+                            }
+                        }
+                        else if (templatesFolder.Contains("pdf", StringComparison.OrdinalIgnoreCase) && (!(appSettings.PdfTemplates.Any())))
+                        {
+                            foreach (var template in Directory.GetFiles(templatesFolder))
+                            {
+                                appSettings.PdfTemplates.Add(template);
+                            }
+                        }
+                    }
+                }
+                SettingsManager.SaveSettings(appSettings);
+                var dialog = new CreateProjectDialog(Application.Current.MainWindow, appSettings);
+                if (dialog.ShowDialog() == true)
+                {
+                    LoadProjectsAsync();
+                }
             }
         }
-        private void OnAddItem(object obj)
+
+         private void OnAddItem(object obj)
         {
             var dialog = new AddItemDialog(Application.Current.MainWindow, _itemsPath);
             if (dialog.ShowDialog() == true)

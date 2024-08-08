@@ -870,6 +870,45 @@ namespace ESD.PM.Models
         {
             if (Directory.Exists(FullName) == true)
             {
+                var templatesPath = "C:\\Dropbox\\technology\\Utilits\\ESD.PM";
+                if (!(_appSettings.StructureTemplates.Any()) || !(_appSettings.PdfTemplates.Any()))
+                {
+                    if (Directory.Exists(templatesPath))
+                    {
+                        foreach (var templatesFolder in Directory.GetDirectories(templatesPath))
+                        {
+                            if (templatesFolder.Contains("folder", StringComparison.OrdinalIgnoreCase) && (!(_appSettings.StructureTemplates.Any())))
+                            {
+                                foreach (var template in Directory.GetDirectories(templatesFolder))
+                                {
+                                    _appSettings.StructureTemplates.Add(template);
+                                }
+                            }
+                            else if (templatesFolder.Contains("project", StringComparison.OrdinalIgnoreCase) && (!(_appSettings.ProjectTemplates.Any())))
+                            {
+                                foreach (var template in Directory.GetDirectories(templatesFolder))
+                                {
+                                    _appSettings.ProjectTemplates.Add(template);
+                                }
+                            }
+                            else if (templatesFolder.Contains("rfi", StringComparison.OrdinalIgnoreCase) && (!(_appSettings.RfiTemplates.Any())))
+                            {
+                                foreach (var template in Directory.GetFiles(templatesFolder))
+                                {
+                                    _appSettings.RfiTemplates.Add(template);
+                                }
+                            }
+                            else if (templatesFolder.Contains("pdf", StringComparison.OrdinalIgnoreCase) && (!(_appSettings.PdfTemplates.Any())))
+                            {
+                                foreach (var template in Directory.GetFiles(templatesFolder))
+                                {
+                                    _appSettings.PdfTemplates.Add(template);
+                                }
+                            }
+                        }
+                    }
+                    SettingsManager.SaveSettings(_appSettings);
+                }
                 int orderNumber = GetOrderNumber();
                 string rfiNumber = GetNextRfiNumber();
                 var pathList = PathList;

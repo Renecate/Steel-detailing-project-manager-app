@@ -71,6 +71,9 @@
                 <ComboBox ItemsSource="{Binding FolderTypes}"
                           SelectedItem="{Binding SelectedFolderType, Mode=TwoWay}"
                           Width="171"/>
+                <TextBlock Text="EIW RFI: " Width="87"/>
+                <CheckBox IsChecked="{Binding EiwRfiIsTrue}" VerticalAlignment="Center" 
+                          IsEnabled="{Binding IsRfiSelected}"/>
             </StackPanel>
         </Border>
 
