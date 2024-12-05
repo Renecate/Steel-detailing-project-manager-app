@@ -709,7 +709,10 @@ namespace ESD.PM.Models
 
         private void OnOpenFolder(object obj)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", FullName));
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "explorer.exe";
+            startInfo.Arguments = "\"" + FullName + "\"";
+            Process.Start(startInfo);
         }
 
         private void OnCopyPath(object obj)
