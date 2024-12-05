@@ -18,6 +18,7 @@ namespace ESD.PM.Models
             }
         }
         public ObservableCollection<FileModel> InsideFiles { get; set; }
+        public bool FolderIsChecked { get; set; }
 
         public DelegateCommand OpenFileCommand { get; set; }
 
@@ -25,6 +26,8 @@ namespace ESD.PM.Models
 
         public FoldersModel(string name) : base(name)
         {
+            FolderIsChecked = false;
+
             Name = new DirectoryInfo(name).Name;
 
             FullName = new DirectoryInfo(name).FullName;

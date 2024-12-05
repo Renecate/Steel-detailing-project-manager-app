@@ -209,7 +209,7 @@ namespace ESD.PM.ViewModels
                         }
                         else
                         {
-                            var vm = new FoldersViewModel(folder, appSettings);
+                            var vm = new FoldersViewModel(folder, appSettings, sharedSettings);
                             appSettings.SavedFolders.Add(vm);
                         }
                     }
@@ -219,7 +219,7 @@ namespace ESD.PM.ViewModels
                         {
                             foreach (var folder in Directory.GetDirectories(itemFolder))
                             {
-                                var vm = new FoldersViewModel(folder, appSettings);
+                                var vm = new FoldersViewModel(folder, appSettings, sharedSettings);
                                 appSettings.SavedFolders.Add(vm);
                             }
                         }
@@ -317,7 +317,7 @@ namespace ESD.PM.ViewModels
                             {
                                 foreach (var folder in Directory.GetDirectories(itemFolder))
                                 {
-                                    var vm = new FoldersViewModel(folder, appSettings);
+                                    var vm = new FoldersViewModel(folder, appSettings, sharedSettings);
                                     var isSaved = false;
                                     foreach (var saved in appSettings.SavedFolders)
                                     {
@@ -446,7 +446,7 @@ namespace ESD.PM.ViewModels
                             }
                             else
                             {
-                                var vm = new FoldersViewModel(folder, appSettings);
+                                var vm = new FoldersViewModel(folder, appSettings, sharedSettings);
                                 Folders.Add(vm);
                                 if (vm.HideFolderIsTrue == true)
                                 {
@@ -589,7 +589,7 @@ namespace ESD.PM.ViewModels
                 {
                     foreach (var folder in Directory.GetDirectories(_selectedItem.FullName))
                     {
-                        var vm = new FoldersViewModel(folder, appSettings);
+                        var vm = new FoldersViewModel(folder, appSettings, sharedSettings);
                         Folders.Add(vm);
                         if (vm.HideFolderIsTrue == true)
                         {
@@ -657,7 +657,7 @@ namespace ESD.PM.ViewModels
                 if (folder.ShowFolder)
                 {
                     HiddenFolders.Remove(folder);
-                    var vm = (new FoldersViewModel(folder.FullName, appSettings));
+                    var vm = (new FoldersViewModel(folder.FullName, appSettings, sharedSettings));
                     Folders.Add(vm);
                     vm.HideFolderIsTrue = false;
                     if (vm.FolderSettings != null)

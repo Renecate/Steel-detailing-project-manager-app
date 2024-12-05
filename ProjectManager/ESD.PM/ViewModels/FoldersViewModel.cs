@@ -26,7 +26,7 @@ namespace ESD.PM.Models
         public string Name { get; set; }
 
         [JsonIgnore]
-        public ObservableCollection<FoldersModel> FolderList { get; set; }
+        public ObservableCollection<FoldersModel> SubFolderList { get; set; }
 
         [JsonIgnore]
         public ObservableCollection<FoldersModel> FilteredDocsList { get; set; }
@@ -105,7 +105,6 @@ namespace ESD.PM.Models
             }
         }
 
-
         [JsonIgnore]
         public string DateSortButtonSourse { get; set; } = "/Views/Resourses/sort_date.png";
 
@@ -165,12 +164,13 @@ namespace ESD.PM.Models
         private ObservableCollection<FoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
         private AppSettings _appSettings { get; set; }
+        private SharedSettings _sharedSettings { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public FoldersViewModel(string fullName, AppSettings appSettings)
+        public FoldersViewModel(string fullName, AppSettings appSettings, SharedSettings sharedSettings)
         {
 
             if (appSettings != null)
@@ -186,6 +186,11 @@ namespace ESD.PM.Models
                 _appSettings = appSettings;
             }
 
+            if (sharedSettings != null)
+            {
+                _sharedSettings = sharedSettings;
+            }
+
             FullName = fullName;
             Name = new DirectoryInfo(fullName).Name;
 
@@ -195,7 +200,7 @@ namespace ESD.PM.Models
             _viewIsToggled = false;
 
             PathList = new List<string>();
-            FolderList = new ObservableCollection<FoldersModel>();
+            SubFolderList = new ObservableCollection<FoldersModel>();
             Tags = new ObservableCollection<TagsModel>();
             FilteredDocsList = new ObservableCollection<FoldersModel>();
             UntaggedDocsList = new ObservableCollection<FoldersModel>();
@@ -204,7 +209,7 @@ namespace ESD.PM.Models
             _iterationList = new ObservableCollection<FoldersModel>();
 
             ViewIsHiddenOrToggledCheck();
-            GetFolders();
+            GetSubFolders();
             ToggleViewCheck();
 
             OpenCommand = new DelegateCommand(OnOpen);
@@ -251,7 +256,7 @@ namespace ESD.PM.Models
         {
             if (e.PropertyName == "State")
             {
-                FilterFolders();
+                FilterSubFolders();
                 var changedTag = (TagsModel)sender;
                 if (FolderSettings != null)
                 {
@@ -262,7 +267,7 @@ namespace ESD.PM.Models
             }
         }
 
-        private void FilterFolders()
+        private void FilterSubFolders()
         {
             string[] files = [];
             string[] parts = [];
@@ -272,7 +277,7 @@ namespace ESD.PM.Models
             foreach (var tag in Tags)
             {
                 var count = 0;
-                foreach (var doc in FolderList)
+                foreach (var doc in SubFolderList)
                 {
                     if (tag.State is true)
                     {
@@ -323,7 +328,7 @@ namespace ESD.PM.Models
             {
                 if (_dynamicSearchText != null)
                 {
-                    foreach (var folder in FolderList)
+                    foreach (var folder in SubFolderList)
                     {
                         if (!(folder.Name.Contains(_dynamicSearchText, StringComparison.OrdinalIgnoreCase)))
                         {
@@ -352,6 +357,8 @@ namespace ESD.PM.Models
                     }
                 }
             }
+
+
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
@@ -369,7 +376,7 @@ namespace ESD.PM.Models
                     OnPropertyChanged(nameof(ToggleViewCommandActive));
                 }
 
-                else if (Tags.Count == 0 && FolderList.Count() == 0)
+                else if (Tags.Count == 0 && SubFolderList.Count() == 0)
                 {
                     ToggleViewCommandActive = false;
                     OnPropertyChanged(nameof(ToggleViewCommandActive));
@@ -382,7 +389,7 @@ namespace ESD.PM.Models
             }
         }
 
-        private void GetFolders()
+        private void GetSubFolders()
         {
             PathList.Clear();
             _iterationList = new ObservableCollection<FoldersModel>();
@@ -390,30 +397,48 @@ namespace ESD.PM.Models
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    _iterationList.Add(new FoldersModel(item));
+                    if (_sharedSettings.CheckedFolders.Contains(item))
+                    {
+                        var subFolderToAdd = new FoldersModel(item);
+                        subFolderToAdd.FolderIsChecked = true;
+                        _iterationList.Add(subFolderToAdd);
+                    }
+                    else
+                    {
+                        _iterationList.Add(new FoldersModel(item));
+                    }
                 }
             }
             if (_viewIsToggled == false)
             {
-                FolderList.Clear();
+                SubFolderList.Clear();
                 PathList.Add(FullName);
-                FolderList = new ObservableCollection<FoldersModel>(_iterationList);
+                SubFolderList = new ObservableCollection<FoldersModel>(_iterationList);
 
             }
             if (_viewIsToggled == true)
             {
-                FolderList.Clear();
+                SubFolderList.Clear();
                 foreach (var folder in _iterationList)
                 {
                     PathList.Add(folder.FullName);
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
-                        FolderList.Add(new FoldersModel(insideFolder));
+                        if (_sharedSettings.CheckedFolders.Contains(insideFolder))
+                        {
+                            var subFolderToAdd = new FoldersModel(insideFolder);
+                            subFolderToAdd.FolderIsChecked = true;
+                            SubFolderList.Add(subFolderToAdd);
+                        }
+                        else
+                        {
+                            SubFolderList.Add(new FoldersModel(insideFolder));
+                        }
                     }
                 }
             }
             ProcessLocalList();
-            FilterFolders();
+            FilterSubFolders();
         }
 
         private void ProcessLocalList()
@@ -423,7 +448,7 @@ namespace ESD.PM.Models
             {
                 Tags = FolderSettings.Tags;
             }
-            foreach (var folder in FolderList)
+            foreach (var folder in SubFolderList)
             {
                 var parts = folder.Name.Split("-");
                 if (parts.Length > 1)
@@ -683,9 +708,9 @@ namespace ESD.PM.Models
                     _appSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
                     SettingsManager.SaveSettings(_appSettings);
                 }
-                GetFolders();
+                GetSubFolders();
                 ProcessLocalList();
-                FilterFolders();
+                FilterSubFolders();
             }
             else if (_viewIsToggled == false)
             {
@@ -700,9 +725,9 @@ namespace ESD.PM.Models
                     _appSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
                     SettingsManager.SaveSettings(_appSettings);
                 }
-                GetFolders();
+                GetSubFolders();
                 ProcessLocalList();
-                FilterFolders();
+                FilterSubFolders();
             }
 
         }
@@ -746,7 +771,7 @@ namespace ESD.PM.Models
                 }
             }
             OnPropertyChanged(nameof(DateSortButtonSourse));
-            GetFolders();
+            GetSubFolders();
         }
 
         private void OnFileDrop(object obj)
@@ -766,7 +791,7 @@ namespace ESD.PM.Models
                         File.Move(path, destination);
                     }
                 }
-                GetFolders();
+                GetSubFolders();
             }
         }
 
@@ -782,7 +807,7 @@ namespace ESD.PM.Models
                 var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags, _appSettings);
                 var existingDirectories = new List<string>();
 
-                foreach (var existingDirectory in FolderList)
+                foreach (var existingDirectory in SubFolderList)
                 {
                     existingDirectories.Add(existingDirectory.FullName);
                 }
@@ -791,8 +816,8 @@ namespace ESD.PM.Models
 
                 if (dialog.ShowDialog() == true)
                 {
-                    GetFolders();
-                    foreach (var newDirectory in FolderList)
+                    GetSubFolders();
+                    foreach (var newDirectory in SubFolderList)
                     {
                         if (!existingDirectories.Contains(newDirectory.FullName))
                         {
@@ -813,7 +838,7 @@ namespace ESD.PM.Models
                         }
                     }
                 }
-                GetFolders();
+                GetSubFolders();
                 Application.Current.MainWindow.Focus();
             }
         }
@@ -847,7 +872,7 @@ namespace ESD.PM.Models
                             Directory.Move(_selectedFolderName.FullName, rootPath + "\\" + newFolderName);
                             _selectedFolderName.Name = newFolderName;
                             _selectedFolderName.FullName = rootPath + "\\" + newFolderName;
-                            GetFolders();
+                            GetSubFolders();
                         }
                         catch (Exception ex)
                         {
@@ -926,7 +951,7 @@ namespace ESD.PM.Models
                 var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags, _appSettings);
                 if (dialog.ShowDialog() == true)
                 {
-                    GetFolders();
+                    GetSubFolders();
                 }
             }
             if (_viewIsToggled == false)
@@ -960,7 +985,7 @@ namespace ESD.PM.Models
                 }
             }
             OnPropertyChanged(nameof(HideNumbersButtonSourse));
-            GetFolders();
+            GetSubFolders();
         }
         #endregion
 
@@ -976,7 +1001,7 @@ namespace ESD.PM.Models
         public void DynamicSearch(string text)
         {
             _dynamicSearchText = text;
-            GetFolders();
+            GetSubFolders();
         }
         #endregion
     }
