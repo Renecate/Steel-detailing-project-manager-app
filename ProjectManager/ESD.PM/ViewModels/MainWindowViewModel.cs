@@ -87,6 +87,7 @@ namespace ESD.PM.ViewModels
 
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
+        private SharedSettings sharedSettings;
         #endregion
 
         #region Commands
@@ -114,6 +115,7 @@ namespace ESD.PM.ViewModels
             Folders.CollectionChanged += OnFoldersCollectionChanged;
             HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
             appSettings = SettingsManager.LoadSettings();
+            sharedSettings = ServerSettingsManager.LoadSettings();
 
             CheckIfUserExists();
 
