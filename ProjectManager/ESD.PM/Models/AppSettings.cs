@@ -17,5 +17,7 @@ namespace ESD.PM.Models
         public ObservableCollection<string> ProjectTemplates { get; set; } = new ObservableCollection<string> { };
 
         public ObservableCollection<string> RfiTemplates { get; set; } = new ObservableCollection<string> { };
+
+        public string User { get; set; }
     }
 }

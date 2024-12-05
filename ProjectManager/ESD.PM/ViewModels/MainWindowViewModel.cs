@@ -115,6 +115,8 @@ namespace ESD.PM.ViewModels
             HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
             appSettings = SettingsManager.LoadSettings();
 
+            CheckIfUserExists();
+
             FavoriteImageSourse = "/Views/Resourses/star.png";
             ProjectIsTrue = false;
 
@@ -688,7 +690,14 @@ namespace ESD.PM.ViewModels
                 }
             }
         }
-
+        private void CheckIfUserExists()
+        {
+            if (appSettings.User == null)
+            {
+                appSettings.User = Environment.UserName;
+                SettingsManager.SaveSettings(appSettings);
+            }
+        }
         #endregion
 
         #region Public Methods
