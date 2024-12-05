@@ -397,16 +397,7 @@ namespace ESD.PM.Models
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    if (_sharedSettings.CheckedFolders.Contains(item))
-                    {
-                        var subFolderToAdd = new FoldersModel(item);
-                        subFolderToAdd.FolderIsChecked = true;
-                        _iterationList.Add(subFolderToAdd);
-                    }
-                    else
-                    {
-                        _iterationList.Add(new FoldersModel(item));
-                    }
+                    _iterationList.Add(new FoldersModel(item));
                 }
             }
             if (_viewIsToggled == false)
@@ -424,16 +415,7 @@ namespace ESD.PM.Models
                     PathList.Add(folder.FullName);
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
-                        if (_sharedSettings.CheckedFolders.Contains(insideFolder))
-                        {
-                            var subFolderToAdd = new FoldersModel(insideFolder);
-                            subFolderToAdd.FolderIsChecked = true;
-                            SubFolderList.Add(subFolderToAdd);
-                        }
-                        else
-                        {
-                            SubFolderList.Add(new FoldersModel(insideFolder));
-                        }
+                        SubFolderList.Add(new FoldersModel(insideFolder));
                     }
                 }
             }

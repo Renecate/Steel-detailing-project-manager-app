@@ -114,15 +114,15 @@ namespace ESD.PM.ViewModels
             favoriteProjectsList = new ObservableCollection<ProjectsModel>();
             Folders.CollectionChanged += OnFoldersCollectionChanged;
             HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
-            appSettings = SettingsManager.LoadSettings();
             sharedSettings = ServerSettingsManager.LoadSettings();
+            appSettings = SettingsManager.LoadSettings();
 
             CheckIfUserExists();
+            CheckIfSharedSettingsAvailable();
+            LoadProjectsAsync();
 
             FavoriteImageSourse = "/Views/Resourses/star.png";
             ProjectIsTrue = false;
-
-            LoadProjectsAsync();
 
             StructuralOpenCommand = new DelegateCommand(OnOpenStructural);
             ArchOpenCommand = new DelegateCommand(OnOpenArch);
@@ -698,6 +698,14 @@ namespace ESD.PM.ViewModels
             {
                 appSettings.User = Environment.UserName;
                 SettingsManager.SaveSettings(appSettings);
+            }
+        }
+        private void CheckIfSharedSettingsAvailable()
+        {
+            if (sharedSettings != null)
+            {
+                sharedSettings.Available = true;
+                ServerSettingsManager.SaveSettings(sharedSettings);
             }
         }
         #endregion

@@ -4,7 +4,8 @@ namespace ESD.PM.Models
 {
     public class SharedSettings
     {
-        public string CheckedFolders { get; set; }
+        public ObservableCollection<string> CheckedFolders { get; set; } = new ObservableCollection<string>();
 
+        public bool Available { get; set; }
     }
 }
