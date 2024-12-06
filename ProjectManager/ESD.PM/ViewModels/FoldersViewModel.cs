@@ -1,4 +1,5 @@
 ﻿using ESD.PM.Commands;
+using ESD.PM.Settings;
 using ESD.PM.ViewModels;
 using ESD.PM.Views;
 using Newtonsoft.Json;
@@ -163,19 +164,22 @@ namespace ESD.PM.Models
 
         private ObservableCollection<FoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
+        private FoldersSettings _foldersSettings { get; set; }
+
         private AppSettings _appSettings { get; set; }
-        private SharedSettings _sharedSettings { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public FoldersViewModel(string fullName, AppSettings appSettings, SharedSettings sharedSettings)
+        public FoldersViewModel(string fullName, AppSettings appSettings)
         {
 
-            if (appSettings != null)
+            _foldersSettings = FoldersSettingsManager.LoadSettings();
+
+            if (_foldersSettings != null)
             {
-                foreach (var folder in appSettings.SavedFolders)
+                foreach (var folder in _foldersSettings.SavedFolders)
                 {
                     if (folder.FullName == fullName)
                     {
@@ -183,12 +187,11 @@ namespace ESD.PM.Models
                         break;
                     }
                 }
-                _appSettings = appSettings;
             }
 
-            if (sharedSettings != null)
+            if (_appSettings != null)
             {
-                _sharedSettings = sharedSettings;
+                _appSettings = appSettings;
             }
 
             FullName = fullName;
@@ -260,9 +263,9 @@ namespace ESD.PM.Models
                 var changedTag = (TagsModel)sender;
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
             }
         }
@@ -466,9 +469,9 @@ namespace ESD.PM.Models
                 Tags.Add(new TagsModel(tag));
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
             }
         }
@@ -686,9 +689,9 @@ namespace ESD.PM.Models
                 _viewIsToggled = false;
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
                 GetSubFolders();
                 ProcessLocalList();
@@ -703,9 +706,9 @@ namespace ESD.PM.Models
                 _viewIsToggled = true;
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
                 GetSubFolders();
                 ProcessLocalList();
@@ -736,9 +739,9 @@ namespace ESD.PM.Models
                 DateSortButtonSourse = "/Views/Resourses/sort_date.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
             }
             else
@@ -747,9 +750,9 @@ namespace ESD.PM.Models
                 DateSortButtonSourse = "/Views/Resourses/sort_date_dark.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
             }
             OnPropertyChanged(nameof(DateSortButtonSourse));
@@ -786,7 +789,7 @@ namespace ESD.PM.Models
                 string rfiNumber = GetNextRfiNumber();
                 var pathList = PathList;
                 var tags = new List<string>();
-                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags, _appSettings);
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags);
                 var existingDirectories = new List<string>();
 
                 foreach (var existingDirectory in SubFolderList)
@@ -830,9 +833,9 @@ namespace ESD.PM.Models
             HideFolderIsTrue = true;
             if (FolderSettings != null)
             {
-                var settingsPoint = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                _appSettings.SavedFolders[settingsPoint].HideFolderIsTrue = HideFolderIsTrue;
-                SettingsManager.SaveSettings(_appSettings);
+                var settingsPoint = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                _foldersSettings.SavedFolders[settingsPoint].HideFolderIsTrue = HideFolderIsTrue;
+                FoldersSettingsManager.SaveSettings(_foldersSettings);
             }
         }
 
@@ -917,7 +920,7 @@ namespace ESD.PM.Models
                             }
                         }
                     }
-                    SettingsManager.SaveSettings(_appSettings);
+                    AppSettingsManager.SaveSettings(_appSettings);
                 }
                 int orderNumber = GetOrderNumber();
                 string rfiNumber = GetNextRfiNumber();
@@ -930,7 +933,7 @@ namespace ESD.PM.Models
                         tags.Add(tag.Name);
                     }
                 }
-                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags, _appSettings);
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags);
                 if (dialog.ShowDialog() == true)
                 {
                     GetSubFolders();
@@ -950,9 +953,9 @@ namespace ESD.PM.Models
                 HideNumbersButtonSourse = "/Views/Resourses/numbers_on.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
             }
             else
@@ -961,9 +964,9 @@ namespace ESD.PM.Models
                 HideNumbersButtonSourse = "/Views/Resourses/numbers_off.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _appSettings.SavedFolders.IndexOf(FolderSettings);
-                    _appSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
-                    SettingsManager.SaveSettings(_appSettings);
+                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    _foldersSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
+                    FoldersSettingsManager.SaveSettings(_foldersSettings);
                 }
             }
             OnPropertyChanged(nameof(HideNumbersButtonSourse));

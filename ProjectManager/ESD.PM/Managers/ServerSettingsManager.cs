@@ -1,32 +1,32 @@
-﻿using Newtonsoft.Json;
+﻿using ESD.PM.Settings;
+using Newtonsoft.Json;
 using System.IO;
 
 namespace ESD.PM.Models
 {
-    public static class SettingsManager
+    public static class ServerSettingsManager
     {
-        private static readonly string settingsDirectoryPath = @"C:\ESD.PM";
-        private static readonly string settingsFilePath = Path.Combine(settingsDirectoryPath, "appsettings.json");
-
-        public static AppSettings LoadSettings()
+        private static readonly string settingsDirectoryPath = @"\\192.168.10.2\esddatabase";
+        private static readonly string settingsFilePath = Path.Combine(settingsDirectoryPath, "sharedsettings.json");
+        public static SharedSettings LoadSettings()
         {
             if (!File.Exists(settingsFilePath))
             {
-                return new AppSettings();
+                return new SharedSettings();
             }
 
             var json = File.ReadAllText(settingsFilePath);
 
-            var settings = JsonConvert.DeserializeObject<AppSettings>(json, new JsonSerializerSettings
+            var settings = JsonConvert.DeserializeObject<SharedSettings>(json, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented
             });
 
-            return settings ?? new AppSettings();
+            return settings ?? new SharedSettings();
         }
 
-        public static void SaveSettings(AppSettings settings)
+        public static void SaveSettings(SharedSettings settings)
         {
             if (!Directory.Exists(settingsDirectoryPath))
             {

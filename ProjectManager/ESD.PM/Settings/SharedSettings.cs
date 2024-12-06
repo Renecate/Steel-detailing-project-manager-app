@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ESD.PM.Models
+namespace ESD.PM.Settings
 {
     public class SharedSettings
     {

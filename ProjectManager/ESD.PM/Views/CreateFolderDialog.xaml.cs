@@ -1,4 +1,4 @@
-﻿using ESD.PM.Models;
+﻿using ESD.PM.Settings;
 using ESD.PM.ViewModels;
 using System.Windows;
 
@@ -24,7 +24,7 @@ namespace ESD.PM.Views
 
         private CreateFolderViewModel _createFolderViewModel;
 
-        public CreateFolderDialog(Window owner, int initialOrderNumber, string rfiNumber, List<string> creationPath, List<string> tags, AppSettings appSettings)
+        public CreateFolderDialog(Window owner, int initialOrderNumber, string rfiNumber, List<string> creationPath, List<string> tags)
         {
 
             InitializeComponent();
@@ -35,7 +35,6 @@ namespace ESD.PM.Views
             _createFolderViewModel.OrderNumber = initialOrderNumber.ToString();
             _createFolderViewModel.CreationPath = creationPath;
             _createFolderViewModel.FolderTags = tags;
-            _createFolderViewModel.AppSettings = appSettings;
             _createFolderViewModel.RfiNumber = rfiNumber;
             _createFolderViewModel.GetTags();
         }

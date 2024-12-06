@@ -1,5 +1,6 @@
 ﻿using ESD.PM.Commands;
 using ESD.PM.Models;
+using ESD.PM.Settings;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -137,7 +138,7 @@ namespace ESD.PM.ViewModels
 
         public SettingsViewModel()
         {
-            appSettings = SettingsManager.LoadSettings();
+            appSettings = AppSettingsManager.LoadSettings();
 
             GetProjectPath();
             GetPdfTemplates();
@@ -178,7 +179,7 @@ namespace ESD.PM.ViewModels
                     if (!appSettings.ProjectPaths.Contains(selectedPath) && selectedPath.EndsWith("Projects"))
                     {
                         appSettings.ProjectPaths.Add(selectedPath);
-                        SettingsManager.SaveSettings(appSettings);
+                        AppSettingsManager.SaveSettings(appSettings);
                         GetProjectPath();
                     }
                     else if (appSettings.ProjectPaths.Contains(selectedPath))
@@ -224,7 +225,7 @@ namespace ESD.PM.ViewModels
                         }
                     }
 
-                    SettingsManager.SaveSettings(appSettings);
+                    AppSettingsManager.SaveSettings(appSettings);
                     GetPdfTemplates();
 
                 }
@@ -262,7 +263,7 @@ namespace ESD.PM.ViewModels
                         if (!appSettings.StructureTemplates.Contains(template))
                         {
                             appSettings.StructureTemplates.Add(template);
-                            SettingsManager.SaveSettings(appSettings);
+                            AppSettingsManager.SaveSettings(appSettings);
                             GetFolderStructureTemplates();
                         }
                         else if (appSettings.StructureTemplates.Contains(template))
@@ -301,7 +302,7 @@ namespace ESD.PM.ViewModels
                         if (!appSettings.ProjectTemplates.Contains(template))
                         {
                             appSettings.ProjectTemplates.Add(template);
-                            SettingsManager.SaveSettings(appSettings);
+                            AppSettingsManager.SaveSettings(appSettings);
                             GetProjectTemplates();
                         }
                         else if (appSettings.ProjectTemplates.Contains(template))
@@ -346,7 +347,7 @@ namespace ESD.PM.ViewModels
                         }
                     }
 
-                    SettingsManager.SaveSettings(appSettings);
+                    AppSettingsManager.SaveSettings(appSettings);
                     GetRfiTemplates();
 
                 }
@@ -449,7 +450,7 @@ namespace ESD.PM.ViewModels
 
         public void SaveSettings()
         {
-            SettingsManager.SaveSettings(appSettings);
+            AppSettingsManager.SaveSettings(appSettings);
         }
         #endregion
     }
