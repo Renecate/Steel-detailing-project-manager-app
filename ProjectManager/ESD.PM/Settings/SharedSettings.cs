@@ -7,12 +7,12 @@ namespace ESD.PM.Settings
     {
         public ObservableCollection<SessionModel> Users { get; set; }
 
-        public ObservableCollection<HistoryModel> History { get; set; }
+        public ObservableCollection<ProjectHistoryModel> History { get; set; }
 
         public SharedSettings()
         {
             Users = new ObservableCollection<SessionModel>();
-            History = new ObservableCollection<HistoryModel>();
+            History = new ObservableCollection<ProjectHistoryModel>();
         }
     }
 }
