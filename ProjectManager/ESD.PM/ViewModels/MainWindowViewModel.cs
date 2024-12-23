@@ -211,8 +211,8 @@ namespace ESD.PM.ViewModels
                         }
                         else
                         {
-                            var vm = new FoldersViewModel(folder, appSettings);
-                            foldersSettings.SavedFolders.Add(vm);
+                            var model = new SavedFolderModel(folder);
+                            foldersSettings.SavedFolders.Add(model);
                         }
                     }
                     if (ItemsIsTrue)
@@ -221,8 +221,8 @@ namespace ESD.PM.ViewModels
                         {
                             foreach (var folder in Directory.GetDirectories(itemFolder))
                             {
-                                var vm = new FoldersViewModel(folder, appSettings);
-                                foldersSettings.SavedFolders.Add(vm);
+                                var model = new SavedFolderModel(folder);
+                                foldersSettings.SavedFolders.Add(model);
                             }
                         }
                     }
@@ -321,18 +321,18 @@ namespace ESD.PM.ViewModels
                             {
                                 foreach (var folder in Directory.GetDirectories(itemFolder))
                                 {
-                                    var vm = new FoldersViewModel(folder, appSettings);
+                                    var model = new SavedFolderModel(folder);
                                     var isSaved = false;
                                     foreach (var saved in foldersSettings.SavedFolders)
                                     {
-                                        if (saved.FullName == vm.FullName)
+                                        if (saved.FullName == model.FullName)
                                         {
                                             isSaved = true;
                                         }
                                     }
                                     if (!isSaved)
                                     {
-                                        foldersSettings.SavedFolders.Add(vm);
+                                        foldersSettings.SavedFolders.Add(model);
                                     }
                                 }
                             }
@@ -667,12 +667,6 @@ namespace ESD.PM.ViewModels
                     var vm = (new FoldersViewModel(folder.FullName, appSettings));
                     Folders.Add(vm);
                     vm.HideFolderIsTrue = false;
-                    if (vm.FolderSettings != null)
-                    {
-                        var settingsPoint = foldersSettings.SavedFolders.IndexOf(vm.FolderSettings);
-                        foldersSettings.SavedFolders[settingsPoint].HideFolderIsTrue = vm.HideFolderIsTrue;
-                        FoldersSettingsManager.SaveSettings(foldersSettings);
-                    }
                 }
             }
         }

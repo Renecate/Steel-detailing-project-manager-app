@@ -6,7 +6,7 @@ namespace ESD.PM.Models
 {
     public static class AppSettingsManager
     {
-        private static readonly string settingsDirectoryPath = @"C:\ESD.PM";
+        private static readonly string settingsDirectoryPath = @"C:\ESD.PM\test";
         private static readonly string settingsFilePath = Path.Combine(settingsDirectoryPath, "appsettings.json");
 
         public static AppSettings LoadSettings()

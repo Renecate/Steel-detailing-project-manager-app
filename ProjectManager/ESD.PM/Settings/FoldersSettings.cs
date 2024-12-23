@@ -10,6 +10,6 @@ namespace ESD.PM.Settings
 {
     public class FoldersSettings
     {
-        public ObservableCollection<FoldersViewModel> SavedFolders { get; set; } = new ObservableCollection<FoldersViewModel> { };
+        public ObservableCollection<SavedFolderModel> SavedFolders { get; set; } = new ObservableCollection<SavedFolderModel> { };
     }
 }

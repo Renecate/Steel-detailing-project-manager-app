@@ -231,7 +231,8 @@ namespace ESD.PM.ViewModels
 
         public CreateFolderViewModel()
         {
-
+            AppSettings = new AppSettings();
+            AppSettings = AppSettingsManager.LoadSettings();
             FolderTypes = new List<string>()
             {
                 "RFI",

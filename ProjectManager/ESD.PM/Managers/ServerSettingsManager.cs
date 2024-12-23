@@ -6,7 +6,7 @@ namespace ESD.PM.Models
 {
     public static class ServerSettingsManager
     {
-        private static readonly string settingsDirectoryPath = @"\\192.168.10.2\esddatabase";
+        private static readonly string settingsDirectoryPath = @"C:\ESD.PM\test"; //@"\\192.168.10.2\esddatabase\test" 
         private static readonly string settingsFilePath = Path.Combine(settingsDirectoryPath, "sharedsettings.json");
         public static SharedSettings LoadSettings()
         {
