@@ -117,8 +117,6 @@ namespace ESD.PM.ViewModels
             HiddenFolders.CollectionChanged += OnHiddenFoldersCollectionChanged;
             appSettings = AppSettingsManager.LoadSettings();
 
-            CheckIfUserExists();
-            CheckIfSharedSettingsAvailable();
             LoadProjectsAsync();
 
             FavoriteImageSourse = "/Views/Resourses/star.png";
@@ -691,22 +689,6 @@ namespace ESD.PM.ViewModels
                     }
                     else System.Windows.MessageBox.Show($"Folder '{selectedPath}' is not Projects folder");
                 }
-            }
-        }
-        private void CheckIfUserExists()
-        {
-            if (appSettings.User == null)
-            {
-                appSettings.User = Environment.UserName;
-                AppSettingsManager.SaveSettings(appSettings);
-            }
-        }
-        private void CheckIfSharedSettingsAvailable()
-        {
-            if (sharedSettings != null)
-            {
-                sharedSettings.Available = true;
-                ServerSettingsManager.SaveSettings(sharedSettings);
             }
         }
         #endregion

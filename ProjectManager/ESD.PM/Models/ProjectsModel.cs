@@ -2,7 +2,7 @@
 
 namespace ESD.PM.Models
 {
-    public class ProjectsModel : FoldersModel
+    public class ProjectsModel : SubFoldersModel
     {
 
         private bool _favorite;

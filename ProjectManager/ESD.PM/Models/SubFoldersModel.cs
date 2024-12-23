@@ -6,7 +6,7 @@ using System.IO;
 
 namespace ESD.PM.Models
 {
-    public class FoldersModel : FileModel
+    public class SubFoldersModel : FileModel
     {
         public FileModel SelectedFileName
         {
@@ -19,12 +19,11 @@ namespace ESD.PM.Models
         }
         public ObservableCollection<FileModel> InsideFiles { get; set; }
         public bool FolderIsChecked { get; set; }
-
         public DelegateCommand OpenFileCommand { get; set; }
 
         private FileModel _selectedFileName;
 
-        public FoldersModel(string name) : base(name)
+        public SubFoldersModel(string name) : base(name)
         {
             FolderIsChecked = false;
 

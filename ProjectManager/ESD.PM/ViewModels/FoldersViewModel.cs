@@ -23,13 +23,13 @@ namespace ESD.PM.Models
 
         public string Name { get; set; }
 
-        public ObservableCollection<FoldersModel> SubFolderList { get; set; }
+        public ObservableCollection<SubFoldersModel> SubFolderList { get; set; }
 
-        public ObservableCollection<FoldersModel> FilteredDocsList { get; set; }
+        public ObservableCollection<SubFoldersModel> FilteredDocsList { get; set; }
 
-        public ObservableCollection<FoldersModel> TaggedDocsList { get; set; }
+        public ObservableCollection<SubFoldersModel> TaggedDocsList { get; set; }
 
-        public ObservableCollection<FoldersModel> UntaggedDocsList { get; set; }
+        public ObservableCollection<SubFoldersModel> UntaggedDocsList { get; set; }
 
         public List<string> PathList { get; set; }
 
@@ -70,7 +70,7 @@ namespace ESD.PM.Models
             }
         }
 
-        public FoldersModel SelectedFolderName
+        public SubFoldersModel SelectedFolderName
         {
             get { return _selectedFolderName; }
             set
@@ -143,7 +143,7 @@ namespace ESD.PM.Models
 
         #region Private Properties
 
-        private FoldersModel _selectedFolderName { get; set; }
+        private SubFoldersModel _selectedFolderName { get; set; }
 
         private bool _viewIsToggled;
         private bool _hideFolderIsTrue;
@@ -151,7 +151,7 @@ namespace ESD.PM.Models
 
         private string _dynamicSearchText;
 
-        private ObservableCollection<FoldersModel> _iterationList { get; set; }
+        private ObservableCollection<SubFoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
         private FoldersSettings _foldersSettings { get; set; }
 
@@ -194,13 +194,13 @@ namespace ESD.PM.Models
             _viewIsToggled = false;
 
             PathList = new List<string>();
-            SubFolderList = new ObservableCollection<FoldersModel>();
+            SubFolderList = new ObservableCollection<SubFoldersModel>();
             Tags = new ObservableCollection<TagsModel>();
-            FilteredDocsList = new ObservableCollection<FoldersModel>();
-            UntaggedDocsList = new ObservableCollection<FoldersModel>();
-            TaggedDocsList = new ObservableCollection<FoldersModel>();
+            FilteredDocsList = new ObservableCollection<SubFoldersModel>();
+            UntaggedDocsList = new ObservableCollection<SubFoldersModel>();
+            TaggedDocsList = new ObservableCollection<SubFoldersModel>();
             _tagsToRemove = new ObservableCollection<TagsModel>();
-            _iterationList = new ObservableCollection<FoldersModel>();
+            _iterationList = new ObservableCollection<SubFoldersModel>();
 
             ViewIsHiddenOrToggledCheck();
             GetSubFolders();
@@ -301,20 +301,20 @@ namespace ESD.PM.Models
                 Tags.Remove(tag);
             }
 
-            FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList));
+            FilteredDocsList = new ObservableCollection<SubFoldersModel>(UntaggedDocsList.Concat(TaggedDocsList));
 
             if (_filterdDocsList.Count == 0)
                 _filterdDocsList = FilteredDocsList;
 
             if (!DateSortIsTrue)
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                FilteredDocsList = new ObservableCollection<SubFoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
                     .OrderBy(a => ExtrateDate(a.Name))
                     .ThenBy(a => ExtractNumber(a.Name)));
             }
             else
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                FilteredDocsList = new ObservableCollection<SubFoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
                     .OrderByDescending(a => ExtrateDate(a.Name))
                     .ThenByDescending(a => ExtractNumber(a.Name)));
             }
@@ -387,19 +387,19 @@ namespace ESD.PM.Models
         private void GetSubFolders()
         {
             PathList.Clear();
-            _iterationList = new ObservableCollection<FoldersModel>();
+            _iterationList = new ObservableCollection<SubFoldersModel>();
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    _iterationList.Add(new FoldersModel(item));
+                    _iterationList.Add(new SubFoldersModel(item));
                 }
             }
             if (_viewIsToggled == false)
             {
                 SubFolderList.Clear();
                 PathList.Add(FullName);
-                SubFolderList = new ObservableCollection<FoldersModel>(_iterationList);
+                SubFolderList = new ObservableCollection<SubFoldersModel>(_iterationList);
 
             }
             if (_viewIsToggled == true)
@@ -410,7 +410,7 @@ namespace ESD.PM.Models
                     PathList.Add(folder.FullName);
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
-                        SubFolderList.Add(new FoldersModel(insideFolder));
+                        SubFolderList.Add(new SubFoldersModel(insideFolder));
                     }
                 }
             }
@@ -476,13 +476,13 @@ namespace ESD.PM.Models
 
             if (!DateSortIsTrue)
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                FilteredDocsList = new ObservableCollection<SubFoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
                     .OrderBy(a => ExtrateDate(a.Name))
                     .ThenBy(a => ExtractNumber(a.Name)));
             }
             else
             {
-                FilteredDocsList = new ObservableCollection<FoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
+                FilteredDocsList = new ObservableCollection<SubFoldersModel>(UntaggedDocsList.Concat(TaggedDocsList)
                     .OrderByDescending(a => ExtrateDate(a.Name))
                     .ThenByDescending(a => ExtractNumber(a.Name)));
             }
@@ -586,20 +586,20 @@ namespace ESD.PM.Models
             }
         }
 
-        private ObservableCollection<FoldersModel> GetOriginalList()
+        private ObservableCollection<SubFoldersModel> GetOriginalList()
         {
-            var localIterationList = new ObservableCollection<FoldersModel>();
-            var localList = new ObservableCollection<FoldersModel>();
+            var localIterationList = new ObservableCollection<SubFoldersModel>();
+            var localList = new ObservableCollection<SubFoldersModel>();
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    localIterationList.Add(new FoldersModel(item));
+                    localIterationList.Add(new SubFoldersModel(item));
                 }
             }
             if (_viewIsToggled == false)
             {
-                localList = new ObservableCollection<FoldersModel>(localIterationList);
+                localList = new ObservableCollection<SubFoldersModel>(localIterationList);
             }
             if (_viewIsToggled == true)
             {
@@ -608,7 +608,7 @@ namespace ESD.PM.Models
                 {
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
-                        localList.Add(new FoldersModel(insideFolder));
+                        localList.Add(new SubFoldersModel(insideFolder));
                     }
                 }
             }

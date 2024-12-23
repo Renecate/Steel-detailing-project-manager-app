@@ -17,6 +17,6 @@ namespace ESD.PM.Settings
 
         public ObservableCollection<string> RfiTemplates { get; set; } = new ObservableCollection<string> { };
 
-        public string User { get; set; }
+        public SessionModel User { get; set; }
     }
 }
