@@ -116,9 +116,9 @@
         <Border Grid.Row="4" Style="{StaticResource BorderLight}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Path:" Width="100"/>
-                <ComboBox Width="360" ItemsSource="{Binding CreationPath}"
-                SelectedItem="{Binding SelectedPath}" IsEnabled="{Binding CreationPathEnabled}">
-                </ComboBox>
+                <TextBox Width="360" Text="{Binding CreationPath}"
+                IsEnabled="False">
+                </TextBox>
             </StackPanel>
         </Border>
 

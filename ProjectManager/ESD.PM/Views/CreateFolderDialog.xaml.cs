@@ -24,7 +24,7 @@ namespace ESD.PM.Views
 
         private CreateFolderViewModel _createFolderViewModel;
 
-        public CreateFolderDialog(Window owner, int initialOrderNumber, string rfiNumber, List<string> creationPath, List<string> tags)
+        public CreateFolderDialog(Window owner, int initialOrderNumber, string rfiNumber, string creationPath, List<string> tags)
         {
 
             InitializeComponent();

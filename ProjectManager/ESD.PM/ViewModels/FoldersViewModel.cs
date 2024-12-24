@@ -55,8 +55,6 @@ namespace ESD.PM.Models
 
         public ObservableCollection<SubFoldersModel> UntaggedDocsList { get; set; }
 
-        public List<string> PathList { get; set; }
-
         public ObservableCollection<TagsModel> Tags { get; set; }
 
         public bool GetBackCommandActive
@@ -232,7 +230,6 @@ namespace ESD.PM.Models
             HideNumbersIsTrue = false;
             GetBackCommandActive = false;
 
-            PathList = new List<string>();
             SubFolderList = new ObservableCollection<SubFoldersModel>();
             Tags = new ObservableCollection<TagsModel>();
             FilteredDocsList = new ObservableCollection<SubFoldersModel>();
@@ -397,7 +394,6 @@ namespace ESD.PM.Models
 
         private void GetSubFolders()
         {
-            PathList.Clear();
             SubFolderList = new ObservableCollection<SubFoldersModel>();
             if (Directory.Exists(FullName))
             {
@@ -753,9 +749,8 @@ namespace ESD.PM.Models
             {
                 int orderNumber = GetOrderNumber();
                 string rfiNumber = GetNextRfiNumber();
-                var pathList = PathList;
                 var tags = new List<string>();
-                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, pathList, tags);
+                var dialog = new CreateFolderDialog(Application.Current.MainWindow, orderNumber, rfiNumber, FullName, tags);
                 var existingDirectories = new List<string>();
 
                 foreach (var existingDirectory in SubFolderList)
@@ -880,7 +875,7 @@ namespace ESD.PM.Models
                 }
                 int orderNumber = GetOrderNumber();
                 string rfiNumber = GetNextRfiNumber();
-                var pathList = PathList;
+                var pathList = FullName;
                 var tags = new List<string>();
                 if (Tags != null)
                 {

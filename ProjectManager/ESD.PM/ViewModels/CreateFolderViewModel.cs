@@ -137,7 +137,7 @@ namespace ESD.PM.ViewModels
             }
         }
 
-        public List<string> CreationPath { get; set; }
+        public string CreationPath { get; set; }
 
         public string SelectedPath
         {
@@ -261,7 +261,7 @@ namespace ESD.PM.ViewModels
         private void GetTemplates()
         {
             ProjectName = string.Empty;
-            var parts = CreationPath[0].Split("\\");
+            var parts = CreationPath.Split("\\");
             var nextIndex = 0;
             foreach (var part in parts)
             {
@@ -433,15 +433,6 @@ namespace ESD.PM.ViewModels
                 }
                 FolderTags.Sort();
             }
-            if (CreationPath.Count > 1)
-            {
-                CreationPathEnabled = true;
-                SelectedPath = CreationPath[0];
-            }
-            else
-            {
-                SelectedPath = CreationPath[0];
-            }
             SelectedFolderType = FolderTypes[2];
             OnPropertyChanged(nameof(FolderTags));
             OnPropertyChanged(nameof(CreationPath));
@@ -449,6 +440,7 @@ namespace ESD.PM.ViewModels
 
         public void Create()
         {
+            SelectedPath = CreationPath;
             var newFolderName = string.Empty;
             if (SelectedFolderTag != null)
             {
