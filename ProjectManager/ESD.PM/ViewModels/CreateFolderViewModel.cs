@@ -485,10 +485,18 @@ namespace ESD.PM.ViewModels
             }
 
             var path = SelectedPath + "\\" + newFolderName;
+            char[] invalidChars = Path.GetInvalidFileNameChars();
 
             if (Directory.Exists(path) != true)
             {
-                Directory.CreateDirectory(path);
+                if (newFolderName.Any(ch => invalidChars.Contains(ch)))
+                {
+                    System.Windows.MessageBox.Show("The folder name contains invalid characters. Please use a valid name.");
+                }
+                else
+                {
+                    Directory.CreateDirectory(path);
+                }
             }
             else
                 System.Windows.MessageBox.Show($"Folder '{newFolderName}' already exists");

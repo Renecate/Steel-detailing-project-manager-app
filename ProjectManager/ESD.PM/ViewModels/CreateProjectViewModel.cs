@@ -75,22 +75,30 @@ namespace ESD.PM.ViewModels
         public void CreateProject()
         {
             var path = SelectedPath + "\\" + ProjectName;
+            char[] invalidChars = Path.GetInvalidFileNameChars();
 
             if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
-                if (Directory.Exists(SelectedTemplate.FullName))
+                if (ProjectName.Any(ch => invalidChars.Contains(ch)))
                 {
-                    foreach (var directory in Directory.GetDirectories(SelectedTemplate.FullName))
-                    {
-                        var subFolders = new DirectoryInfo(directory).Name;
-                        var foldersPath = path + "\\" + subFolders;
-                        Directory.CreateDirectory(foldersPath);
-                    }
+                    System.Windows.MessageBox.Show("The folder name contains invalid characters. Please use a valid name.");
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show($"Template '{SelectedTemplate.Name}' no longer exists");
+                    Directory.CreateDirectory(path);
+                    if (Directory.Exists(SelectedTemplate.FullName))
+                    {
+                        foreach (var directory in Directory.GetDirectories(SelectedTemplate.FullName))
+                        {
+                            var subFolders = new DirectoryInfo(directory).Name;
+                            var foldersPath = path + "\\" + subFolders;
+                            Directory.CreateDirectory(foldersPath);
+                        }
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"Template '{SelectedTemplate.Name}' no longer exists");
+                    }
                 }
             }
             else

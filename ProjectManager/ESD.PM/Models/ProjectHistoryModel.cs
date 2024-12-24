@@ -11,11 +11,13 @@ namespace ESD.PM.Models
     {
         public string Name { get; set; }
 
-        public ObservableCollection<HistoryModel> History { get; set; }
+        public ObservableCollection<FolderHistoryModel> History { get; set; }
 
         public ProjectHistoryModel(string name)
         {
             Name = name;
+
+            History = new ObservableCollection<FolderHistoryModel> { };
         }
     }
 }

@@ -101,43 +101,35 @@ namespace ESD.PM.Models
 
         public string HideNumbersButtonSourse { get; set; } = "/Views/Resourses/numbers_on.png";
 
+        public string ProjectName { get; set; }
+
         #endregion
 
         #region Commands
 
-        [JsonIgnore]
         public DelegateCommand OpenCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand OpenFolderCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand ToggleViewCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand CopyPathCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand DateSortCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand FileDropCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand HideFolderCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand RenameFolderCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand CreateFolderCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand HideNumbersCommand { get; set; }
 
-        [JsonIgnore]
         public DelegateCommand FileEmptyDropCommand { get; set; }
 
+        public DelegateCommand CheckFolderCommand { get; set; }
 
         #endregion
 
@@ -148,25 +140,34 @@ namespace ESD.PM.Models
         private bool _viewIsToggled;
         private bool _hideFolderIsTrue;
         private bool _hideNumbersIsTrue;
+        private bool _folderIsChecked;
+        private bool _settingsIsTrue;
 
         private string _dynamicSearchText;
 
         private ObservableCollection<SubFoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
-        private FoldersSettings _foldersSettings { get; set; }
 
+        private FoldersSettings _foldersSettings { get; set; }
         private FoldersSettings _tempSettings { get; set; }
 
         private AppSettings _appSettings { get; set; }
+
+        private SharedSettings _sharedSettings;
+        private SharedSettings _tempHistory;
+        private ProjectHistoryModel _projectHistory;
+        private FolderHistoryModel _folderHistory;
 
         #endregion
 
         #region Constructor
 
-        public FoldersViewModel(string fullName, AppSettings appSettings)
+        public FoldersViewModel(string fullName, AppSettings appSettings, string projectName)
         {
+            ProjectName = projectName;
 
             _foldersSettings = FoldersSettingsManager.LoadSettings();
+            _sharedSettings = ServerSettingsManager.LoadSettings();
 
             if (_foldersSettings != null)
             {
@@ -183,6 +184,18 @@ namespace ESD.PM.Models
             if (_appSettings == null)
             {
                 _appSettings = appSettings;
+            }
+
+            if (_sharedSettings != null)
+            {
+                foreach (var projectHistory in _sharedSettings.ProjectHistory)
+                {
+                    if (ProjectName.Equals(projectHistory.Name))
+                    {
+                        _projectHistory = projectHistory;
+                        _settingsIsTrue = true;
+                    }
+                }
             }
 
             FullName = fullName;
@@ -217,6 +230,7 @@ namespace ESD.PM.Models
             CreateFolderCommand = new DelegateCommand(OnCreateFolder);
             HideNumbersCommand = new DelegateCommand(OnHideNumbers);
             FileEmptyDropCommand = new DelegateCommand(OnFileEmptyDrop);
+            CheckFolderCommand = new DelegateCommand(OnCheckFolder);
 
         }
 
@@ -392,7 +406,7 @@ namespace ESD.PM.Models
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    _iterationList.Add(new SubFoldersModel(item));
+                    _iterationList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
                 }
             }
             if (_viewIsToggled == false)
@@ -410,7 +424,7 @@ namespace ESD.PM.Models
                     PathList.Add(folder.FullName);
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
-                        SubFolderList.Add(new SubFoldersModel(insideFolder));
+                        SubFolderList.Add(new SubFoldersModel(insideFolder, ProjectName, _settingsIsTrue));
                     }
                 }
             }
@@ -594,7 +608,7 @@ namespace ESD.PM.Models
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    localIterationList.Add(new SubFoldersModel(item));
+                    localIterationList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
                 }
             }
             if (_viewIsToggled == false)
@@ -608,7 +622,7 @@ namespace ESD.PM.Models
                 {
                     foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
                     {
-                        localList.Add(new SubFoldersModel(insideFolder));
+                        localList.Add(new SubFoldersModel(insideFolder, ProjectName, _settingsIsTrue));
                     }
                 }
             }
@@ -966,6 +980,61 @@ namespace ESD.PM.Models
             }
             OnPropertyChanged(nameof(HideNumbersButtonSourse));
             GetSubFolders();
+        }
+
+        private void OnCheckFolder(object obj)
+        {
+            if (SelectedFolderName != null)
+            {
+                var index = SelectedFolderName.FullName.IndexOf(ProjectName);
+                string path = null;
+
+                if (index > 0)
+                {
+                    path = SelectedFolderName.FullName.Substring(index + ProjectName.Length);
+                }
+
+                var history = new FolderHistoryModel(path, true);
+
+                if (_projectHistory == null)
+                {
+                    _projectHistory = new ProjectHistoryModel(ProjectName);
+                    _projectHistory.History.Add(history);
+                    SelectedFolderName.IsChecked = true;
+                    _tempHistory = ServerSettingsManager.LoadSettings();
+                    _settingsIsTrue = true;
+                    _tempHistory.ProjectHistory.Add(_projectHistory);
+                }
+                else
+                {
+                    _tempHistory = ServerSettingsManager.LoadSettings();
+                    foreach (var projectHistory in _tempHistory.ProjectHistory)
+                    {
+                        if (projectHistory.Name.Equals(ProjectName))
+                        {
+                            _projectHistory = projectHistory;
+                            break;
+                        }
+                    }
+                    var _contains = false;
+                    foreach (var folderHistory in _projectHistory.History)
+                    {
+                        if (folderHistory.Path.Equals(path))
+                        {
+                            folderHistory.IsChecked = !folderHistory.IsChecked;
+                            SelectedFolderName.IsChecked = folderHistory.IsChecked;
+                            _contains = true;
+                            break;
+                        }
+                    }
+                    if (_contains == false)
+                    {
+                        _projectHistory.History.Add(history);
+                        SelectedFolderName.IsChecked = true;
+                    }
+                }
+                ServerSettingsManager.SaveSettings(_tempHistory);
+            }
         }
         #endregion
 
