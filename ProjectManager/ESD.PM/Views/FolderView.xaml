@@ -45,19 +45,19 @@
                                         Margin="10,0,0,0" FontSize="18" Text="{Binding Name}" LineHeight="28" 
                                         LineStackingStrategy="BlockLineHeight"/>
                 </Border>
-            </StackPanel>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
                 <Border VerticalAlignment="Top"
-                        HorizontalAlignment="Left" Width="100" Height="35" 
+                        HorizontalAlignment="Left" Width="35" Height="35" 
                         Margin="5,25,5,5" CornerRadius="2,2,2,2" 
                         BorderThickness="2,2,2,2" Background="#FF788896"
                         BorderBrush="#FF788896" >
-                    <Button Content="TOGGLE VIEW" 
+                    <Button Content="&lt;-"
                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                            Command="{Binding ToggleViewCommand}" 
-                            IsEnabled="{Binding ToggleViewCommandActive}" 
-                            BorderBrush="{x:Null}" Background="{x:Null}" FontFamily="Bahnschrift" FontSize="14"/>
+                            Command="{Binding GetBackCommand}"
+                            IsEnabled="{Binding GetBackCommandActive}"
+                            BorderBrush="{x:Null}" Background="{x:Null}" FontFamily="Bahnschrift" FontSize="20"/>
                 </Border>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
                 <Border VerticalAlignment="Top"
                         HorizontalAlignment="Left" Width="125" Height="35" 
                         Margin="5,25,6,5" CornerRadius="2,2,2,2" 

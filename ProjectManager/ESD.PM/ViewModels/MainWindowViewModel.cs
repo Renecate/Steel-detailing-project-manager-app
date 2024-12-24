@@ -344,21 +344,9 @@ namespace ESD.PM.ViewModels
         }
         private void OnUpdate(object obj)
         {
-            var _selectedProj = SelectedProject;
-            var _selectedItem = SelectedItem;
-            if (SelectedItem != null)
+            foreach (var vm in Folders)
             {
-                SelectedItem = null;
-                OnPropertyChanged(nameof(SelectedItem));
-                SelectedItem = _selectedItem;
-                OnPropertyChanged(nameof(SelectedItem));
-            }
-            else
-            {
-                SelectedProject = null;
-                OnPropertyChanged(nameof(SelectedProject));
-                SelectedProject = _selectedProj;
-                OnPropertyChanged(nameof(SelectedProject));
+                vm.Update();
             }
         }
         private void OnRemoveItemSelection(object obj)

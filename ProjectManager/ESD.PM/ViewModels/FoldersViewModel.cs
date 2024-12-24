@@ -19,9 +19,33 @@ namespace ESD.PM.Models
     public class FoldersViewModel : INotifyPropertyChanged
     {
         #region Public Properties
-        public string FullName { get; set; }
 
-        public string Name { get; set; }
+        public string FullName
+        {
+            get { return _fullName; }
+            set
+            {
+                if (value != _fullName)
+                {
+                    _fullName = value;
+                    Name = new DirectoryInfo(_fullName).Name;
+                    OnPropertyChanged(nameof(FullName));
+                }
+            }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
 
         public ObservableCollection<SubFoldersModel> SubFolderList { get; set; }
 
@@ -35,7 +59,18 @@ namespace ESD.PM.Models
 
         public ObservableCollection<TagsModel> Tags { get; set; }
 
-        public bool ToggleViewCommandActive { get; set; }
+        public bool GetBackCommandActive
+        {
+            get { return _getBackCommandActive; }
+            set
+            {
+                if (_getBackCommandActive != value)
+                {
+                    _getBackCommandActive = value;
+                    OnPropertyChanged(nameof(GetBackCommandActive));
+                }
+            }
+        }
 
         public bool HideFolderIsTrue
         {
@@ -53,19 +88,6 @@ namespace ESD.PM.Models
                         _tempSettings.SavedFolders[settingsPoint].HideFolderIsTrue = _hideFolderIsTrue;
                         FoldersSettingsManager.SaveSettings(_tempSettings);
                     }
-                }
-            }
-        }
-
-        public bool ViewIsToggled
-        {
-            get { return _viewIsToggled; }
-            set
-            {
-                if (_viewIsToggled != value)
-                {
-                    _viewIsToggled = value;
-                    OnPropertyChanged(nameof(ViewIsToggled));
                 }
             }
         }
@@ -111,7 +133,7 @@ namespace ESD.PM.Models
 
         public DelegateCommand OpenFolderCommand { get; set; }
 
-        public DelegateCommand ToggleViewCommand { get; set; }
+        public DelegateCommand GetBackCommand { get; set; }
 
         public DelegateCommand CopyPathCommand { get; set; }
 
@@ -137,15 +159,16 @@ namespace ESD.PM.Models
 
         private SubFoldersModel _selectedFolderName { get; set; }
 
-        private bool _viewIsToggled;
         private bool _hideFolderIsTrue;
         private bool _hideNumbersIsTrue;
         private bool _folderIsChecked;
         private bool _settingsIsTrue;
+        private bool _getBackCommandActive;
 
         private string _dynamicSearchText;
+        private string _name;
+        private string _fullName;
 
-        private ObservableCollection<SubFoldersModel> _iterationList { get; set; }
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
 
         private FoldersSettings _foldersSettings { get; set; }
@@ -157,6 +180,8 @@ namespace ESD.PM.Models
         private SharedSettings _tempHistory;
         private ProjectHistoryModel _projectHistory;
         private FolderHistoryModel _folderHistory;
+
+        private string _originalPath;
 
         #endregion
 
@@ -192,19 +217,20 @@ namespace ESD.PM.Models
                 {
                     if (ProjectName.Equals(projectHistory.Name))
                     {
-                        _projectHistory = projectHistory;
                         _settingsIsTrue = true;
+                        break;
                     }
                 }
             }
 
             FullName = fullName;
+            _originalPath = FullName;
             Name = new DirectoryInfo(fullName).Name;
 
             DateSortIsTrue = false;
             HideFolderIsTrue = false;
             HideNumbersIsTrue = false;
-            _viewIsToggled = false;
+            GetBackCommandActive = false;
 
             PathList = new List<string>();
             SubFolderList = new ObservableCollection<SubFoldersModel>();
@@ -213,14 +239,12 @@ namespace ESD.PM.Models
             UntaggedDocsList = new ObservableCollection<SubFoldersModel>();
             TaggedDocsList = new ObservableCollection<SubFoldersModel>();
             _tagsToRemove = new ObservableCollection<TagsModel>();
-            _iterationList = new ObservableCollection<SubFoldersModel>();
 
             ViewIsHiddenOrToggledCheck();
             GetSubFolders();
-            ToggleViewCheck();
 
             OpenCommand = new DelegateCommand(OnOpen);
-            ToggleViewCommand = new DelegateCommand(OnToggleView);
+            GetBackCommand = new DelegateCommand(OnGetBack);
             OpenFolderCommand = new DelegateCommand(OnOpenFolder);
             CopyPathCommand = new DelegateCommand(OnCopyPath);
             DateSortCommand = new DelegateCommand(OnDateSort);
@@ -371,65 +395,31 @@ namespace ESD.PM.Models
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
-        private void ToggleViewCheck()
-        {
-            if (ViewIsToggled)
-            {
-                ToggleViewCommandActive = true;
-            }
-            else
-            {
-                if (Tags.Count > 0)
-                {
-                    ToggleViewCommandActive = false;
-                    OnPropertyChanged(nameof(ToggleViewCommandActive));
-                }
-
-                else if (Tags.Count == 0 && SubFolderList.Count() == 0)
-                {
-                    ToggleViewCommandActive = false;
-                    OnPropertyChanged(nameof(ToggleViewCommandActive));
-                }
-                else
-                {
-                    ToggleViewCommandActive = true;
-                    OnPropertyChanged(nameof(ToggleViewCommandActive));
-                }
-            }
-        }
-
         private void GetSubFolders()
         {
             PathList.Clear();
-            _iterationList = new ObservableCollection<SubFoldersModel>();
+            SubFolderList = new ObservableCollection<SubFoldersModel>();
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    _iterationList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
-                }
-            }
-            if (_viewIsToggled == false)
-            {
-                SubFolderList.Clear();
-                PathList.Add(FullName);
-                SubFolderList = new ObservableCollection<SubFoldersModel>(_iterationList);
-
-            }
-            if (_viewIsToggled == true)
-            {
-                SubFolderList.Clear();
-                foreach (var folder in _iterationList)
-                {
-                    PathList.Add(folder.FullName);
-                    foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
-                    {
-                        SubFolderList.Add(new SubFoldersModel(insideFolder, ProjectName, _settingsIsTrue));
-                    }
+                    SubFolderList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
                 }
             }
             ProcessLocalList();
             FilterSubFolders();
+            GetFiles();
+        }
+
+        private void GetFiles()
+        {
+            if (Directory.Exists(FullName))
+            {
+                foreach (var file in Directory.GetFiles(FullName))
+                {
+                    FilteredDocsList.Add(new SubFoldersModel(file, ProjectName, _settingsIsTrue));
+                }
+            }
         }
 
         private void ProcessLocalList()
@@ -602,28 +592,12 @@ namespace ESD.PM.Models
 
         private ObservableCollection<SubFoldersModel> GetOriginalList()
         {
-            var localIterationList = new ObservableCollection<SubFoldersModel>();
             var localList = new ObservableCollection<SubFoldersModel>();
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    localIterationList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
-                }
-            }
-            if (_viewIsToggled == false)
-            {
-                localList = new ObservableCollection<SubFoldersModel>(localIterationList);
-            }
-            if (_viewIsToggled == true)
-            {
-
-                foreach (var folder in localIterationList)
-                {
-                    foreach (var insideFolder in Directory.GetDirectories(folder.FullName))
-                    {
-                        localList.Add(new SubFoldersModel(insideFolder, ProjectName, _settingsIsTrue));
-                    }
+                    localList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
                 }
             }
 
@@ -637,10 +611,6 @@ namespace ESD.PM.Models
                 if (FolderSettings.HideFolderIsTrue)
                 {
                     OnHideFolder(this);
-                }
-                if (FolderSettings.ViewIsToggled)
-                {
-                    _viewIsToggled = FolderSettings.ViewIsToggled;
                 }
                 if (FolderSettings.DateSortIsTrue)
                 {
@@ -680,52 +650,35 @@ namespace ESD.PM.Models
         {
             if (_selectedFolderName != null)
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = "explorer.exe";
-                startInfo.Arguments = "\"" + _selectedFolderName.FullName + "\"";
-                Process.Start(startInfo);
+                if (File.Exists(_selectedFolderName.FullName))
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = "explorer.exe";
+                    startInfo.Arguments = "\"" + _selectedFolderName.FullName + "\"";
+                    Process.Start(startInfo);
+                }
+                else if (Directory.Exists(_selectedFolderName.FullName))
+                {
+                    FullName = _selectedFolderName.FullName;
+                    GetSubFolders();
+                }
+                GetBackCommandActive = true;
             }
         }
 
-        private void OnToggleView(object obj)
+        private void OnGetBack(object obj)
         {
-            if (_viewIsToggled == true)
+            string trimmedPath = Path.GetDirectoryName(FullName);
+            FullName = trimmedPath;
+            GetSubFolders();
+            if (FullName != _originalPath)
             {
-                FilteredDocsList.Clear();
-                Tags.Clear();
-                UntaggedDocsList.Clear();
-                TaggedDocsList.Clear();
-                _viewIsToggled = false;
-                if (FolderSettings != null)
-                {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
-                    _tempSettings = FoldersSettingsManager.LoadSettings();
-                    _tempSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
-                    FoldersSettingsManager.SaveSettings(_tempSettings);
-                }
-                GetSubFolders();
-                ProcessLocalList();
-                FilterSubFolders();
+                GetBackCommandActive = true;
             }
-            else if (_viewIsToggled == false)
+            else
             {
-                FilteredDocsList.Clear();
-                Tags.Clear();
-                UntaggedDocsList.Clear();
-                TaggedDocsList.Clear();
-                _viewIsToggled = true;
-                if (FolderSettings != null)
-                {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
-                    _tempSettings = FoldersSettingsManager.LoadSettings();
-                    _tempSettings.SavedFolders[settingsIndex].ViewIsToggled = _viewIsToggled;
-                    FoldersSettingsManager.SaveSettings(_tempSettings);
-                }
-                GetSubFolders();
-                ProcessLocalList();
-                FilterSubFolders();
+                GetBackCommandActive = false;
             }
-
         }
 
         private void OnOpenFolder(object obj)
@@ -880,10 +833,6 @@ namespace ESD.PM.Models
                     }
                 }
             }
-            if (_viewIsToggled == false)
-            {
-                ToggleViewCheck();
-            }
         }
 
         private void OnCreateFolder(object obj)
@@ -946,10 +895,6 @@ namespace ESD.PM.Models
                     GetSubFolders();
                 }
             }
-            if (_viewIsToggled == false)
-            {
-                ToggleViewCheck();
-            }
         }
 
         private void OnHideNumbers(object obj)
@@ -995,19 +940,38 @@ namespace ESD.PM.Models
                 }
 
                 var history = new FolderHistoryModel(path, true);
+                _tempHistory = ServerSettingsManager.LoadSettings();
+
+                if (_tempHistory.ProjectHistory.Count == 0)
+                {
+                    _projectHistory = null;
+                }
+                else
+                {
+                    foreach (var projectHistory in _tempHistory.ProjectHistory)
+                    {
+                        if (ProjectName.Equals(projectHistory.Name))
+                        {
+                            _projectHistory = projectHistory;
+                            break;
+                        }
+                        else
+                        {
+                            _projectHistory = null;
+                        }
+                    }
+                }
 
                 if (_projectHistory == null)
                 {
                     _projectHistory = new ProjectHistoryModel(ProjectName);
                     _projectHistory.History.Add(history);
                     SelectedFolderName.IsChecked = true;
-                    _tempHistory = ServerSettingsManager.LoadSettings();
                     _settingsIsTrue = true;
                     _tempHistory.ProjectHistory.Add(_projectHistory);
                 }
                 else
                 {
-                    _tempHistory = ServerSettingsManager.LoadSettings();
                     foreach (var projectHistory in _tempHistory.ProjectHistory)
                     {
                         if (projectHistory.Name.Equals(ProjectName))
@@ -1022,6 +986,15 @@ namespace ESD.PM.Models
                         if (folderHistory.Path.Equals(path))
                         {
                             folderHistory.IsChecked = !folderHistory.IsChecked;
+                            if (!folderHistory.IsChecked)
+                            {
+                                _projectHistory.History.Remove(folderHistory);
+                                if (_projectHistory.History.Count == 0)
+                                {
+                                    _tempHistory.ProjectHistory.Remove(_projectHistory);
+                                    _projectHistory = null;
+                                }
+                            }
                             SelectedFolderName.IsChecked = folderHistory.IsChecked;
                             _contains = true;
                             break;
@@ -1050,6 +1023,11 @@ namespace ESD.PM.Models
         public void DynamicSearch(string text)
         {
             _dynamicSearchText = text;
+            GetSubFolders();
+        }
+
+        public void Update()
+        {
             GetSubFolders();
         }
         #endregion
