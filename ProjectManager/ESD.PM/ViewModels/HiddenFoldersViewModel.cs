@@ -3,7 +3,7 @@ using ESD.PM.Models;
 
 namespace ESD.PM.ViewModels
 {
-    public class HiddenFoldersViewModel : ProjectsModel
+    public class HiddenFoldersViewModel : FileModel
     {
         public DelegateCommand ShowFolderCommand { get; set; }
         public bool ShowFolder

@@ -81,7 +81,7 @@ namespace ESD.PM.Models
                     OnPropertyChanged(nameof(HideFolderIsTrue));
                     if (FolderSettings != null)
                     {
-                        var settingsPoint = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                        var settingsPoint = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
                         _tempSettings = FoldersSettingsManager.LoadSettings();
                         _tempSettings.SavedFolders[settingsPoint].HideFolderIsTrue = _hideFolderIsTrue;
                         FoldersSettingsManager.SaveSettings(_tempSettings);
@@ -122,6 +122,8 @@ namespace ESD.PM.Models
         public string HideNumbersButtonSourse { get; set; } = "/Views/Resourses/numbers_on.png";
 
         public string ProjectName { get; set; }
+
+        public FoldersSettings GeneralFoldersSettings { get; set; }
 
         #endregion
 
@@ -168,8 +170,6 @@ namespace ESD.PM.Models
         private string _fullName;
 
         private ObservableCollection<TagsModel> _tagsToRemove { get; set; }
-
-        private FoldersSettings _foldersSettings { get; set; }
         private FoldersSettings _tempSettings { get; set; }
 
         private AppSettings _appSettings { get; set; }
@@ -189,12 +189,12 @@ namespace ESD.PM.Models
         {
             ProjectName = projectName;
 
-            _foldersSettings = FoldersSettingsManager.LoadSettings();
+            GeneralFoldersSettings = FoldersSettingsManager.LoadSettings();
             _sharedSettings = ServerSettingsManager.LoadSettings();
 
-            if (_foldersSettings != null)
+            if (GeneralFoldersSettings != null)
             {
-                foreach (var folder in _foldersSettings.SavedFolders)
+                foreach (var folder in GeneralFoldersSettings.SavedFolders)
                 {
                     if (folder.FullName == fullName)
                     {
@@ -289,7 +289,7 @@ namespace ESD.PM.Models
                 var changedTag = (TagsModel)sender;
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
                     _tempSettings = FoldersSettingsManager.LoadSettings();
                     _tempSettings.SavedFolders[settingsIndex].Tags = FolderSettings.Tags;
                     FoldersSettingsManager.SaveSettings(_tempSettings);
@@ -464,9 +464,9 @@ namespace ESD.PM.Models
                 Tags.Add(new TagsModel(tag));
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
-                    _foldersSettings.SavedFolders[settingsIndex].Tags = Tags;
-                    FoldersSettingsManager.SaveSettings(_foldersSettings);
+                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    GeneralFoldersSettings.SavedFolders[settingsIndex].Tags = Tags;
+                    FoldersSettingsManager.SaveSettings(GeneralFoldersSettings);
                 }
             }
         }
@@ -699,7 +699,7 @@ namespace ESD.PM.Models
                 DateSortButtonSourse = "/Views/Resourses/sort_date.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
                     _tempSettings = FoldersSettingsManager.LoadSettings();
                     _tempSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
                     FoldersSettingsManager.SaveSettings(_tempSettings);
@@ -711,7 +711,7 @@ namespace ESD.PM.Models
                 DateSortButtonSourse = "/Views/Resourses/sort_date_dark.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
                     _tempSettings = FoldersSettingsManager.LoadSettings();
                     _tempSettings.SavedFolders[settingsIndex].DateSortIsTrue = DateSortIsTrue;
                     FoldersSettingsManager.SaveSettings(_tempSettings);
@@ -900,7 +900,7 @@ namespace ESD.PM.Models
                 HideNumbersButtonSourse = "/Views/Resourses/numbers_on.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
                     _tempSettings = FoldersSettingsManager.LoadSettings();
                     _tempSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
                     FoldersSettingsManager.SaveSettings(_tempSettings);
@@ -912,7 +912,7 @@ namespace ESD.PM.Models
                 HideNumbersButtonSourse = "/Views/Resourses/numbers_off.png";
                 if (FolderSettings != null)
                 {
-                    var settingsIndex = _foldersSettings.SavedFolders.IndexOf(FolderSettings);
+                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
                     _tempSettings = FoldersSettingsManager.LoadSettings();
                     _tempSettings.SavedFolders[settingsIndex].HideNumbersIsTrue = HideNumbersIsTrue;
                     FoldersSettingsManager.SaveSettings(_tempSettings);

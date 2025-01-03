@@ -201,27 +201,53 @@ namespace ESD.PM.ViewModels
                 if (!appSettings.FavoriteProjects.Contains(selectedProject.FullName))
                 {
                     appSettings.FavoriteProjects.Add(selectedProject.FullName);
-                    foreach (var folder in Directory.GetDirectories(selectedProject.FullName))
+                    if (SelectedItem == null)
                     {
-                        if (folder.EndsWith("Items"))
+                        foreach (var vm in Folders)
                         {
-
+                            foldersSettings.SavedFolders.Add(GetActiveVmProps(vm));
                         }
-                        else
+                        foreach (var vm in HiddenFolders)
                         {
-                            var model = new SavedFolderModel(folder);
-                            foldersSettings.SavedFolders.Add(model);
+                            foldersSettings.SavedFolders.Add(GetHiddenVmProps(vm));
+                        }
+                        if (ItemsIsTrue)
+                        {
+                            foreach (var itemFolder in Directory.GetDirectories(_itemsPath))
+                            {
+                                foreach (var folder in Directory.GetDirectories(itemFolder))
+                                {
+                                    var model = new SavedFolderModel(folder);
+                                    foldersSettings.SavedFolders.Add(model);
+                                }
+                            }
                         }
                     }
-                    if (ItemsIsTrue)
+                    if (SelectedItem != null)
                     {
+                        foreach (var vm in Folders)
+                        {
+                            foldersSettings.SavedFolders.Add(GetActiveVmProps(vm));
+                        }
+                        foreach (var vm in HiddenFolders)
+                        {
+                            foldersSettings.SavedFolders.Add(GetHiddenVmProps(vm));
+                        }
                         foreach (var itemFolder in Directory.GetDirectories(_itemsPath))
                         {
                             foreach (var folder in Directory.GetDirectories(itemFolder))
                             {
-                                var model = new SavedFolderModel(folder);
-                                foldersSettings.SavedFolders.Add(model);
+                                if (folder != SelectedItem.FullName)
+                                {
+                                    var model = new SavedFolderModel(folder);
+                                    foldersSettings.SavedFolders.Add(model);
+                                }
                             }
+                        }
+                        foreach (var folder in Directory.GetDirectories(SelectedProject.FullName))
+                        {
+                            var model = new SavedFolderModel(folder);
+                            foldersSettings.SavedFolders.Add(model);
                         }
                     }
                     selectedProject.Favorite = true;
@@ -250,6 +276,7 @@ namespace ESD.PM.ViewModels
                 }
                 AppSettingsManager.SaveSettings(appSettings);
                 FoldersSettingsManager.SaveSettings(foldersSettings);
+                SendFolderSettings(foldersSettings);
                 OnUpdate(this);
             }
             CheckIfFavorite();
@@ -676,6 +703,38 @@ namespace ESD.PM.ViewModels
                         LoadProjectsAsync();
                     }
                     else System.Windows.MessageBox.Show($"Folder '{selectedPath}' is not Projects folder");
+                }
+            }
+        }
+        private static SavedFolderModel GetActiveVmProps(FoldersViewModel vm)
+        {
+            var vmToSave = new SavedFolderModel(vm.FullName);
+            vmToSave.Tags = vm.Tags;
+            vmToSave.HideFolderIsTrue = vm.HideFolderIsTrue;
+            vmToSave.DateSortIsTrue = vm.DateSortIsTrue;
+            vmToSave.HideNumbersIsTrue = vm.HideNumbersIsTrue;
+            return vmToSave;
+        }
+
+        private static SavedFolderModel GetHiddenVmProps(HiddenFoldersViewModel vm)
+        {
+            var vmToSave = new SavedFolderModel(vm.FullName);
+            vmToSave.HideFolderIsTrue = true;
+            return vmToSave;
+        }
+
+        private void SendFolderSettings(FoldersSettings foldersSettings)
+        {
+            foreach (var vm in Folders)
+            {
+                vm.GeneralFoldersSettings = FoldersSettingsManager.LoadSettings();
+                foreach (var folder in vm.GeneralFoldersSettings.SavedFolders)
+                {
+                    if (folder.FullName == vm.FullName)
+                    {
+                        vm.FolderSettings = folder;
+                        break;
+                    }
                 }
             }
         }
