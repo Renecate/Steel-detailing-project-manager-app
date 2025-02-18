@@ -52,7 +52,7 @@ namespace ESD.PM.Models
         private bool _settingsIsTrue;
         private bool _isChecked; 
 
-        private FolderHistoryModel _folderHistory;
+        private CheckHistoryModel _folderHistory;
         private ProjectHistoryModel _projectHistory;
         private SharedSettings _sharedSettings;
 
@@ -60,7 +60,7 @@ namespace ESD.PM.Models
 
         #region Constructor
 
-        public SubFoldersModel(string name, string _projectName, bool settingsIsTrue) : base(name)
+        public SubFoldersModel(string name, string _projectName, SharedSettings sharedSettings) : base(name)
         {
             SubFolderIsChecked = "Black";
 
@@ -68,18 +68,18 @@ namespace ESD.PM.Models
 
             FullName = new DirectoryInfo(name).FullName;
 
-            _settingsIsTrue = settingsIsTrue;
-            if (_settingsIsTrue)
+            _sharedSettings = sharedSettings;
+
+            if (sharedSettings != null)
             {
-                _sharedSettings = ServerSettingsManager.LoadSettings();
                 foreach (var projectHistory in _sharedSettings.ProjectHistory)
                 {
-                    if (projectHistory.Name == _projectName)
+                    if (FullName.Contains(projectHistory.Folder))
                     {
                         _projectHistory = projectHistory;
-                        foreach (var folderHisory in _projectHistory.History)
+                        foreach (var folderHisory in _projectHistory.CheckHistory)
                         {
-                            if (folderHisory.Path.Contains(Name))
+                            if (folderHisory.Path.Equals(Name))
                             {
                                 _isChecked = folderHisory.IsChecked;
                                 ChangeColour();

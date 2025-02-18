@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows;
 using Application = System.Windows.Application;
 using Clipboard = System.Windows.Clipboard;
 using Path = System.IO.Path;
@@ -162,7 +163,6 @@ namespace ESD.PM.Models
         private bool _hideFolderIsTrue;
         private bool _hideNumbersIsTrue;
         private bool _folderIsChecked;
-        private bool _settingsIsTrue;
         private bool _getBackCommandActive;
 
         private string _dynamicSearchText;
@@ -177,7 +177,8 @@ namespace ESD.PM.Models
         private SharedSettings _sharedSettings;
         private SharedSettings _tempHistory;
         private ProjectHistoryModel _projectHistory;
-        private FolderHistoryModel _folderHistory;
+        private CheckHistoryModel _folderHistory;
+        private ObservableCollection<SubFoldersModel> _filesList { get; set; }
 
         private string _originalPath;
 
@@ -185,9 +186,8 @@ namespace ESD.PM.Models
 
         #region Constructor
 
-        public FoldersViewModel(string fullName, AppSettings appSettings, string projectName)
+        public FoldersViewModel(string fullName, AppSettings appSettings)
         {
-            ProjectName = projectName;
 
             GeneralFoldersSettings = FoldersSettingsManager.LoadSettings();
             _sharedSettings = ServerSettingsManager.LoadSettings();
@@ -207,18 +207,6 @@ namespace ESD.PM.Models
             if (_appSettings == null)
             {
                 _appSettings = appSettings;
-            }
-
-            if (_sharedSettings != null)
-            {
-                foreach (var projectHistory in _sharedSettings.ProjectHistory)
-                {
-                    if (ProjectName.Equals(projectHistory.Name))
-                    {
-                        _settingsIsTrue = true;
-                        break;
-                    }
-                }
             }
 
             FullName = fullName;
@@ -354,11 +342,21 @@ namespace ESD.PM.Models
                     .ThenByDescending(a => ExtractNumber(a.Name)));
             }
 
+            GetFiles();
+            
+
             if (_dynamicSearchText != null)
             {
                 if (_dynamicSearchText != null)
                 {
                     foreach (var folder in SubFolderList)
+                    {
+                        if (!(folder.Name.Contains(_dynamicSearchText, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            FilteredDocsList.Remove(folder);
+                        }
+                    }
+                    foreach (var folder in _filesList)
                     {
                         if (!(folder.Name.Contains(_dynamicSearchText, StringComparison.OrdinalIgnoreCase)))
                         {
@@ -389,63 +387,53 @@ namespace ESD.PM.Models
             }
 
 
+
             OnPropertyChanged(nameof(FilteredDocsList));
         }
 
         private void GetSubFolders()
         {
+            Tags.Clear();
             SubFolderList = new ObservableCollection<SubFoldersModel>();
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    SubFolderList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
+                    SubFolderList.Add(new SubFoldersModel(item, ProjectName, _sharedSettings));
                 }
             }
             ProcessLocalList();
             FilterSubFolders();
-            GetFiles();
-        }
-
-        private void GetFiles()
-        {
-            if (Directory.Exists(FullName))
-            {
-                foreach (var file in Directory.GetFiles(FullName))
-                {
-                    FilteredDocsList.Add(new SubFoldersModel(file, ProjectName, _settingsIsTrue));
-                }
-            }
         }
 
         private void ProcessLocalList()
         {
             UntaggedDocsList.Clear();
-            if (FolderSettings != null)
+            if (FolderSettings != null && GetBackCommandActive == false)
             {
                 if (FolderSettings.Tags != null)
                 {
-                    Tags = FolderSettings.Tags;
+                    Tags = new ObservableCollection<TagsModel>(FolderSettings.Tags);
                 }
             }
             foreach (var folder in SubFolderList)
             {
-                var parts = folder.Name.Split("-");
-                if (parts.Length > 1)
-                {
-                    string tag = parts[1].Trim(' ');
-                    if (tag.Length == 2)
+                    var parts = folder.Name.Split("-");
+                    if (parts.Length > 1)
                     {
-                        AddTagIfNotExist(tag);
-                    }
-                    else
-                    {
-                        if (!UntaggedDocsList.Any(t => t.FullName == folder.FullName))
+                        string tag = parts[1].Trim(' ');
+                        if (tag.Length == 2)
                         {
-                            UntaggedDocsList.Add(folder);
+                            AddTagIfNotExist(tag);
+                        }
+                        else
+                        {
+                            if (!UntaggedDocsList.Any(t => t.FullName == folder.FullName))
+                            {
+                                UntaggedDocsList.Add(folder);
+                            }
                         }
                     }
-                }
                 else
                 {
                     if (!UntaggedDocsList.Any(t => t.FullName == folder.FullName))
@@ -593,7 +581,7 @@ namespace ESD.PM.Models
             {
                 foreach (var item in Directory.GetDirectories(FullName))
                 {
-                    localList.Add(new SubFoldersModel(item, ProjectName, _settingsIsTrue));
+                    localList.Add(new SubFoldersModel(item, ProjectName, _sharedSettings));
                 }
             }
 
@@ -637,6 +625,22 @@ namespace ESD.PM.Models
             OnPropertyChanged(nameof(HideNumbersButtonSourse));
         }
 
+        private void GetFiles()
+        {
+            _filesList = new ObservableCollection<SubFoldersModel>();
+            if (Directory.Exists(FullName))
+            {
+                foreach (var item in Directory.GetFiles(FullName))
+                {
+                    _filesList.Add(new SubFoldersModel(item, ProjectName, _sharedSettings));
+                }
+                foreach (var file in _filesList)
+                {
+                    FilteredDocsList.Add(file);
+                }
+            }
+        }
+
 
         #endregion
 
@@ -657,8 +661,8 @@ namespace ESD.PM.Models
                 {
                     FullName = _selectedFolderName.FullName;
                     GetSubFolders();
+                    GetBackCommandActive = true;
                 }
-                GetBackCommandActive = true;
             }
         }
 
@@ -666,7 +670,6 @@ namespace ESD.PM.Models
         {
             string trimmedPath = Path.GetDirectoryName(FullName);
             FullName = trimmedPath;
-            GetSubFolders();
             if (FullName != _originalPath)
             {
                 GetBackCommandActive = true;
@@ -675,6 +678,7 @@ namespace ESD.PM.Models
             {
                 GetBackCommandActive = false;
             }
+            GetSubFolders();
         }
 
         private void OnOpenFolder(object obj)
@@ -688,7 +692,20 @@ namespace ESD.PM.Models
         private void OnCopyPath(object obj)
         {
             if (SelectedFolderName != null)
-                Clipboard.SetText(SelectedFolderName.FullName);
+            {
+                try
+                {
+                    Clipboard.Clear();
+                    Clipboard.SetText(SelectedFolderName.FullName);
+                }
+                catch (System.Runtime.InteropServices.COMException ex)
+                {
+                    System.Windows.MessageBox.Show($"Error: {ex.Message}",
+                                              "Error",
+                                              MessageBoxButton.OK,
+                                              MessageBoxImage.Error);
+                }
+            }
         }
 
         private void OnDateSort(object obj)
@@ -926,15 +943,9 @@ namespace ESD.PM.Models
         {
             if (SelectedFolderName != null)
             {
-                var index = SelectedFolderName.FullName.IndexOf(ProjectName);
-                string path = null;
+                string path = SelectedFolderName.Name;
 
-                if (index > 0)
-                {
-                    path = SelectedFolderName.FullName.Substring(index + ProjectName.Length);
-                }
-
-                var history = new FolderHistoryModel(path, true);
+                var history = new CheckHistoryModel(path, true);
                 _tempHistory = ServerSettingsManager.LoadSettings();
 
                 if (_tempHistory.ProjectHistory.Count == 0)
@@ -945,7 +956,7 @@ namespace ESD.PM.Models
                 {
                     foreach (var projectHistory in _tempHistory.ProjectHistory)
                     {
-                        if (ProjectName.Equals(projectHistory.Name))
+                        if (FullName.Equals(projectHistory.Folder))
                         {
                             _projectHistory = projectHistory;
                             break;
@@ -959,32 +970,31 @@ namespace ESD.PM.Models
 
                 if (_projectHistory == null)
                 {
-                    _projectHistory = new ProjectHistoryModel(ProjectName);
-                    _projectHistory.History.Add(history);
+                    _projectHistory = new ProjectHistoryModel(FullName);
+                    _projectHistory.CheckHistory.Add(history);
                     SelectedFolderName.IsChecked = true;
-                    _settingsIsTrue = true;
                     _tempHistory.ProjectHistory.Add(_projectHistory);
                 }
                 else
                 {
                     foreach (var projectHistory in _tempHistory.ProjectHistory)
                     {
-                        if (projectHistory.Name.Equals(ProjectName))
+                        if (projectHistory.Folder != null && projectHistory.Folder.Equals(FullName))
                         {
                             _projectHistory = projectHistory;
                             break;
                         }
                     }
                     var _contains = false;
-                    foreach (var folderHistory in _projectHistory.History)
+                    foreach (var folderHistory in _projectHistory.CheckHistory)
                     {
                         if (folderHistory.Path.Equals(path))
                         {
                             folderHistory.IsChecked = !folderHistory.IsChecked;
                             if (!folderHistory.IsChecked)
                             {
-                                _projectHistory.History.Remove(folderHistory);
-                                if (_projectHistory.History.Count == 0)
+                                _projectHistory.CheckHistory.Remove(folderHistory);
+                                if (_projectHistory.CheckHistory.Count == 0)
                                 {
                                     _tempHistory.ProjectHistory.Remove(_projectHistory);
                                     _projectHistory = null;
@@ -997,11 +1007,12 @@ namespace ESD.PM.Models
                     }
                     if (_contains == false)
                     {
-                        _projectHistory.History.Add(history);
+                        _projectHistory.CheckHistory.Add(history);
                         SelectedFolderName.IsChecked = true;
                     }
                 }
                 ServerSettingsManager.SaveSettings(_tempHistory);
+                _sharedSettings = _tempHistory;
             }
         }
         #endregion

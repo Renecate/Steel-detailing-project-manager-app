@@ -9,15 +9,15 @@ namespace ESD.PM.Models
 {
     public class ProjectHistoryModel
     {
-        public string Name { get; set; }
+        public string Folder { get; set; }
 
-        public ObservableCollection<FolderHistoryModel> History { get; set; }
+        public ObservableCollection<CheckHistoryModel> CheckHistory { get; set; }
 
-        public ProjectHistoryModel(string name)
+        public ProjectHistoryModel(string folder)
         {
-            Name = name;
+            Folder = folder;
 
-            History = new ObservableCollection<FolderHistoryModel> { };
+            CheckHistory = new ObservableCollection<CheckHistoryModel> { };
         }
     }
 }
