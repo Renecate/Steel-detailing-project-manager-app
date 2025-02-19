@@ -218,11 +218,7 @@ namespace ESD.PM.Models
             HideNumbersIsTrue = false;
             GetBackCommandActive = false;
 
-            SubFolderList = new ObservableCollection<SubFoldersModel>();
-            Tags = new ObservableCollection<TagsModel>();
-            FilteredDocsList = new ObservableCollection<SubFoldersModel>();
-            UntaggedDocsList = new ObservableCollection<SubFoldersModel>();
-            TaggedDocsList = new ObservableCollection<SubFoldersModel>();
+
             _tagsToRemove = new ObservableCollection<TagsModel>();
 
             ViewIsHiddenOrToggledCheck();
@@ -393,8 +389,11 @@ namespace ESD.PM.Models
 
         private void GetSubFolders()
         {
-            Tags.Clear();
+            FilteredDocsList = new ObservableCollection<SubFoldersModel>();
+            UntaggedDocsList = new ObservableCollection<SubFoldersModel>();
+            TaggedDocsList = new ObservableCollection<SubFoldersModel>();
             SubFolderList = new ObservableCollection<SubFoldersModel>();
+            Tags = new ObservableCollection<TagsModel>();
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
@@ -408,7 +407,6 @@ namespace ESD.PM.Models
 
         private void ProcessLocalList()
         {
-            UntaggedDocsList.Clear();
             if (FolderSettings != null && GetBackCommandActive == false)
             {
                 if (FolderSettings.Tags != null)
@@ -660,8 +658,8 @@ namespace ESD.PM.Models
                 else if (Directory.Exists(_selectedFolderName.FullName))
                 {
                     FullName = _selectedFolderName.FullName;
-                    GetSubFolders();
                     GetBackCommandActive = true;
+                    GetSubFolders();
                 }
             }
         }
