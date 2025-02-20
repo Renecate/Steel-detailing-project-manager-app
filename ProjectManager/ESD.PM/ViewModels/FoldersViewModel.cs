@@ -164,6 +164,7 @@ namespace ESD.PM.Models
         private bool _hideNumbersIsTrue;
         private bool _folderIsChecked;
         private bool _getBackCommandActive;
+        private bool _folderIsChanged;
 
         private string _dynamicSearchText;
         private string _name;
@@ -288,30 +289,33 @@ namespace ESD.PM.Models
             var _filterdDocsList = FilteredDocsList;
             _tagsToRemove.Clear();
             TaggedDocsList.Clear();
-            foreach (var tag in Tags)
+            if (Tags != null)
             {
-                var count = 0;
-                foreach (var doc in SubFolderList)
+                foreach (var tag in Tags)
                 {
-                    if (tag.State is true)
+                    var count = 0;
+                    foreach (var doc in SubFolderList)
                     {
-                        files = doc.Name.Split('\\');
-                        parts = files[^1].Split("-");
-                        foreach (var part in parts)
+                        if (tag.State is true)
                         {
-                            var partTrimmed = part.Trim();
-                            if (partTrimmed.Equals(tag.Name))
+                            files = doc.Name.Split('\\');
+                            parts = files[^1].Split("-");
+                            foreach (var part in parts)
                             {
-                                TaggedDocsList.Add(doc);
-                                count++;
-                                break;
+                                var partTrimmed = part.Trim();
+                                if (partTrimmed.Equals(tag.Name))
+                                {
+                                    TaggedDocsList.Add(doc);
+                                    count++;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
-                if (count == 0 && tag.State is true)
-                {
-                    _tagsToRemove.Add(tag);
+                    if (count == 0 && tag.State is true)
+                    {
+                        _tagsToRemove.Add(tag);
+                    }
                 }
             }
 
@@ -393,7 +397,11 @@ namespace ESD.PM.Models
             UntaggedDocsList = new ObservableCollection<SubFoldersModel>();
             TaggedDocsList = new ObservableCollection<SubFoldersModel>();
             SubFolderList = new ObservableCollection<SubFoldersModel>();
-            Tags = new ObservableCollection<TagsModel>();
+            if (_folderIsChanged == true)
+            {
+                Tags = new ObservableCollection<TagsModel>();
+                _folderIsChanged = false;
+            }
             if (Directory.Exists(FullName))
             {
                 foreach (var item in Directory.GetDirectories(FullName))
@@ -445,14 +453,17 @@ namespace ESD.PM.Models
 
         private void AddTagIfNotExist(string tag)
         {
-            if (!Tags.Any(t => t.Name == tag))
+            if (Tags != null)
             {
-                Tags.Add(new TagsModel(tag));
-                if (FolderSettings != null)
+                if (!Tags.Any(t => t.Name == tag))
                 {
-                    var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
-                    GeneralFoldersSettings.SavedFolders[settingsIndex].Tags = Tags;
-                    FoldersSettingsManager.SaveSettings(GeneralFoldersSettings);
+                    Tags.Add(new TagsModel(tag));
+                    if (FolderSettings != null)
+                    {
+                        var settingsIndex = GeneralFoldersSettings.SavedFolders.IndexOf(FolderSettings);
+                        GeneralFoldersSettings.SavedFolders[settingsIndex].Tags = Tags;
+                        FoldersSettingsManager.SaveSettings(GeneralFoldersSettings);
+                    }
                 }
             }
         }
@@ -475,10 +486,11 @@ namespace ESD.PM.Models
 
             OnPropertyChanged(nameof(FilteredDocsList));
             OnPropertyChanged(nameof(Tags));
+            if (Tags != null)
             foreach (var item in Tags)
-            {
-                item.PropertyChanged += TagStateChanged;
-            }
+                {
+                    item.PropertyChanged += TagStateChanged;
+                }
         }
 
         private int GetOrderNumber()
@@ -659,6 +671,7 @@ namespace ESD.PM.Models
                 {
                     FullName = _selectedFolderName.FullName;
                     GetBackCommandActive = true;
+                    _folderIsChanged = true;
                     GetSubFolders();
                 }
             }
@@ -676,6 +689,7 @@ namespace ESD.PM.Models
             {
                 GetBackCommandActive = false;
             }
+            _folderIsChanged = true;
             GetSubFolders();
         }
 
@@ -806,6 +820,7 @@ namespace ESD.PM.Models
 
         private void OnHideFolder(object obj)
         {
+            FullName = _originalPath;
             HideFolderIsTrue = true;
         }
 

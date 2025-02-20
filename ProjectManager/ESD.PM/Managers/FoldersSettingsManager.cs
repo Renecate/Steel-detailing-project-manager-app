@@ -6,7 +6,7 @@ namespace ESD.PM.Models
 {
     public static class FoldersSettingsManager
     {
-        private static readonly string settingsDirectoryPath = @"C:\ESD.PM\test";
+        private static readonly string settingsDirectoryPath = @"C:\ESD.PM";
         private static readonly string settingsFilePath = Path.Combine(settingsDirectoryPath, "folderssettings.json");
 
         public static FoldersSettings LoadSettings()
